@@ -1,0 +1,13 @@
+export type Course = { id: string; title: string; subtitle: string; price: number; priceLabel?: string; oldPrice?: number; image: string; tag?: string; description: string; duration: string };
+export const courses: Course[] = [
+ { id:'live-spoken-english', title:'4-Month Live Spoken English Course', subtitle:'Daily live class, practice sessions, doubts support and PDF materials.', price:0, priceLabel:'Enquire', image:'/images/course-live-spoken.jpg', tag:'Live Classes', description:'A structured four-month spoken English programme with daily live classes, practice groups, doubt sessions and PDF study materials. Confirm current fee and batch availability with Persona Institute.', duration:'4 months · Live batch' },
+ { id:'recorded-spoken-english', title:'Zero to Fluent — Recorded Course', subtitle:'Recorded lessons, step-by-step learning and downloadable study materials.', price:1199, oldPrice:2500, image:'/images/course-recorded.jpg', tag:'Recorded', description:'A self-paced recorded spoken English course with lessons, practice and downloadable study materials. Access validity: 15 months, as shown in the supplied course artwork.', duration:'15 months validity' },
+ { id:'winter-spoken-english', title:'4-Month Winter Special Course', subtitle:'Basic to advanced spoken English with live and recorded practice.', price:0, priceLabel:'Enquire', image:'/images/course-winter-special.jpg', tag:'Special Batch', description:'A four-month winter special spoken English course with live classes, recorded sessions, daily practice and step-by-step learning. Confirm the current fee and batch dates with Persona Institute.', duration:'4 months · Batch based' },
+ { id:'grammar-booster', title:'3-Month Grammar Booster', subtitle:'Concepts, examples, practice and tests in a live learning format.', price:1599, oldPrice:2500, image:'/images/course-grammar-booster.jpg', tag:'New Live Course', description:'A three-month live grammar booster course focused on concepts, examples, practice and tests. The supplied course artwork shows an offer price of ₹1,599.', duration:'3 months' }
+];
+export const videos = [
+ { title:'Live Spoken English Course', category:'Daily live class · Persona Institute', duration:'Live', image:'/images/course-live-spoken.jpg' },
+ { title:'Zero to Fluent Spoken English', category:'Recorded Course · Ajay Sir', duration:'Recorded', image:'/images/course-recorded.jpg' },
+ { title:'Grammar Booster', category:'Concept · Example · Practice · Test', duration:'Live', image:'/images/course-grammar-booster.jpg' },
+ { title:'Winter Special Spoken English', category:'Basic to advanced learning', duration:'Course', image:'/images/course-winter-special.jpg' }
+];
