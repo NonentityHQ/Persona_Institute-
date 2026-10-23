@@ -1,5 +1,6 @@
 "use client";
 
+import PublicHeader from "@/components/PublicHeader";
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import Link from "next/link";
 import { Phone, Mail, MapPin, MessageCircle, Search, ArrowRight, Clock, Building2, UserRound, Users, Mic, BookOpen, GraduationCap, Star, ChevronDown, ChevronUp, Menu, X, MessageSquare, Award } from "lucide-react";
@@ -32,15 +33,7 @@ export default function ContactPage() {
   }
   const nav = [["Home", "/"], ["Courses", "/courses"], ["Free Tests", "/free-tests"], ["Success Stories", "/reviews"], ["About Us", "/about"], ["Contact", "/contact"]];
   return <main className="min-h-screen overflow-hidden bg-[#fffdfb] text-[#09276f]">
-    <header className="sticky top-0 z-50 border-b border-orange-100/70 bg-white/95 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-5 py-3 lg:px-10">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5"><img src="/images/persona-logo.png" alt="Persona Institute logo" className="h-11 w-11 object-contain"/><span className="leading-tight"><strong className="block text-lg font-extrabold tracking-tight sm:text-xl">Persona Institute</strong><span className="block text-xs font-medium text-[#284b8e]">Learn · Practice · Grow</span></span></Link>
-        <nav className="hidden items-center gap-1 rounded-full bg-white px-2 py-1 shadow-[0_3px_24px_rgba(16,39,91,0.08)] lg:flex">{nav.map(([label, href]) => <Link key={label} href={href} className={`rounded-full px-3 py-2 text-sm transition hover:text-orange-600 ${label === "Contact" ? "border-b-2 border-orange-500 font-semibold text-orange-600" : "text-[#23417e]"}`}>{label}</Link>)}</nav>
-        <div className="hidden items-center gap-3 sm:flex"><button aria-label="Search" className="grid h-10 w-10 place-items-center rounded-full border border-slate-100 bg-white shadow-sm"><Search size={19}/></button><Link href="/login" className="rounded-full bg-gradient-to-r from-[#ff1835] to-[#ff3517] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-red-200/60">Login / Sign Up</Link></div>
-        <button className="rounded-xl border border-slate-200 p-2 lg:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation">{menuOpen ? <X/> : <Menu/>}</button>
-      </div>
-      {menuOpen && <nav className="grid gap-1 border-t border-slate-100 bg-white p-4 lg:hidden">{[...nav,["Login / Sign Up","/login"]].map(([label,href])=><Link key={label} href={href} onClick={()=>setMenuOpen(false)} className="rounded-lg px-3 py-3 font-medium hover:bg-orange-50">{label}</Link>)}</nav>}
-    </header>
+    <PublicHeader active="/contact" />
 
     <section className="contact-hero-section relative isolate overflow-hidden bg-[#fff5eb]">
       <div aria-hidden="true" className="contact-hero-bg absolute inset-0 -z-20" style={{ backgroundImage: "url('/images/contact-hero-background.png')" }} />

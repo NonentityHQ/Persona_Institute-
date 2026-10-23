@@ -1,5 +1,6 @@
 "use client";
 
+import PublicHeader from "@/components/PublicHeader";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
@@ -43,16 +44,7 @@ export default function SuccessStoriesPage() {
   const nav = [["Home","/"],["Courses","/courses"],["Free Tests","/free-tests"],["Success Stories","/reviews"],["About Us","/about"],["Contact","/contact"]];
   return (
     <main className="min-h-screen overflow-hidden bg-[#fffdfb] text-[#102d70]">
-      <header className="sticky top-0 z-50 border-b border-orange-100/70 bg-white/95 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-3 px-5 py-3 lg:px-10">
-          <Link href="/" className="flex shrink-0 items-center gap-2.5"><img src="/images/persona-logo.png" alt="Persona Institute logo" className="h-10 w-10 object-contain"/><span className="leading-tight"><strong className="block text-base font-extrabold tracking-tight sm:text-xl">Persona Institute</strong><span className="block text-[10px] font-medium text-[#284b8e] sm:text-xs">Learn · Practice · Grow</span></span></Link>
-          <nav className="hidden items-center gap-1 rounded-full bg-white px-2 py-1 shadow-[0_3px_24px_rgba(16,39,91,.08)] lg:flex">
-            {nav.map(([label,href]) => <Link key={label} href={href} className={`rounded-full px-3 py-2 text-sm transition hover:text-orange-600 ${label === "Success Stories" ? "border-b-2 border-orange-500 font-semibold text-orange-600" : "text-[#23417e]"}`}>{label}</Link>)}
-          </nav>
-          <div className="flex shrink-0 items-center gap-2"><button aria-label="Search stories" onClick={() => document.getElementById("story-search")?.focus()} className="grid h-9 w-9 place-items-center rounded-full border border-slate-100 bg-white shadow-sm sm:h-10 sm:w-10"><Search size={18}/></button><Link href="/login" className="hidden rounded-full bg-gradient-to-r from-[#ff4a16] to-[#ff7014] px-5 py-3 text-xs font-bold text-white shadow-sm sm:block">Login / Sign Up</Link><button aria-label="Toggle navigation" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)} className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white lg:hidden">{menuOpen ? <X size={21}/> : <Menu size={21}/>}</button></div>
-        </div>
-        {menuOpen && <nav className="story-mobile-menu mx-3 mb-3 grid gap-1 rounded-2xl border border-orange-100 bg-white p-3 shadow-[0_16px_40px_rgba(16,45,112,.16)] lg:hidden">{nav.map(([label,href]) => <Link key={label} href={href} onClick={() => setMenuOpen(false)} className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition ${label === "Success Stories" ? "bg-orange-50 text-[#f04422]" : "text-[#23417e] hover:bg-orange-50"}`}><span>{label}</span><ArrowRight size={15}/></Link>)}<Link href="/login" onClick={() => setMenuOpen(false)} className="mt-1 rounded-xl bg-gradient-to-r from-[#ff1744] to-[#ff4b18] px-4 py-3 text-center text-sm font-bold text-white">Login / Sign Up</Link></nav>}
-      </header>
+      <PublicHeader active="/reviews" />
 
       <section className="success-hero-section relative isolate overflow-hidden bg-[#fff2e7]">
         <div aria-hidden="true" className="success-hero-bg absolute inset-0 -z-20" style={{backgroundImage:"url('/images/success-hero-background.png')"}} />

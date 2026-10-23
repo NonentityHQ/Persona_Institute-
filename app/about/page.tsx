@@ -1,12 +1,35 @@
 "use client";
 
+import PublicHeader from "@/components/PublicHeader";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowRight, Search, Menu, X, Users, Play, Star, Globe2, BarChart3,
   BookOpen, MonitorPlay, ClipboardCheck, HeartHandshake, ShieldCheck,
   Target, Eye, GraduationCap, Award, UsersRound, Lightbulb, CheckCircle2
 } from "lucide-react";
+
+
+function CountUpText({ value }: { value: string }) {
+  const match = value.match(/^([\d,]+(?:\.\d+)?)(.*)$/);
+  const target = match ? Number(match[1].replace(/,/g, "")) : 0;
+  const suffix = match?.[2] ?? "";
+  const decimals = match?.[1].includes(".") ? 1 : 0;
+  const [current, setCurrent] = useState(0);
+  useEffect(() => {
+    let frame = 0;
+    let start = 0;
+    const tick = (time: number) => {
+      if (!start) start = time;
+      const progress = Math.min((time - start) / 1250, 1);
+      setCurrent(target * (1 - Math.pow(1 - progress, 3)));
+      if (progress < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [target]);
+  return <>{current.toLocaleString("en-IN", { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}{suffix}</>;
+}
 
 const stats = [
   { icon: Users, value: "10,000+", label: "Happy Learners", tone: "orange" },
@@ -37,25 +60,7 @@ export default function AboutPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
     <main className="min-h-screen overflow-hidden bg-[#fffdfb] text-[#102d70]">
-      <header className="sticky top-0 z-50 border-b border-orange-100/70 bg-white/95 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-5 py-3 lg:px-10">
-          <Link href="/" className="flex shrink-0 items-center gap-2.5">
-            <img src="/images/persona-logo.png" alt="Persona Institute logo" className="h-11 w-11 object-contain" />
-            <span className="leading-tight"><span className="block text-lg font-extrabold tracking-tight sm:text-xl">Persona Institute</span><span className="block text-xs font-medium text-[#284b8e]">Learn · Practice · Grow</span></span>
-          </Link>
-          <nav className="hidden items-center gap-1 rounded-full bg-white px-2 py-1 shadow-[0_3px_24px_rgba(16,39,91,0.08)] lg:flex">
-            {[["Home","/"],["Courses","/courses"],["Free Tests","/free-tests"],["Success Stories","/reviews"],["About Us","/about"],["Contact","/contact"]].map(([label,href]) =>
-              <Link key={label} href={href} className={`rounded-full px-3 py-2 text-sm transition hover:text-orange-600 ${label === "About Us" ? "border-b-2 border-orange-500 font-semibold text-orange-600" : "text-[#23417e]"}`}>{label}</Link>
-            )}
-          </nav>
-          <div className="hidden items-center gap-3 sm:flex">
-            <button aria-label="Search" className="grid h-10 w-10 place-items-center rounded-full border border-slate-100 bg-white shadow-sm"><Search size={19}/></button>
-            <Link href="/login" className="rounded-full bg-gradient-to-r from-[#ff4c16] to-[#ff7114] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-orange-200/60">Login / Sign Up</Link>
-          </div>
-          <button className="rounded-xl border border-slate-200 p-2 lg:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation">{menuOpen ? <X/> : <Menu/>}</button>
-        </div>
-        {menuOpen && <nav className="grid gap-1 border-t border-slate-100 bg-white p-4 lg:hidden">{[["Home","/"],["Courses","/courses"],["Free Tests","/free-tests"],["Success Stories","/reviews"],["About Us","/about"],["Contact","/contact"],["Login / Sign Up","/login"]].map(([label,href])=><Link key={label} href={href} onClick={()=>setMenuOpen(false)} className="rounded-lg px-3 py-3 font-medium hover:bg-orange-50">{label}</Link>)}</nav>}
-      </header>
+      <PublicHeader active="/about" />
 
       {/* About hero: supplied panoramic image is the background, with a soft fade for readable content */}
       <section className="about-hero-section relative isolate overflow-hidden bg-[#fff5eb]">
@@ -86,7 +91,7 @@ export default function AboutPage() {
             </div>
           </div>
           <aside className="about-enter about-enter-delay about-quote-card relative z-10 ml-auto w-full max-w-[290px] rounded-[20px] border border-white/90 bg-white/90 p-4 shadow-[0_14px_36px_rgba(74,46,25,.15)] backdrop-blur-xl md:mt-0 lg:p-5">
-            <div className="flex gap-2"><span className="-mt-1 text-4xl font-black leading-none text-[#ff5a24]">“</span><div><p className="text-base font-semibold leading-[1.35] text-[#102d70]">Education is the most powerful weapon to change your future.</p><p className="mt-3 text-xs font-semibold text-[#173879]">— Saurabh Sir</p><p className="text-[10px] text-[#52658d]">Founder, Persona Institute</p></div></div>
+            <div className="flex gap-2"><span className="-mt-1 text-4xl font-black leading-none text-[#ff5a24]">“</span><div><p className="text-base font-semibold leading-[1.35] text-[#102d70]">Education is the most powerful weapon to change your future.</p><p className="mt-3 text-xs font-semibold text-[#173879]">— Ajay Sir</p><p className="text-[10px] text-[#52658d]">Founder, Persona Institute</p></div></div>
             <div className="my-3 h-px bg-gradient-to-r from-orange-100 via-slate-100 to-transparent" />
             <ul className="grid grid-cols-1 gap-2.5 text-xs font-medium text-[#173879]">
               {[{icon:BookOpen,label:"Learn with Practical Approach"},{icon:MonitorPlay,label:"Build Real Communication Skills"},{icon:UsersRound,label:"Get Personal Guidance"},{icon:Award,label:"Grow in English & in Life"}].map(({icon:Icon,label})=> <li key={label} className="flex items-center gap-2.5"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#fff0e8] text-[#ff5425]"><Icon size={15}/></span><span>{label}</span></li>)}
@@ -96,7 +101,7 @@ export default function AboutPage() {
       </section>
 
       <section className="about-stats relative z-30 mx-auto -mt-1 grid max-w-[1440px] grid-cols-2 gap-2 px-5 py-3 sm:grid-cols-3 lg:grid-cols-5 lg:px-10">
-        {stats.map(({icon:Icon,value,label,tone})=><div key={label} className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white px-3 py-4 shadow-[0_5px_20px_rgba(15,39,87,.05)] sm:px-4"><span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${tone==="pink"?"bg-rose-100 text-rose-500":tone==="violet"?"bg-violet-100 text-violet-600":"bg-orange-100 text-orange-500"}`}><Icon size={21} fill={label==="Average Rating"?"currentColor":"none"}/></span><span><strong className="block text-lg font-black leading-tight sm:text-xl">{value}</strong><span className="mt-1 block text-[10px] leading-tight text-[#52658d] sm:text-xs">{label}</span></span></div>)}
+        {stats.map(({icon:Icon,value,label,tone})=><div key={label} className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white px-3 py-4 shadow-[0_5px_20px_rgba(15,39,87,.05)] sm:px-4"><span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${tone==="pink"?"bg-rose-100 text-rose-500":tone==="violet"?"bg-violet-100 text-violet-600":"bg-orange-100 text-orange-500"}`}><Icon size={21} fill={label==="Average Rating"?"currentColor":"none"}/></span><span><strong className="block text-lg font-black leading-tight tabular-nums sm:text-xl"><CountUpText value={value}/></strong><span className="mt-1 block text-[10px] leading-tight text-[#52658d] sm:text-xs">{label}</span></span></div>)}
       </section>
 
       <section className="mx-auto grid max-w-[1440px] items-center gap-5 px-5 py-3 md:grid-cols-[290px_1fr_230px] lg:px-10">
@@ -107,7 +112,7 @@ export default function AboutPage() {
           <p className="mt-3 text-sm leading-relaxed text-[#52658d]">Persona Institute was founded with a simple belief — that everyone can learn English, regardless of their background, if they get the right guidance, practical learning and continuous support.</p>
           <p className="mt-3 text-sm leading-relaxed text-[#52658d]">What started as a small online initiative has grown into a learning community. Through structured courses, live practice and real-life examples, we help students overcome their fear and speak English with confidence.</p>
         </div>
-        <div className="relative space-y-3 border-l-2 border-orange-200 py-2 pl-5">
+        <div className="about-process-line relative space-y-3 border-l-2 border-orange-200 py-2 pl-5">
           {timeline.map(([year,desc])=><div key={year} className="relative"><span className="absolute -left-[26px] top-1 h-3 w-3 rounded-full border-2 border-white bg-orange-500 shadow"/><strong className="block text-sm font-extrabold">{year}</strong><p className="mt-0.5 text-xs leading-relaxed text-[#52658d]">{desc}</p></div>)}
         </div>
       </section>
@@ -128,9 +133,17 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section className="comparison-section mx-auto max-w-[1440px] px-5 py-7 lg:px-10">
+        <div className="mb-5 max-w-2xl"><span className="rounded-full bg-blue-50 px-3 py-1 text-[10px] font-extrabold tracking-wider text-blue-700">THE PERSONA DIFFERENCE</span><h2 className="mt-3 text-2xl font-black tracking-tight sm:text-3xl">Traditional Learning vs Persona Learning</h2><p className="mt-2 text-sm leading-relaxed text-[#52658d]">A quick look at how structured practice and guidance support a more confident learning journey.</p></div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <article className="comparison-card comparison-traditional rounded-2xl border border-slate-200 bg-white p-5 sm:p-6"><h3 className="text-lg font-black text-slate-700">Traditional learning</h3><p className="mt-1 text-xs text-slate-500">Often focused on one-way instruction</p><ul className="mt-4 grid gap-3 text-sm text-slate-600">{['Limited speaking practice','Progress can be hard to measure','Less flexible revision routine','Doubts may wait until the next class'].map(item=><li key={item} className="flex items-start gap-2"><span className="comparison-minus mt-0.5">−</span>{item}</li>)}</ul></article>
+          <article className="comparison-card comparison-persona rounded-2xl border border-orange-100 bg-gradient-to-br from-white to-orange-50/70 p-5 sm:p-6"><h3 className="text-lg font-black text-[#102d70]">Persona learning</h3><p className="mt-1 text-xs text-[#52658d]">Practice, feedback and steady progress</p><ul className="mt-4 grid gap-3 text-sm text-[#284779]">{['Live speaking and daily practice','Tests and visible progress tracking','Recorded lessons to revise anytime','Guidance and doubt-solving support'].map(item=><li key={item} className="flex items-start gap-2"><CheckCircle2 className="comparison-check mt-0.5 shrink-0" size={17}/>{item}</li>)}</ul></article>
+        </div>
+      </section>
+
       <section id="founder" className="mx-auto grid max-w-[1440px] items-center gap-5 px-5 pb-8 lg:grid-cols-[0.95fr_1.05fr] lg:px-10">
         <div className="relative overflow-hidden rounded-2xl bg-[#f8e9df]"><img src="/images/contact-ajay-reference.jpg" alt="Persona Institute mentor" className="h-[260px] w-full object-cover object-center sm:h-[330px]"/><button aria-label="Play founder introduction" className="absolute left-1/2 top-1/2 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-2 border-white bg-white/90 text-[#f04422] shadow-xl"><Play fill="currentColor" size={23}/></button></div>
-        <div><span className="rounded-full bg-[#ffe6e0] px-3 py-1 text-[10px] font-extrabold tracking-wider text-[#f04422]">MEET OUR FOUNDER</span><h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">Saurabh Sir</h2><p className="mt-2 text-sm leading-relaxed text-[#52658d]">With a learner-first approach, practical examples and structured lessons, our goal is to help students overcome hesitation and build real communication skills. Persona Institute is designed to make English learning approachable and useful in everyday life.</p>
+        <div><span className="rounded-full bg-[#ffe6e0] px-3 py-1 text-[10px] font-extrabold tracking-wider text-[#f04422]">MEET OUR FOUNDER</span><h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">Ajay Singh Rajput (Ajay Sir)</h2><p className="mt-2 text-sm leading-relaxed text-[#52658d]">With a learner-first approach, practical examples and structured lessons, our goal is to help students overcome hesitation and build real communication skills. Persona Institute is designed to make English learning approachable and useful in everyday life.</p>
           <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">{[{icon:Award,top:"Years of",bottom:"Teaching Experience"},{icon:UsersRound,top:"10,000+",bottom:"Students Guided"},{icon:GraduationCap,top:"Specialist in",bottom:"Spoken English"},{icon:Users,top:"Mentor &",bottom:"Career Guide"}].map(({icon:Icon,top,bottom})=><div key={bottom} className="flex items-center gap-2 rounded-xl border border-slate-100 bg-white p-2 shadow-sm"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-orange-50 text-orange-500"><Icon size={16}/></span><span><strong className="block text-[11px]">{top}</strong><span className="text-[10px] text-[#52658d]">{bottom}</span></span></div>)}</div>
           <div className="mt-4 flex flex-wrap gap-2"><Link href="/courses" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#ff1738] to-[#ff5017] px-5 py-3 text-xs font-bold text-white">Explore Courses <ArrowRight size={15}/></Link><Link href="/contact" className="inline-flex items-center gap-2 rounded-full border border-[#ff6840] bg-white px-5 py-3 text-xs font-bold">Talk to Our Team</Link></div>
         </div>
