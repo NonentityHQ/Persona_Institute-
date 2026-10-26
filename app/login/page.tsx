@@ -1,19 +1,16 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
+import { AnimatePresence, m } from 'framer-motion';
+import TransitionLink from '@/components/motion/TransitionLink';
+import { useRouteTransition } from '@/components/motion/RouteTransition';
+import { EASE_OUT } from '@/lib/motion';
+import CountUp from '@/components/motion/CountUp';
 import { useEffect, useRef, useState, type FormEvent, type ClipboardEvent, type KeyboardEvent } from 'react';
-import { useRouter } from 'next/navigation';
 import { ArrowLeft, ArrowRight, BookOpenText, ChartNoAxesCombined, CheckCircle2, LockKeyhole, Mail, Smartphone, UsersRound, PlayCircle, GraduationCap, ShieldCheck, RefreshCw } from 'lucide-react';
 
-function RollingNumber({ value, suffix = '' }: { value: number; suffix?: string }) {
-  const [current, setCurrent] = useState(0);
-  useEffect(() => { let frame = 0; let start = 0; const duration = 1500; const tick = (time: number) => { if (!start) start = time; const progress = Math.min((time - start) / duration, 1); setCurrent(Math.round(value * (1 - Math.pow(1 - progress, 3)))); if (progress < 1) frame = requestAnimationFrame(tick); }; frame = requestAnimationFrame(tick); return () => cancelAnimationFrame(frame); }, [value]);
-  return <>{current.toLocaleString('en-IN')}{suffix}</>;
-}
-
 export default function LoginPage() {
-  const router = useRouter();
+  const { navigate } = useRouteTransition();
   const [method, setMethod] = useState<'mobile' | 'email'>('mobile');
   const [identity, setIdentity] = useState('');
   const [notice, setNotice] = useState('');
@@ -47,7 +44,7 @@ export default function LoginPage() {
     setOtpNotice('Demo preview: OTP delivery is not connected yet. Enter any 4 digits to preview verification.');
     setResendSeconds(25);
     setStep('otp');
-    window.setTimeout(() => otpRefs.current[0]?.focus(), 80);
+    window.setTimeout(() => otpRefs.current[0]?.focus(), 300);
   }
 
   function beginOtpOrbit() {
@@ -56,7 +53,7 @@ export default function LoginPage() {
     window.setTimeout(() => {
       setOtpState('success');
       setOtpNotice('You’re verified! Opening your learning dashboard…');
-      window.setTimeout(() => router.push('/batches'), 900);
+      window.setTimeout(() => navigate('/batches'), 900);
     }, 1180);
   }
 
@@ -115,10 +112,10 @@ export default function LoginPage() {
     <main className="login-page min-h-screen bg-white text-[#102f55]">
       <div className="login-layout">
         <section className="login-story">
-          <Link href="/" className="login-brand" aria-label="Persona Institute home">
+          <TransitionLink href="/" className="login-brand" aria-label="Persona Institute home">
             <Image src="/images/persona-logo.png" alt="Persona Institute logo" width={88} height={88} priority />
             <span><strong>Persona Institute</strong><small>Learn · Practice · Grow</small></span>
-          </Link>
+          </TransitionLink>
           <div className="login-story-content">
             <div className="login-doodle login-doodle-cap" aria-hidden="true"><GraduationCap size={58} strokeWidth={1.4} /></div>
             <div className="login-doodle login-doodle-note" aria-hidden="true">Learn<br />Practice<br />Grow <span>↙</span></div>
@@ -135,8 +132,8 @@ export default function LoginPage() {
             <div className="login-teacher-wrap">
               <div className="login-teacher-glow" />
               <Image src="/images/ajay-sir-cutout.png" alt="Ajay Sir, Persona Institute" width={682} height={764} className="login-teacher" priority />
-              <div className="login-proof login-proof-learners"><span className="proof-icon"><UsersRound size={22} /></span><span><b><RollingNumber value={10000} suffix="+" /></b><small>Happy Learners</small></span></div>
-              <div className="login-proof login-proof-progress"><span className="proof-icon proof-red"><ChartNoAxesCombined size={22} /></span><span><b><RollingNumber value={95} suffix="%" /></b><small>Visible Improvement</small></span></div>
+              <div className="login-proof login-proof-learners"><span className="proof-icon"><UsersRound size={22} /></span><span><b><CountUp value={10000} suffix="+" /></b><small>Happy Learners</small></span></div>
+              <div className="login-proof login-proof-progress"><span className="proof-icon proof-red"><ChartNoAxesCombined size={22} /></span><span><b><CountUp value={95} suffix="%" /></b><small>Visible Improvement</small></span></div>
             </div>
             <div className="login-chart-doodle" aria-hidden="true"><span /><span /><span /></div>
             <p className="login-handwriting">Same Guidance<br />Real Progress<br />With <b>Ajay Sir ♡</b></p>
@@ -145,9 +142,11 @@ export default function LoginPage() {
         </section>
 
         <section className="login-form-panel">
-          <div className="login-topline"><span>New here?</span><Link href="/contact" className="login-create-link">Create an Account</Link></div>
+          <div className="login-topline"><span>New here?</span><TransitionLink href="/contact" className="login-create-link">Create an Account</TransitionLink></div>
           <div className="login-card">
-            <Link href="/" className="login-card-logo" aria-label="Back to Persona Institute home"><Image src="/images/persona-logo.png" alt="Persona Institute" width={150} height={150} priority /></Link>
+            <TransitionLink href="/" className="login-card-logo" aria-label="Back to Persona Institute home"><Image src="/images/persona-logo.png" alt="Persona Institute" width={150} height={150} priority /></TransitionLink>
+            <AnimatePresence mode="wait" initial={false}>
+            <m.div key={step} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0, transition: { duration: 0.24, ease: EASE_OUT } }} exit={{ opacity: 0, y: -6, transition: { duration: 0.16 } }}>
             <h2>{step === 'identity' ? <>Welcome to <span>Persona English!</span></> : <>Verify <span>it’s you</span></>}</h2>
             <p className="login-card-subtitle">{step === 'identity' ? 'Login to continue your learning journey.' : <>Enter the 4-digit code sent to <strong>{method === 'mobile' ? `+91 ${identity.slice(0, 2)}•••••${identity.slice(-2)}` : identity.replace(/^(.).+(@.*)$/, '$1•••$2')}</strong></>}</p>
             {step === 'identity' ? <>
@@ -166,7 +165,7 @@ export default function LoginPage() {
                 {notice && <p role="status" className="login-notice">{notice}</p>}
               </form>
               <p className="login-security"><LockKeyhole size={15} fill="currentColor" /> Your information is safe and secure with us.</p>
-              <p className="login-terms">By continuing, you agree to the <Link href="/contact">Terms and Conditions</Link> and <Link href="/contact">Privacy Policy</Link>.</p>
+              <p className="login-terms">By continuing, you agree to the <TransitionLink href="/contact">Terms and Conditions</TransitionLink> and <TransitionLink href="/contact">Privacy Policy</TransitionLink>.</p>
             </> : <>
               <form onSubmit={verifyOtp} className={`otp-form otp-state-${otpState}`} noValidate>
                 <div className={`otp-emblem ${otpState === 'success' ? 'otp-emblem-success' : otpState === 'error' ? 'otp-emblem-error' : otpState === 'orbiting' ? 'otp-emblem-orbiting' : ''}`} aria-hidden="true">
@@ -185,8 +184,10 @@ export default function LoginPage() {
               </form>
               <p className="login-security"><LockKeyhole size={15} fill="currentColor" /> Your information is safe and secure with us.</p>
             </>}
+            </m.div>
+            </AnimatePresence>
           </div>
-          <p className="login-panel-footer">New to Persona? <Link href="/courses">Explore courses</Link> or <Link href="/free-tests">try a free test</Link>.</p>
+          <p className="login-panel-footer">New to Persona? <TransitionLink href="/courses">Explore courses</TransitionLink> or <TransitionLink href="/free-tests">try a free test</TransitionLink>.</p>
         </section>
       </div>
     </main>

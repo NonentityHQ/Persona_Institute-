@@ -1,0 +1,78 @@
+/* ==========================================================================
+   Motion system styles (companion to components/motion/* and lib/motion.ts)
+   Only transform / opacity are ever animated continuously.
+   ========================================================================== */
+
+/* framer-motion useScroll({target}) wants a positioned scroll container (silences a dev-only warning; no visual effect) */
+html{position:relative}
+
+/* ---- Route transition chrome ------------------------------------------- */
+.route-progress{position:fixed;inset:0 0 auto 0;z-index:130;height:3px;transform-origin:0 50%;pointer-events:none;
+  background:linear-gradient(90deg,#ff7a1a 0%,#ff4b18 38%,#6d5dfc 100%);transform:scaleX(0);opacity:0}
+.shared-overlay{position:fixed;z-index:120;overflow:hidden;pointer-events:none;box-shadow:0 18px 44px rgba(12,46,99,.2);background:#fff}
+.shared-overlay img{display:block;width:100%;height:100%;object-fit:cover}
+/* Next.js scrolls the new route segment into view after navigation. The persistent sticky header sits above
+   the stage, so without a margin the page would land ~header-height scrolled. The margin makes it clamp to 0. */
+.page-stage{min-height:inherit;scroll-margin-top:160px}
+/* The sticky header now sits above the page, so `min-h-screen` mains would make every short page scroll by one header height. */
+.page-stage>main.min-h-screen{min-height:calc(100vh - 66px)}
+
+/* ---- Header scroll progress + sliding nav pill --------------------------- */
+.scroll-progress{position:absolute;left:0;right:0;bottom:-1px;height:2px;transform-origin:0 50%;pointer-events:none;
+  background:linear-gradient(90deg,#ff7a1a,#6d5dfc)}
+.nav-pill{position:absolute;inset:0;z-index:-1;border-radius:9999px;background:#fff1ea;pointer-events:none}
+.nav-link-pill{position:relative;isolation:isolate}
+/* Portal sidebar: the active highlight (incl. its orange edge bar) is one element that glides between items. */
+.portal-nav-link{isolation:isolate}
+.portal-nav-link.active{background:transparent}
+.portal-nav-link.active:before{content:none}
+.nav-pill-portal{position:absolute;inset:0;z-index:-1;border-radius:13px;background:linear-gradient(100deg,#fff0e3,#fff5eb);pointer-events:none}
+.nav-pill-portal::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 5px 5px 0;background:#ff6a00}
+
+/* ---- 3D tilt card ------------------------------------------------------- */
+.c3d{position:relative;transform-style:preserve-3d;transition:box-shadow .28s ease,border-color .28s ease}
+.c3d::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;pointer-events:none;
+  box-shadow:0 24px 46px rgba(12,46,99,.16);opacity:0;transition:opacity .28s ease}
+@media (hover:hover) and (pointer:fine){ .c3d:hover::before{opacity:1} .c3d:hover{border-color:#ffd9de} }
+.c3d-glare{position:absolute;inset:0;border-radius:inherit;pointer-events:none;mix-blend-mode:soft-light;z-index:3}
+.c3d-z1{transform:translateZ(14px)}
+.c3d-z2{transform:translateZ(26px)}
+.c3d-img{transition:transform .5s cubic-bezier(.22,.61,.36,1)}
+.c3d:hover .c3d-img{transform:scale(1.045)}
+@media (hover:none),(pointer:coarse){ .c3d-z1,.c3d-z2{transform:none} .c3d:hover .c3d-img{transform:none} }
+
+/* ---- Flip card ---------------------------------------------------------- */
+.flip{position:relative}
+@media (hover:hover) and (pointer:fine){.flip-lift{transition:transform .24s cubic-bezier(.22,.61,.36,1)}.flip-lift:hover{transform:translateY(-6px)}}
+.flip-inner{display:grid;height:100%;transform-style:preserve-3d}
+.flip-face{grid-area:1/1;min-width:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.flip-back{transform:rotateY(180deg)}
+
+/* ---- Hero heading ------------------------------------------------------- */
+.hero-line{display:block;overflow:hidden;isolation:isolate;contain:paint;padding:.04em .06em .18em;margin:-.04em -.06em -.18em}
+.hero-line-inner{display:block}
+.typed-caret{display:inline-block;width:.055em;height:.82em;margin-left:.05em;background:currentColor;vertical-align:-.06em;opacity:0}
+.typed-caret.is-typing{opacity:1;animation:caretBlink .9s steps(1) infinite}
+@keyframes caretBlink{50%{opacity:0}}
+
+/* ---- Hero image: slow settle (visible from first paint, no LCP penalty) --- */
+.hero-settle{animation:heroSettle 1.6s cubic-bezier(.22,.61,.36,1) both}
+@keyframes heroSettle{from{transform:scale(1.06)}to{transform:scale(1)}}
+
+/* ---- Lightweight focus feedback for inputs (login/contact) ---------------- */
+.field-focus{transition:border-color .2s ease,box-shadow .2s ease,background-color .2s ease}
+.field-focus:focus,.field-focus:focus-within{box-shadow:0 0 0 4px rgba(109,93,252,.14)}
+
+/* ---- Section kicker underline draw --------------------------------------- */
+.kicker-draw{position:relative;display:inline-block}
+.kicker-draw::after{content:"";position:absolute;left:0;bottom:-5px;height:2px;width:100%;background:linear-gradient(90deg,#ff7a1a,#6d5dfc);
+  transform:scaleX(0);transform-origin:0 50%;transition:transform .7s cubic-bezier(.22,.61,.36,1) .15s}
+.in-view .kicker-draw::after,.kicker-draw.in-view::after{transform:scaleX(1)}
+
+/* ---- Reduced motion: no decorative movement ------------------------------ */
+@media (prefers-reduced-motion:reduce){
+  .hero-settle{animation:none}
+  .typed-caret.is-typing{animation:none}
+  .c3d,.c3d-img,.kicker-draw::after{transition:none}
+  .c3d:hover .c3d-img{transform:none}
+}
