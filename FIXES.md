@@ -1,35 +1,23 @@
-# Mobile + build fixes
+# Fixes
 
 ## Build
-1. `lib/motion.ts` — added `DUR.fast: 0.2`
-2. `lib/sanity/fallback.ts` — removed duplicate `youtubeSectionTitle` / `youtubeSectionKicker`
+- `lib/motion.ts` — `DUR.fast: 0.2`
+- `lib/sanity/fallback.ts` — duplicate youtube keys removed
 
-## Mobile UX
-3. **Login modal** (`BrandLoginModal.tsx`)
-   - Bottom-sheet on mobile, centered on desktop
-   - Body scroll lock, safe max-height + internal scroll
-   - Higher z-index (200) so it sits above header/menu
-   - Drag handle on mobile
+## Mobile login
+- Bottom-sheet modal, body scroll lock, z-index 200
+- Header Login visible on mobile; closes menu on open
 
-4. **Login button** (`BrandLoginButton.tsx`)
-   - Visible on mobile header (compact "Login")
-   - `onOpen` callback to close mobile menu when modal opens
+## Hero chips (mobile / tablet)
+- **2×2 grid** under the video — no long empty bars
+- Desktop (≥1024px): original floating side chips unchanged
 
-5. **Public header** — closes mobile menu when Login is tapped
+## Reels
+- Auto-rolling kept on **all** devices
+- Cards stay **clickable** (Instagram)
+- Arrow buttons removed
+- Hover / touch pauses briefly so you can tap
 
-6. **Reels** (`GrowCarousel.tsx`)
-   - Removed ← → arrow buttons
-   - Mobile/touch: native horizontal swipe + snap
-   - Desktop: keeps auto-marquee (hover to pause)
-
-7. **Hero feature chips** (`home3d.css`)
-   - Full-width stacked pills under video on mobile/tablet
-   - All 4 chips visible (Expert / Structured / Practice / Build)
-   - Cleaner spacing, no overlapping absolute positions
-
-## Apply
-Copy these files into your project, then:
 ```bash
-rm -rf .next
-npm run build
+rm -rf .next && npm run build
 ```
