@@ -7,6 +7,7 @@ import { m } from "framer-motion";
 import { ArrowRight, Menu, Search, X } from "lucide-react";
 import TransitionLink from "@/components/motion/TransitionLink";
 import ScrollProgress from "@/components/motion/ScrollProgress";
+import BrandLoginButton from "@/components/BrandLoginButton";
 import { DUR, EASE_IN_OUT } from "@/lib/motion";
 
 const links = [
@@ -62,7 +63,7 @@ export default function PublicHeader({ active, className = "" }: Props) {
 
         <div className="flex shrink-0 items-center gap-2">
           <TransitionLink href="/courses" aria-label="Search courses" className="grid h-9 w-9 place-items-center rounded-full border border-slate-100 bg-white text-[#23417e] shadow-sm transition-colors hover:bg-orange-50 sm:h-10 sm:w-10"><Search size={18} /></TransitionLink>
-          <TransitionLink href="/login" className="hidden rounded-full bg-gradient-to-r from-[#ff4a16] to-[#ff7014] px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-opacity hover:opacity-90 sm:inline-flex sm:px-5 sm:py-3">Login / Sign Up</TransitionLink>
+          <BrandLoginButton />
           <button type="button" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="public-mobile-menu"
             onClick={() => setMenuOpen((open) => !open)} className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-[#173879] transition-colors hover:bg-orange-50 lg:hidden">
             {menuOpen ? <X size={21} /> : <Menu size={21} />}
@@ -75,7 +76,7 @@ export default function PublicHeader({ active, className = "" }: Props) {
           className={`flex min-h-11 items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${isActive(href) ? "bg-orange-50 text-[#f04422]" : "text-[#23417e] hover:bg-orange-50 hover:text-[#f04422]"}`}>
           <span>{label}</span><ArrowRight size={15} />
         </TransitionLink>)}
-        <TransitionLink href="/login" onClick={() => setMenuOpen(false)} className="mt-1 rounded-xl bg-gradient-to-r from-[#ff1744] to-[#ff4b18] px-4 py-3 text-center text-sm font-bold text-white">Login / Sign Up</TransitionLink>
+        <div className="mt-1"><BrandLoginButton block /></div>
       </nav>}
       <ScrollProgress />
     </header>

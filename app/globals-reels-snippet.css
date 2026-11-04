@@ -1,0 +1,16 @@
+/* Paste into app/globals.css */
+
+@keyframes reels-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.reels-marquee-track {
+  width: max-content;
+  animation: reels-marquee var(--reels-speed, 42s) linear infinite;
+}
+.reels-marquee-track.is-paused {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reels-marquee-track { animation: none !important; }
+}

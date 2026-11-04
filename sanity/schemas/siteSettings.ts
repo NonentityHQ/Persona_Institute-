@@ -1,0 +1,217 @@
+import { defineField, defineType } from 'sanity';
+
+export default defineType({
+  name: 'siteSettings',
+  title: 'Site Settings',
+  type: 'document',
+  groups: [
+    { name: 'hero', title: 'Hero', default: true },
+    { name: 'social', title: 'Social & Media' },
+    { name: 'stats', title: 'Stats bar' },
+    { name: 'about', title: 'About page' },
+    { name: 'contact', title: 'Contact page' },
+  ],
+  fields: [
+    // —— Hero ——
+    defineField({
+      name: 'heroEyebrow',
+      title: 'Hero Eyebrow',
+      type: 'string',
+      group: 'hero',
+      initialValue: "INDIA'S TRUSTED ENGLISH LEARNING PLATFORM",
+    }),
+    defineField({
+      name: 'heroTitleLine1',
+      title: 'Hero Title Line 1',
+      type: 'string',
+      group: 'hero',
+      initialValue: 'Speak English',
+    }),
+    defineField({
+      name: 'heroTitlePrefix',
+      title: 'Hero Title Prefix (before typed word)',
+      type: 'string',
+      group: 'hero',
+      initialValue: 'with',
+    }),
+    defineField({
+      name: 'heroTypedWords',
+      title: 'Hero Rotating Words',
+      type: 'array',
+      group: 'hero',
+      of: [{ type: 'string' }],
+      initialValue: ['Confidence', 'Fluency', 'Clarity'],
+    }),
+    defineField({
+      name: 'heroSubtitle',
+      title: 'Hero Subtitle',
+      type: 'text',
+      rows: 2,
+      group: 'hero',
+    }),
+    defineField({
+      name: 'heroImage',
+      title: 'Hero Teacher / Main Image',
+      type: 'image',
+      group: 'hero',
+      options: { hotspot: true },
+      description: 'Right-side hero image on homepage',
+    }),
+    defineField({
+      name: 'heroSecondaryImage',
+      title: 'Hero Secondary Image (optional)',
+      type: 'image',
+      group: 'hero',
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: 'learnersCount',
+      title: 'Learners Count Label',
+      type: 'string',
+      group: 'hero',
+      initialValue: '10,000+ Learners',
+    }),
+    defineField({
+      name: 'learnersText',
+      title: 'Learners Supporting Text',
+      type: 'string',
+      group: 'hero',
+    }),
+
+    // —— Social / sections ——
+    defineField({
+      name: 'instagramUrl',
+      title: 'Instagram Profile URL',
+      type: 'url',
+      group: 'social',
+    }),
+    defineField({
+      name: 'youtubeChannelUrl',
+      title: 'YouTube Channel URL',
+      type: 'url',
+      group: 'social',
+    }),
+    defineField({
+      name: 'reelsSectionTitle',
+      title: 'Reels Section Title',
+      type: 'string',
+      group: 'social',
+      initialValue: 'Latest Reels',
+    }),
+    defineField({
+      name: 'reelsSectionKicker',
+      title: 'Reels Section Kicker',
+      type: 'string',
+      group: 'social',
+      initialValue: 'INSTAGRAM',
+    }),
+    defineField({
+      name: 'reelsSectionSubtitle',
+      title: 'Reels Section Subtitle',
+      type: 'string',
+      group: 'social',
+    }),
+    defineField({
+      name: 'youtubeSectionTitle',
+      title: 'YouTube Section Title',
+      type: 'string',
+      group: 'social',
+      initialValue: 'Know About Free and Paid Courses',
+    }),
+    defineField({
+      name: 'youtubeSectionKicker',
+      title: 'YouTube Section Kicker',
+      type: 'string',
+      group: 'social',
+      initialValue: 'VISIT OUR YOUTUBE CHANNEL',
+    }),
+    defineField({
+      name: 'youtubeSectionSubtitle',
+      title: 'YouTube Section Subtitle',
+      type: 'string',
+      group: 'social',
+    }),
+
+    // —— Stats ——
+    defineField({
+      name: 'statLearners',
+      title: 'Stat: Happy Learners',
+      type: 'string',
+      group: 'stats',
+      initialValue: '10,000+',
+    }),
+    defineField({
+      name: 'statYears',
+      title: 'Stat: Years Teaching',
+      type: 'string',
+      group: 'stats',
+      initialValue: '4+',
+    }),
+    defineField({
+      name: 'statBatches',
+      title: 'Stat: Live Batches',
+      type: 'string',
+      group: 'stats',
+      initialValue: '50+',
+    }),
+    defineField({
+      name: 'statSatisfaction',
+      title: 'Stat: Satisfaction',
+      type: 'string',
+      group: 'stats',
+      initialValue: '98%',
+    }),
+
+    // —— About ——
+    defineField({
+      name: 'aboutTitle',
+      title: 'About Page Title',
+      type: 'string',
+      group: 'about',
+    }),
+    defineField({
+      name: 'aboutBody',
+      title: 'About Page Body',
+      type: 'text',
+      rows: 6,
+      group: 'about',
+    }),
+    defineField({
+      name: 'aboutImage',
+      title: 'About Page Image',
+      type: 'image',
+      group: 'about',
+      options: { hotspot: true },
+    }),
+
+    // —— Contact ——
+    defineField({
+      name: 'contactEmail',
+      title: 'Contact Email',
+      type: 'string',
+      group: 'contact',
+    }),
+    defineField({
+      name: 'contactPhone',
+      title: 'Contact Phone',
+      type: 'string',
+      group: 'contact',
+    }),
+    defineField({
+      name: 'contactAddress',
+      title: 'Contact Address',
+      type: 'text',
+      rows: 3,
+      group: 'contact',
+    }),
+    defineField({
+      name: 'contactWhatsapp',
+      title: 'WhatsApp Number / Link',
+      type: 'string',
+      group: 'contact',
+    }),
+  ],
+  preview: {
+    prepare: () => ({ title: 'Site Settings' }),
+  },
+});
