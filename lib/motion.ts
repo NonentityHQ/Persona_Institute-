@@ -9,6 +9,7 @@ export const EASE_OUT = [0.22, 0.61, 0.36, 1] as const;     // smooth decelerati
 export const EASE_IN_OUT = [0.65, 0, 0.35, 1] as const;     // symmetric (exits, shared morph)
 
 export const DUR = {
+  fast: 0.2,         // snappy UI (modals, toasts)
   hover: 0.24,       // 180–280ms
   routeExit: 0.22,   // old page leaving
   routeEnter: 0.45,  // new page arriving (350–550ms)

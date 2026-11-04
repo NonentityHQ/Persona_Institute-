@@ -353,7 +353,7 @@ export default function HomePageClient({ offer, reels, youtube, settings }: Prop
               initial={{ opacity: 0, y: 24, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 16, scale: 0.96 }}
-              transition={{ duration: DUR.fast, ease: EASE_OUT }}
+              transition={{ duration: DUR.hover, ease: EASE_OUT }}
               onClick={(e) => e.stopPropagation()}
             >
               <button

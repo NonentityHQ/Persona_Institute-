@@ -121,8 +121,8 @@ export const fallbackSettings: SiteSettings = {
   reelsSectionTitle: 'Watch Our Latest Reels',
   reelsSectionKicker: 'INSTAGRAM',
   reelsSectionSubtitle: 'Quick tips, student stories and class highlights',
-  youtubeSectionTitle: 'YouTube Videos',
-  youtubeSectionKicker: 'Watch & Learn',
+  youtubeSectionTitle: 'Know About Free and Paid Courses',
+  youtubeSectionKicker: 'VISIT OUR YOUTUBE CHANNEL',
   youtubeSectionSubtitle: 'Free lessons, class highlights and student journeys.',
   youtubeChannelUrl: '',
   instagramUrl: 'https://www.instagram.com/',
@@ -136,6 +136,4 @@ export const fallbackSettings: SiteSettings = {
   contactPhone: '',
   contactAddress: '',
   contactWhatsapp: '',
-  youtubeSectionTitle: 'Know About Free and Paid Courses',
-  youtubeSectionKicker: 'VISIT OUR YOUTUBE CHANNEL',
 };
