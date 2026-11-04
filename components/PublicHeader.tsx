@@ -63,7 +63,7 @@ export default function PublicHeader({ active, className = "" }: Props) {
 
         <div className="flex shrink-0 items-center gap-2">
           <TransitionLink href="/courses" aria-label="Search courses" className="grid h-9 w-9 place-items-center rounded-full border border-slate-100 bg-white text-[#23417e] shadow-sm transition-colors hover:bg-orange-50 sm:h-10 sm:w-10"><Search size={18} /></TransitionLink>
-          <BrandLoginButton />
+          <BrandLoginButton onOpen={() => setMenuOpen(false)} />
           <button type="button" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="public-mobile-menu"
             onClick={() => setMenuOpen((open) => !open)} className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-[#173879] transition-colors hover:bg-orange-50 lg:hidden">
             {menuOpen ? <X size={21} /> : <Menu size={21} />}
@@ -76,7 +76,7 @@ export default function PublicHeader({ active, className = "" }: Props) {
           className={`flex min-h-11 items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${isActive(href) ? "bg-orange-50 text-[#f04422]" : "text-[#23417e] hover:bg-orange-50 hover:text-[#f04422]"}`}>
           <span>{label}</span><ArrowRight size={15} />
         </TransitionLink>)}
-        <div className="mt-1"><BrandLoginButton block /></div>
+        <div className="mt-1"><BrandLoginButton block onOpen={() => setMenuOpen(false)} /></div>
       </nav>}
       <ScrollProgress />
     </header>

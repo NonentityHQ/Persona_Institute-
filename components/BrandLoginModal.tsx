@@ -26,7 +26,6 @@ function BrandCard({ brand, onPick }: { brand: BrandConfig; onPick: () => void }
       window.location.href = loginUrl;
       return;
     }
-    // Org code not set yet — still close and show hint via parent if needed
     onPick();
   };
 
@@ -34,11 +33,10 @@ function BrandCard({ brand, onPick }: { brand: BrandConfig; onPick: () => void }
     <button
       type="button"
       onClick={handleClick}
-      className="group flex w-full items-start gap-4 rounded-2xl border border-slate-100 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-rose-100 hover:shadow-md"
-      style={{ borderColor: undefined }}
+      className="group flex w-full items-start gap-3 rounded-2xl border border-slate-100 bg-white p-3.5 text-left shadow-sm transition active:scale-[0.98] hover:-translate-y-0.5 hover:border-rose-100 hover:shadow-md sm:gap-4 sm:p-4"
     >
       <span
-        className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-2xl"
+        className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-2xl sm:h-14 sm:w-14"
         style={{ background: brand.accentSoft }}
       >
         {brand.logo ? (
@@ -50,12 +48,12 @@ function BrandCard({ brand, onPick }: { brand: BrandConfig; onPick: () => void }
             className="h-full w-full object-cover"
           />
         ) : (
-          <BookOpen size={24} style={{ color: brand.accent }} />
+          <BookOpen size={22} style={{ color: brand.accent }} />
         )}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="flex items-center gap-2">
-          <span className="block text-base font-black text-slate-900 group-hover:text-persona-red">
+        <span className="flex flex-wrap items-center gap-2">
+          <span className="block text-[15px] font-black text-slate-900 group-hover:text-persona-red sm:text-base">
             {brand.name}
           </span>
           {!ready && (
@@ -90,6 +88,9 @@ function BrandCard({ brand, onPick }: { brand: BrandConfig; onPick: () => void }
  * Dual-brand login chooser:
  * 1) Persona English  → Classplus org A
  * 2) English with Khushi → Classplus org B
+ *
+ * Mobile: bottom-sheet style, scroll-safe, body lock.
+ * Desktop: centered dialog.
  */
 export default function BrandLoginModal({ open, onClose }: Props) {
   useEffect(() => {
@@ -98,14 +99,21 @@ export default function BrandLoginModal({ open, onClose }: Props) {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prev;
+    };
   }, [open, onClose]);
 
   return (
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[90] grid place-items-center bg-slate-950/50 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[200] flex items-end justify-center bg-slate-950/55 p-0 backdrop-blur-sm sm:items-center sm:p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -115,42 +123,53 @@ export default function BrandLoginModal({ open, onClose }: Props) {
             role="dialog"
             aria-modal="true"
             aria-labelledby="brand-login-title"
-            className="relative w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl"
-            initial={{ opacity: 0, y: 24, scale: 0.96 }}
+            className="relative flex max-h-[min(92dvh,640px)] w-full max-w-md flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl sm:rounded-3xl"
+            initial={{ opacity: 0, y: 40, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.96 }}
+            exit={{ opacity: 0, y: 24, scale: 0.98 }}
             transition={{ duration: DUR.fast, ease: EASE_OUT }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-gradient-to-br from-rose-50 via-white to-violet-50 px-6 pb-4 pt-6">
+            {/* drag handle — mobile only */}
+            <div className="flex justify-center pt-2 sm:hidden" aria-hidden="true">
+              <span className="h-1 w-10 rounded-full bg-slate-200" />
+            </div>
+
+            <div className="relative shrink-0 bg-gradient-to-br from-rose-50 via-white to-violet-50 px-5 pb-3 pt-3 sm:px-6 sm:pb-4 sm:pt-6">
               <button
                 type="button"
                 onClick={onClose}
-                className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/80 text-slate-500 shadow-sm hover:bg-white"
+                className="absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-white/90 text-slate-500 shadow-sm hover:bg-white sm:right-4 sm:top-4 sm:h-9 sm:w-9"
                 aria-label="Close"
               >
-                <X size={16} />
+                <X size={18} />
               </button>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-bold text-persona-red shadow-sm">
                 <Sparkles size={12} /> Choose your app
               </span>
-              <h2 id="brand-login-title" className="mt-3 text-2xl font-black tracking-tight text-slate-900">
+              <h2
+                id="brand-login-title"
+                className="mt-2.5 pr-10 text-xl font-black tracking-tight text-slate-900 sm:mt-3 sm:text-2xl"
+              >
                 Login / Sign up
               </h2>
-              <p className="mt-1 text-sm text-slate-500">
-                Select which brand you want to continue with. You will be taken to the secure Classplus login.
+              <p className="mt-1 text-sm leading-relaxed text-slate-500">
+                Select which brand you want to continue with. You will be taken to the secure
+                Classplus login.
               </p>
             </div>
 
-            <div className="grid gap-3 px-6 py-5">
-              {brandList.map((brand) => (
-                <BrandCard key={brand.id} brand={brand} onPick={onClose} />
-              ))}
-            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+              <div className="grid gap-3 px-5 py-4 sm:px-6 sm:py-5">
+                {brandList.map((brand) => (
+                  <BrandCard key={brand.id} brand={brand} onPick={onClose} />
+                ))}
+              </div>
 
-            <p className="border-t border-slate-100 px-6 py-3 text-center text-[11px] text-slate-400">
-              Learning, payments and live classes run on Classplus for each brand.
-            </p>
+              <p className="border-t border-slate-100 px-5 py-3 text-center text-[11px] text-slate-400 sm:px-6">
+                Learning, payments and live classes run on Classplus for each brand.
+              </p>
+            </div>
           </motion.div>
         </motion.div>
       )}

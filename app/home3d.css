@@ -168,22 +168,51 @@
 
 @media (max-width: 1023px) {
   .h3d-hero { min-height: 0; } .h3d-copy { max-width: 100%; }
-  .h3d-title { font-size: clamp(2.7rem, 11vw, 4.4rem); margin-top: 14px; } .h3d-sub { margin-top: 14px; }
-  .h3d-features { margin-top: 18px; } .h3d-cta, .h3d-proof { margin-top: 22px; }
+  .h3d-title { font-size: clamp(2.4rem, 10vw, 4rem); margin-top: 12px; } .h3d-sub { margin-top: 12px; }
+  .h3d-features { margin-top: 16px; } .h3d-cta, .h3d-proof { margin-top: 18px; }
   .h3d-stage { aspect-ratio: auto; container-type: normal; transform: none; }
   .h3d-stage > * { font-size: 5px; } .h3d-frame { font-size: 5.2px; }
   .h3d-orbit { display: none; }
   .h3d-persp { position: relative; inset: auto; perspective: 1200px; }
-  .h3d-sway { position: relative; inset: auto; } .h3d-scene { position: relative; inset: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .h3d-layer-device { position: relative; left: auto; top: auto; width: auto; grid-column: 1 / -1; padding: 4px 6px 0; }
-  .h3d-device { transform: rotateY(-8deg) rotateZ(-.5deg); border-radius: 18px; aspect-ratio: 16 / 9; }
-  .h3d-chip-a, .h3d-chip-b, .h3d-chip-c, .h3d-chip-d { position: static; width: auto; transform: none; }
-  .h3d-chip { font-size: 13px; } .h3d-chip-a { display: none; }
-  .h3d-statcards { position: static; display: flex; gap: 10px; margin-top: 12px; }
-  .h3d-statcard, .h3d-statcard-r { position: static; flex: 1; width: auto; height: auto; padding: 10px 12px; font-size: 6px; border-radius: 18px; }
+  .h3d-sway { position: relative; inset: auto; }
+  /* Video full-width; chips as clean stack below */
+  .h3d-scene {
+    position: relative; inset: auto;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .h3d-layer-device { position: relative; left: auto; top: auto; width: auto; padding: 0; }
+  .h3d-device { transform: none; border-radius: 18px; aspect-ratio: 16 / 9; }
+  /* Feature chips: full-width pills under video */
+  .h3d-chip-a, .h3d-chip-b, .h3d-chip-c, .h3d-chip-d {
+    position: static; width: 100%; transform: none;
+  }
+  .h3d-float { animation: none !important; }
+  .h3d-chip {
+    font-size: 14px;
+    min-height: 52px;
+    padding: 10px 14px 10px 10px;
+    width: 100%;
+    box-shadow: 0 4px 16px rgba(120, 50, 80, .10);
+  }
+  .h3d-chip-ico { width: 2.6em; height: 2.6em; }
+  /* Show all 4 chips on tablet/mobile */
+  .h3d-chip-a { display: flex; }
+  .h3d-statcards { position: static; display: flex; gap: 10px; margin-top: 4px; }
+  .h3d-statcard, .h3d-statcard-r {
+    position: static; flex: 1; width: auto; height: auto;
+    padding: 10px 12px; font-size: 7px; border-radius: 16px;
+  }
   .h3d-slash { display: none; }
 }
-@media (max-width: 639px) { .h3d-features { flex-wrap: wrap; } .h3d-feature { flex: 1 1 42%; } .h3d-cta { flex-wrap: wrap; } .h3d-cta .h3d-btn { flex: 1 1 100%; } .h3d-scene { grid-template-columns: 1fr; } }
+@media (max-width: 639px) {
+  .h3d-features { flex-wrap: wrap; }
+  .h3d-feature { flex: 1 1 42%; }
+  .h3d-cta { flex-wrap: wrap; }
+  .h3d-cta .h3d-btn { flex: 1 1 100%; }
+  .h3d-chip { font-size: 13px; min-height: 48px; }
+  .h3d-statcard b { font-size: max(12px, 1.7em); }
+  .h3d-statcard small { font-size: max(10px, 1.35em); }
+}
 
 /* -------------------------------------------------------------------------
    3D scroll reveal (never hides anything: transform only, opacity stays 1)
