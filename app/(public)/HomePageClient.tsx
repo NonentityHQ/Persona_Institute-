@@ -130,7 +130,7 @@ export default function HomePageClient({ offer, reels, youtube, settings }: Prop
           delay={0.1}
           className="h3d-title"
           lines={[
-            [{ node: <span className="h3d-l1">{s.heroTitleLine1 || 'Speak English'}<i className="h3d-ticks" aria-hidden="true" /></span> }],
+            [{ node: <span className="h3d-l1">{s.heroTitleLine1 || 'Speak English'}</span> }],
             [s.heroTitlePrefix || 'with'],
             [
               {
@@ -139,7 +139,8 @@ export default function HomePageClient({ offer, reels, youtube, settings }: Prop
                     <TypedWord
                       words={s.heroTypedWords?.length ? s.heroTypedWords : ['Confidence', 'Fluency', 'Clarity']}
                       className="h3d-accent"
-                    />.
+                      suffix="."
+                    />
                   </span>
                 ),
               },

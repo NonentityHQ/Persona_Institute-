@@ -13,11 +13,10 @@
 .h3d-hero {
   --sy: 0; --navy: #0c1f5c; --red: #ee1131;
   position: relative; isolation: isolate; overflow: hidden; display: flex; align-items: center;
-  min-height: clamp(640px, 46vw, 900px);
+  min-height: clamp(620px, 43.6vw, 860px);
   background:
-    radial-gradient(42% 58% at 72% 42%, rgba(255, 214, 222, .92), transparent 72%),
-    radial-gradient(28% 40% at 18% 78%, rgba(255, 236, 240, .7), transparent 70%),
-    linear-gradient(105deg, #fff8f9 0%, #fff2f4 32%, #fde6eb 68%, #f8cfd8 100%);
+    radial-gradient(40% 55% at 70% 45%, rgba(255, 214, 222, .85), transparent 70%),
+    linear-gradient(100deg, #fff7f8 0%, #fff1f3 38%, #fde4e9 72%, #f9ccd5 100%);
 }
 .h3d-hero-inner {
   position: relative; z-index: 2; width: 100%; max-width: 1640px; margin: 0 auto;
@@ -58,20 +57,7 @@
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44' fill='none' stroke='%23f97316' stroke-width='3.6' stroke-linecap='round'%3E%3Cpath d='M5 3l5 17M18 8l15 14M27 30l15 7'/%3E%3C/svg%3E") no-repeat center / contain;
 }
 .h3d-accent, .h3d-conf { color: var(--red); }
-/* No decorative red underline under "Confidence" — keep text clean */
-.h3d-conf {
-  position: relative;
-  display: inline-block;
-  padding-bottom: 0;
-  margin-bottom: 0;
-}
-.h3d-conf::after,
-.h3d-conf::before,
-.h3d-accent::after,
-.h3d-accent::before {
-  content: none !important;
-  display: none !important;
-}
+.h3d-conf { position: relative; display: inline-block; padding-bottom: .12em; margin-bottom: -.12em; }
 .h3d-sub { margin: 1.5vw 0 0; font-size: clamp(1rem, 3.4cqw, 1.35rem); line-height: 1.55; color: #1b2a4d; max-width: 91%; }
 
 .h3d-features { margin-top: clamp(16px, 1.9vw, 32px); display: flex; flex-wrap: wrap; gap: 14px 16px; }
@@ -118,29 +104,12 @@
 .h3d-float { animation: h3dFloat var(--dur, 6s) ease-in-out var(--del, 0s) infinite; }
 @keyframes h3dFloat { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -9px, 0); } }
 
-/* the tilted video slab — slightly tighter framing so it reads closer to the reference */
-.h3d-layer-device { position: absolute; left: -2.5%; top: 6.5%; width: 78%; }
-.h3d-device {
-  position: relative;
-  aspect-ratio: 1.72 / 1;
-  border-radius: 4.2em;
-  transform-style: flat;
-  transform: perspective(240cqw) rotateX(13.5deg) rotateY(-23deg) rotateZ(4.8deg);
-}
+/* the tilted video slab */
+.h3d-layer-device { position: absolute; left: -4%; top: 8.03%; width: 79.72%; }
+.h3d-device { position: relative; aspect-ratio: 1.718 / 1; border-radius: 4.4em; transform-style: flat; transform: perspective(231cqw) rotateX(14.2deg) rotateY(-24.5deg) rotateZ(5.23deg); }
 .h3d-frame {
-  pointer-events: auto;
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  border-radius: inherit;
-  background: #101626;
-  border: 1em solid #fff;
-  box-shadow:
-    .15em .4em 0 0 #fff,
-    .7em 1.4em 0 -.15em #f4d0d7,
-    0 2.8em 4.5em rgba(150, 30, 60, .26);
-  font-size: max(5px, 1cqw);
-  color: #fff;
+  pointer-events: auto; position: absolute; inset: 0; overflow: hidden; border-radius: inherit; background: #101626;
+  border: 1em solid #fff; box-shadow: .2em .5em 0 0 #fff, .8em 1.6em 0 -.2em #f4d0d7, 0 3em 5em rgba(150, 30, 60, .28); font-size: max(5px, 1cqw); color: #fff;
 }
 .h3d-frame svg { width: 100%; height: 100%; display: block; }
 .h3d-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; background: #101626; }
@@ -168,49 +137,20 @@
 .h3d-bar-fill { --p: 0; position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--p) * 100%); border-radius: inherit; background: #ee1131; }
 .h3d-bar-fill::after { content: ""; position: absolute; right: -.7em; top: 50%; width: 1.4em; height: 1.4em; margin-top: -.7em; border-radius: 50%; background: #ee1131; box-shadow: 0 0 0 .25em rgba(255, 255, 255, .6); }
 
-/* floating pill chips (right of video) — aligned to the orbit dots */
-.h3d-chip-a, .h3d-chip-b, .h3d-chip-c, .h3d-chip-d { position: absolute; width: 20.5%; }
-.h3d-chip-a { left: 77%; top: 8%; }
-.h3d-chip-b { left: 78.5%; top: 23.5%; }
-.h3d-chip-c { left: 77%; top: 39%; }
-.h3d-chip-d { left: 76.2%; top: 54.5%; }
+/* floating pill chips (right) */
+.h3d-chip-a, .h3d-chip-b, .h3d-chip-c, .h3d-chip-d { position: absolute; width: 19%; }
+.h3d-chip-a { left: 76%; top: 9.5%; } .h3d-chip-b { left: 77.5%; top: 24.7%; } .h3d-chip-c { left: 76%; top: 40.2%; } .h3d-chip-d { left: 75.4%; top: 55.7%; }
 .h3d-chip {
-  --tint: #ffe9ed;
-  --ink: #ee1131;
-  display: flex;
-  align-items: center;
-  gap: .65em;
-  width: 100%;
-  min-height: 4.4em;
-  padding: .55em 1em .55em .6em;
-  border-radius: 999px;
-  font-size: max(11px, 1.55cqw);
-  background: linear-gradient(135deg, #fff 28%, var(--tint));
-  border: 1px solid rgba(255, 255, 255, .95);
-  box-shadow:
-    0 .55em 1.5em rgba(120, 50, 80, .18),
-    inset 0 0 0 1px rgba(255, 255, 255, .7);
-  white-space: nowrap;
+  --tint: #ffe9ed; --ink: #ee1131; display: flex; align-items: center; gap: .65em; width: 100%; min-height: 4.2em; padding: .5em .9em .5em .55em;
+  border-radius: 999px; font-size: max(11px, 1.55cqw); background: linear-gradient(135deg, #fff 30%, var(--tint)); border: 1px solid rgba(255, 255, 255, .9);
+  box-shadow: 0 .6em 1.6em rgba(120, 50, 80, .2), inset 0 0 0 1px rgba(255, 255, 255, .6); white-space: nowrap;
 }
 .h3d-chip b, .h3d-chip small { display: block; font-size: 1em; line-height: 1.18; color: var(--navy); }
-.h3d-chip b { font-weight: 800; }
-.h3d-chip small { font-weight: 600; }
-.h3d-chip-ico {
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 2.65em;
-  height: 2.65em;
-  border-radius: 50%;
-  color: var(--ink);
-  background: var(--tint);
-  box-shadow: 0 .2em .55em rgba(0, 0, 0, .1);
-}
+.h3d-chip b { font-weight: 800; } .h3d-chip small { font-weight: 600; }
+.h3d-chip-ico { display: grid; place-items: center; flex: none; width: 2.5em; height: 2.5em; border-radius: 50%; color: var(--ink); background: var(--tint); box-shadow: 0 .2em .6em rgba(0, 0, 0, .1); }
 .h3d-chip-ico svg { width: 52%; height: 52%; }
-.h3d-t-pink { --tint: #ffe3e8; --ink: #ee1131; }
-.h3d-t-blue { --tint: #e3eefc; --ink: #2f7be0; }
-.h3d-t-gold { --tint: #fff1cf; --ink: #f2840f; }
-.h3d-t-violet { --tint: #ece4fb; --ink: #7a42d6; }
+.h3d-t-pink { --tint: #ffe3e8; --ink: #ee1131; } .h3d-t-blue { --tint: #e3eefc; --ink: #2f7be0; }
+.h3d-t-gold { --tint: #fff1cf; --ink: #f2840f; } .h3d-t-violet { --tint: #ece4fb; --ink: #7a42d6; }
 
 /* number cards under the video */
 .h3d-statcards { position: absolute; inset: 0; pointer-events: none; }
@@ -228,101 +168,58 @@
 
 @media (max-width: 1023px) {
   .h3d-hero { min-height: 0; } .h3d-copy { max-width: 100%; }
-  .h3d-title { font-size: clamp(2.4rem, 10vw, 4rem); margin-top: 12px; white-space: normal; } .h3d-sub { margin-top: 12px; }
+  .h3d-title { font-size: clamp(2.4rem, 10vw, 4rem); margin-top: 12px; } .h3d-sub { margin-top: 12px; }
   .h3d-features { margin-top: 16px; } .h3d-cta, .h3d-proof { margin-top: 18px; }
   .h3d-stage { aspect-ratio: auto; container-type: normal; transform: none; }
   .h3d-stage > * { font-size: 5px; } .h3d-frame { font-size: 5.2px; }
   .h3d-orbit { display: none; }
-  .h3d-persp { position: relative; inset: auto; perspective: none; }
-  .h3d-sway { position: relative; inset: auto; animation: none !important; transform: none !important; }
+  .h3d-persp { position: relative; inset: auto; perspective: 1200px; }
+  .h3d-sway { position: relative; inset: auto; }
 
-  /* Video on top; chips + stats flow below in a clean grid */
+  /* Video on top; chips + stats flow below */
   .h3d-scene {
     position: relative; inset: auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px 10px;
+    gap: 10px 8px;
     align-items: stretch;
   }
   .h3d-layer-device {
     position: relative; left: auto; top: auto; width: auto;
     grid-column: 1 / -1; padding: 0;
-    transform: none !important;
   }
-  .h3d-device {
-    transform: none !important;
-    border-radius: 18px;
-    aspect-ratio: 16 / 9;
-    box-shadow: 0 12px 32px rgba(150, 40, 70, .16);
-  }
-  .h3d-frame {
-    border-width: 3px;
-    border-radius: 16px;
-    box-shadow: 0 4px 0 #f4d0d7, 0 14px 28px rgba(150, 30, 60, .18);
-  }
+  .h3d-device { transform: none; border-radius: 18px; aspect-ratio: 16 / 9; }
 
-  /* 2×2 chip grid — equal height, consistent look, no overflow */
+  /* 2×2 chip grid — fills empty space, one compact row-pair */
   .h3d-chip-a, .h3d-chip-b, .h3d-chip-c, .h3d-chip-d {
-    position: static !important;
-    width: auto !important;
-    left: auto !important;
-    top: auto !important;
-    transform: none !important;
-    display: flex;
+    position: static; width: auto; transform: none;
   }
-  .h3d-float {
-    animation: none !important;
-    height: 100%;
-    width: 100%;
-    display: flex;
-  }
+  .h3d-float { animation: none !important; height: 100%; }
   .h3d-chip {
     font-size: 13px;
-    min-height: 52px;
+    min-height: 48px;
     height: 100%;
-    padding: 10px 14px 10px 10px;
+    padding: 8px 12px 8px 8px;
     width: 100%;
-    gap: .6em;
-    box-shadow: 0 4px 16px rgba(120, 50, 80, .12);
-    white-space: nowrap;
-    border-radius: 999px;
-    align-items: center;
+    box-shadow: 0 4px 14px rgba(120, 50, 80, .10);
+    white-space: normal; /* allow 2-line labels in tight cells */
   }
-  .h3d-chip b, .h3d-chip small {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .h3d-chip-ico {
-    width: 2.55em;
-    height: 2.55em;
-    flex: none;
-    border-radius: 50%;
-  }
-  .h3d-chip-ico svg { width: 52%; height: 52%; }
+  .h3d-chip b, .h3d-chip small { white-space: nowrap; }
+  .h3d-chip-ico { width: 2.4em; height: 2.4em; flex: none; }
+  .h3d-chip-a { display: flex; }
 
   .h3d-statcards {
-    position: static;
-    display: flex;
-    gap: 10px;
-    grid-column: 1 / -1;
-    margin-top: 4px;
+    position: static; display: flex; gap: 8px;
+    grid-column: 1 / -1; margin-top: 2px;
   }
   .h3d-statcard, .h3d-statcard-r {
-    position: static;
-    flex: 1;
-    width: auto;
-    height: auto;
-    min-height: 56px;
-    padding: 12px 14px;
-    font-size: 7px;
-    border-radius: 18px;
-    box-shadow: 0 6px 18px rgba(150, 40, 70, .12);
+    position: static; flex: 1; width: auto; height: auto;
+    padding: 10px 12px; font-size: 7px; border-radius: 16px;
   }
   .h3d-slash { display: none; }
 }
 
-/* Phones: still 2 columns so 2 chips per line — tighter but readable */
+/* Phones: still 2 columns so 2 chips per line */
 @media (max-width: 639px) {
   .h3d-features { flex-wrap: wrap; }
   .h3d-feature { flex: 1 1 42%; }
@@ -330,22 +227,21 @@
   .h3d-cta .h3d-btn { flex: 1 1 100%; }
   .h3d-scene { gap: 8px; }
   .h3d-chip {
-    font-size: 11.5px;
-    min-height: 48px;
-    padding: 8px 10px 8px 8px;
-    gap: .45em;
+    font-size: 12px;
+    min-height: 44px;
+    padding: 7px 10px 7px 7px;
+    gap: .5em;
   }
-  .h3d-chip-ico { width: 2.35em; height: 2.35em; }
+  .h3d-chip-ico { width: 2.2em; height: 2.2em; }
   .h3d-statcard b { font-size: max(12px, 1.7em); }
   .h3d-statcard small { font-size: max(10px, 1.35em); }
-  .h3d-statcard, .h3d-statcard-r { min-height: 52px; padding: 10px 12px; }
 }
 
-/* Tablet landscape / small laptop: roomier chips */
+/* Tablet landscape / small laptop: slightly roomier chips */
 @media (min-width: 640px) and (max-width: 1023px) {
-  .h3d-chip { font-size: 14px; min-height: 56px; padding: 12px 16px 12px 12px; }
-  .h3d-chip-ico { width: 2.7em; height: 2.7em; }
-  .h3d-scene { gap: 12px 12px; }
+  .h3d-chip { font-size: 14px; min-height: 52px; padding: 10px 14px 10px 10px; }
+  .h3d-chip-ico { width: 2.6em; height: 2.6em; }
+  .h3d-scene { gap: 12px 10px; }
 }
 
 /* -------------------------------------------------------------------------
@@ -499,12 +395,7 @@
 /* one clean font stack for the whole hero (site font can render wide/Verdana-like) */
 .h3d-hero { font-family: "Segoe UI", Inter, "Helvetica Neue", Roboto, Arial, sans-serif; }
 .h3d-hero button, .h3d-title { font-family: inherit; }
-/* bigger, bolder chip icons on desktop only — mobile sizes stay in the max-width media queries */
-@media (min-width: 1024px) {
-  .h3d-chip { min-height: 4.4em; }
-  .h3d-chip-ico { width: 2.85em; height: 2.85em; }
-  .h3d-chip-ico svg { width: 60%; height: 60%; stroke-width: 2.1; }
-}
+/* bigger, bolder chip icons like the design */
+.h3d-chip { min-height: 4.4em; } .h3d-chip-ico { width: 2.85em; height: 2.85em; } .h3d-chip-ico svg { width: 60%; height: 60%; stroke-width: 2.1; }
 /* real avatar photos */
-.h3d-avatars span { overflow: hidden; background: #fff; }
-.h3d-avatars img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.h3d-avatars span { overflow: hidden; background: #fff; } .h3d-avatars img { display: block; width: 100%; height: 100%; object-fit: cover; }

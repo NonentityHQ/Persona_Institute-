@@ -52,14 +52,16 @@ export function HeroHeading({ lines, className = '', delay = 0.05, ariaLabel }: 
  * Typed word. Shows `words[0]` complete (so SSR, SEO and LCP are stable), then
  * once — after the heading has settled — erases and types the other words at a
  * readable pace (~70ms/char), returns to `words[0]` and stops.
- * Width is reserved by an invisible copy of the longest word, so nothing reflows.
+ * * Width is reserved by an invisible copy of the longest word (+ suffix), so nothing reflows.
+ * `suffix` (e.g. the red full stop) is drawn right after the typed text, so it travels with every word.
  */
 export function TypedWord({
-  words, className = '', startAfter = 3600, typeMs = 70, eraseMs = 36, holdMs = 1900,
-}: { words: string[]; className?: string; startAfter?: number; typeMs?: number; eraseMs?: number; holdMs?: number }) {
+  words, className = '', suffix = '', startAfter = 3600, typeMs = 70, eraseMs = 36, holdMs = 1900,
+}: { words: string[]; className?: string; suffix?: string; startAfter?: number; typeMs?: number; eraseMs?: number; holdMs?: number }) {
   const reduced = useReducedMotion();
   const [text, setText] = useState(words[0]);
   const [busy, setBusy] = useState(false);
+  const [pop, setPop] = useState(0); // bumps when a word finishes typing → the suffix dot pops
   const longest = words.reduce((a, b) => (b.length > a.length ? b : a), '');
 
   useEffect(() => {
@@ -77,6 +79,7 @@ export function TypedWord({
         for (let i = 1; i <= next.length && !cancelled; i++) { setText(next.slice(0, i)); await wait(typeMs); }
         current = next;
         setBusy(false);
+        setPop((p) => p + 1);
         if (next !== words[0]) await wait(holdMs);
       }
     })();
@@ -86,9 +89,10 @@ export function TypedWord({
 
   return (
     <span className={`typed-word relative inline-block ${className}`}>
-      <span className="invisible">{longest}</span>
+      <span className="invisible">{longest}{suffix}</span>
       <span className="absolute left-0 top-0 whitespace-nowrap">
         {text}
+        {suffix && <m.span key={pop} className="inline-block" initial={pop ? { scale: 1.9, y: -6 } : false} animate={{ scale: 1, y: 0 }} transition={{ type: 'spring', stiffness: 520, damping: 13 }}>{suffix}</m.span>}
         <span className={`typed-caret ${busy ? 'is-typing' : ''}`} aria-hidden="true" />
       </span>
     </span>

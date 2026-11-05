@@ -165,3 +165,101 @@ export async function getYoutubeVideos(): Promise<SanityYoutubeVideo[]> {
     return [];
   }
 }
+
+// ---------- Book Store ----------
+export type SanityBookCategory = {
+  _id: string;
+  title?: string;
+  slug?: { current?: string };
+  subtitle?: string;
+  icon?: string;
+  order?: number;
+  active?: boolean;
+};
+
+export type SanityBook = {
+  _id: string;
+  title?: string;
+  slug?: { current?: string };
+  cover?: { asset?: { _ref: string }; hotspot?: unknown };
+  category?: { _id?: string; title?: string; slug?: { current?: string } };
+  badge?: string;
+  price?: number;
+  oldPrice?: number;
+  rating?: number;
+  reviewCount?: number;
+  shortDescription?: string;
+  description?: string;
+  isCombo?: boolean;
+  comboLabel?: string;
+  featured?: boolean;
+  heroFeatured?: boolean;
+  buyUrl?: string;
+  active?: boolean;
+  order?: number;
+};
+
+export type SanityBookOffer = {
+  _id: string;
+  active?: boolean;
+  badge?: string;
+  title?: string;
+  subtitle?: string;
+  ctaLabel?: string;
+  ctaLink?: string;
+  image?: { asset?: { _ref: string }; hotspot?: unknown };
+  showCountdown?: boolean;
+  countdownEnd?: string;
+  order?: number;
+};
+
+const bookFields = `
+  _id, title, slug, cover, badge, price, oldPrice, rating, reviewCount,
+  shortDescription, description, isCombo, comboLabel, featured, heroFeatured,
+  buyUrl, active, order,
+  category->{ _id, title, slug }
+`;
+
+const bookCategoryFields = `_id, title, slug, subtitle, icon, order, active`;
+
+const bookOfferFields = `
+  _id, active, badge, title, subtitle, ctaLabel, ctaLink, image,
+  showCountdown, countdownEnd, order
+`;
+
+export async function getBooks(): Promise<SanityBook[]> {
+  if (!sanityConfigured) return [];
+  try {
+    return await client.fetch<SanityBook[]>(
+      `*[_type == "book" && active != false] | order(order asc) { ${bookFields} }`
+    );
+  } catch (e) {
+    console.warn('[sanity] getBooks failed', e);
+    return [];
+  }
+}
+
+export async function getBookCategories(): Promise<SanityBookCategory[]> {
+  if (!sanityConfigured) return [];
+  try {
+    return await client.fetch<SanityBookCategory[]>(
+      `*[_type == "bookCategory" && active != false] | order(order asc) { ${bookCategoryFields} }`
+    );
+  } catch (e) {
+    console.warn('[sanity] getBookCategories failed', e);
+    return [];
+  }
+}
+
+export async function getBookOffer(): Promise<SanityBookOffer | null> {
+  if (!sanityConfigured) return null;
+  try {
+    const rows = await client.fetch<SanityBookOffer[]>(
+      `*[_type == "bookOffer" && active == true] | order(order asc)[0...1]{ ${bookOfferFields} }`
+    );
+    return rows?.[0] ?? null;
+  } catch (e) {
+    console.warn('[sanity] getBookOffer failed', e);
+    return null;
+  }
+}

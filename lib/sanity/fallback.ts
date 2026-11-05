@@ -1,4 +1,12 @@
-import type { SanityOffer, SanityReel, SanityYoutubeVideo, SiteSettings } from './client';
+import type {
+  SanityOffer,
+  SanityReel,
+  SanityYoutubeVideo,
+  SiteSettings,
+  SanityBook,
+  SanityBookCategory,
+  SanityBookOffer,
+} from './client';
 
 /** Used when Sanity is not configured or fetch fails — keeps the site looking good in demo. */
 export const fallbackOffer: SanityOffer = {
@@ -137,3 +145,110 @@ export const fallbackSettings: SiteSettings = {
   contactAddress: '',
   contactWhatsapp: '',
 };
+
+/** Demo book categories when Sanity is empty / offline */
+export const fallbackBookCategories: SanityBookCategory[] = [
+  { _id: 'bc-all', title: 'All Books', slug: { current: 'all' }, subtitle: 'Explore Complete Collection', icon: 'grid', order: 0, active: true },
+  { _id: 'bc-grammar', title: 'Grammar', slug: { current: 'grammar' }, subtitle: 'Build Strong Basics', icon: 'book', order: 1, active: true },
+  { _id: 'bc-vocab', title: 'Vocabulary', slug: { current: 'vocabulary' }, subtitle: 'Expand Your Word Power', icon: 'vocab', order: 2, active: true },
+  { _id: 'bc-practice', title: 'Practice Sets', slug: { current: 'practice-sets' }, subtitle: 'Topic-wise Practice', icon: 'practice', order: 3, active: true },
+  { _id: 'bc-comp', title: 'Comprehension', slug: { current: 'comprehension' }, subtitle: 'Improve Reading Skills', icon: 'comprehension', order: 4, active: true },
+  { _id: 'bc-writing', title: 'Writing Skills', slug: { current: 'writing' }, subtitle: 'Build Better Writing', icon: 'writing', order: 5, active: true },
+  { _id: 'bc-combo', title: 'Combo Packs', slug: { current: 'combo' }, subtitle: 'Save More with Bundles', icon: 'combo', order: 6, active: true },
+];
+
+/** Demo books — cover paths point to existing public images until Sanity covers are uploaded */
+export const fallbackBooks: SanityBook[] = [
+  {
+    _id: 'b1',
+    title: 'English Grammar Mastery',
+    slug: { current: 'english-grammar-mastery' },
+    badge: 'Bestseller',
+    price: 499,
+    oldPrice: 699,
+    rating: 4.9,
+    reviewCount: 3482,
+    shortDescription: 'A Complete Guide for Competitive Exams',
+    category: { _id: 'bc-grammar', title: 'Grammar', slug: { current: 'grammar' } },
+    featured: true,
+    heroFeatured: true,
+    order: 0,
+    active: true,
+  },
+  {
+    _id: 'b2',
+    title: 'Vocabulary Booster',
+    slug: { current: 'vocabulary-booster' },
+    badge: 'Trending',
+    price: 399,
+    oldPrice: 549,
+    rating: 4.8,
+    reviewCount: 2971,
+    shortDescription: '5000+ Words with Usage & Examples',
+    category: { _id: 'bc-vocab', title: 'Vocabulary', slug: { current: 'vocabulary' } },
+    featured: true,
+    heroFeatured: true,
+    order: 1,
+    active: true,
+  },
+  {
+    _id: 'b3',
+    title: 'Comprehension Practice Sets',
+    slug: { current: 'comprehension-practice-sets' },
+    price: 399,
+    oldPrice: 499,
+    rating: 4.8,
+    reviewCount: 1984,
+    shortDescription: 'For SSC, Banking, Defence & Other Competitive Exams',
+    category: { _id: 'bc-comp', title: 'Comprehension', slug: { current: 'comprehension' } },
+    featured: true,
+    heroFeatured: true,
+    order: 2,
+    active: true,
+  },
+  {
+    _id: 'b4',
+    title: 'Error Detection',
+    slug: { current: 'error-detection' },
+    price: 349,
+    oldPrice: 499,
+    rating: 4.7,
+    reviewCount: 1984,
+    shortDescription: 'Practice · Rules · Short Tricks',
+    category: { _id: 'bc-grammar', title: 'Grammar', slug: { current: 'grammar' } },
+    featured: true,
+    order: 3,
+    active: true,
+  },
+  {
+    _id: 'b5',
+    title: 'English Complete Combo',
+    slug: { current: 'english-complete-combo' },
+    badge: 'Combo Pack',
+    price: 1099,
+    oldPrice: 1599,
+    rating: 4.9,
+    reviewCount: 4205,
+    shortDescription: 'Grammar + Vocabulary + Comprehension',
+    isCombo: true,
+    comboLabel: 'Grammar + Vocabulary + Comprehension',
+    category: { _id: 'bc-combo', title: 'Combo Packs', slug: { current: 'combo' } },
+    featured: true,
+    order: 4,
+    active: true,
+  },
+];
+
+export const fallbackBookOffer: SanityBookOffer = {
+  _id: 'bo1',
+  active: true,
+  badge: 'Limited Time Offer',
+  title: 'Book Combo – Save More!',
+  subtitle: 'Get Grammar + Vocabulary + Practice Sets at a special price.',
+  ctaLabel: 'Grab the Combo',
+  ctaLink: '#featured',
+  showCountdown: true,
+  countdownEnd: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000 + 23 * 60 * 60 * 1000).toISOString(),
+  order: 0,
+};
+

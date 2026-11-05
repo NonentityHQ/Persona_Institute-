@@ -13,6 +13,7 @@ import { DUR, EASE_IN_OUT } from "@/lib/motion";
 const links = [
   { label: "Home", href: "/" },
   { label: "Courses", href: "/courses" },
+  { label: "Book Store", href: "/book-store" },
   { label: "Free Tests", href: "/free-tests" },
   { label: "Success Stories", href: "/reviews" },
   { label: "About Us", href: "/about" },

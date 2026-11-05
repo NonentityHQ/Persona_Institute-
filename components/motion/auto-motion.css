@@ -1,0 +1,14 @@
+/* Auto scroll-reveal + hover polish (see AutoMotion.tsx). Only opacity / translate / scale are animated. */
+.pm-hide{opacity:0!important;translate:0 26px;scale:.985}
+.pm-hide.pm-zoom{translate:0 12px;scale:.94}
+.pm-hide.pm-in{opacity:1!important;translate:0 0;scale:1;
+  transition:opacity .75s cubic-bezier(.22,.61,.36,1) var(--pm-d,0ms),translate .75s cubic-bezier(.22,.61,.36,1) var(--pm-d,0ms),scale .75s cubic-bezier(.22,.61,.36,1) var(--pm-d,0ms)!important}
+
+@media (hover:hover) and (pointer:fine){
+  .pm-card:not(.pm-hide){transition:translate .35s cubic-bezier(.22,.61,.36,1),box-shadow .35s ease,border-color .25s ease,background-color .25s ease!important}
+  .pm-card:not(.pm-hide):hover{translate:0 -6px;box-shadow:0 22px 44px -18px rgba(12,46,99,.28)}
+}
+/* tiny press feedback on buttons */
+button:not(:disabled):active{scale:.97;transition:scale .12s ease}
+
+@media (prefers-reduced-motion:reduce){.pm-hide{opacity:1!important;translate:none;scale:none}}
