@@ -44,7 +44,7 @@ export default function SharedImage({ id, src, alt, width, height, className = '
 
   return (
     <div ref={ref} className={className} style={{ visibility: hidden ? 'hidden' : 'visible' }}>
-      <Image src={src} alt={alt} width={width} height={height} priority sizes="(max-width: 768px) 92vw, 540px" className="h-full w-full object-cover" />
+      <Image src={src} alt={alt} width={width} height={height} priority sizes="(max-width: 768px) 92vw, 540px" className="h-full w-full object-cover" unoptimized={/^https?:\/\//i.test(src)} />
     </div>
   );
 }

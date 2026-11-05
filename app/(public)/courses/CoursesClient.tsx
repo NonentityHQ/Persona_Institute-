@@ -98,7 +98,7 @@ export default function CoursesClient({ courseList, live = false }: Props) {
         <div
           aria-hidden
           className="courses-hero-bg absolute inset-0 -z-20"
-          style={{ backgroundImage: "url('/images/courses-hero-background.webp')" }}
+          style={{ backgroundImage: "url('/images/about-hero-background.webp')" }}
         />
         <div aria-hidden className="courses-hero-wash absolute inset-0 -z-10" />
         <div aria-hidden className="courses-hero-bottom absolute inset-x-0 bottom-0 -z-0 h-14" />

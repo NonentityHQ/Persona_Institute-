@@ -104,6 +104,15 @@ export default defineType({
       hidden: ({ parent }) => !parent?.isCombo,
     }),
     defineField({
+      name: 'comboBooks',
+      title: 'Books in this Combo',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'book' }] }],
+      description: 'Pick the individual books that make up this combo (used for trio covers).',
+      hidden: ({ parent }) => !parent?.isCombo,
+      validation: (Rule) => Rule.max(3),
+    }),
+    defineField({
       name: 'featured',
       title: 'Featured (Most Popular)',
       type: 'boolean',

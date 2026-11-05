@@ -166,7 +166,7 @@ main a:hover, main button:hover { transition-duration: .22s; }
 }
 
 /* Free Tests hero — consistent desktop height with About Us, clear portrait, bottom-only fade. */
-.tests-hero-bg { background-image: url('/images/contact-hero-background.webp'); background-size: cover; background-repeat: no-repeat; background-position: 61% 42%; transform: scale(1.01); }
+.tests-hero-bg { background-image: url('/images/about-hero-background.webp'); background-size: cover; background-repeat: no-repeat; background-position: 62% 43%; transform: scale(1.01); }
 .tests-hero-wash { background: linear-gradient(90deg, rgba(255,253,250,.99) 0%, rgba(255,252,247,.96) 27%, rgba(255,247,238,.78) 43%, rgba(255,242,228,.13) 65%, rgba(255,242,228,.02) 100%); }
 .tests-hero-bottom { background: linear-gradient(to top, #fffdfb 0%, rgba(255,253,251,.25) 24%, transparent 100%); }
 .tests-hero-copy { }

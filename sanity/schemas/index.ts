@@ -6,6 +6,7 @@ import youtubeVideo from './youtubeVideo';
 import book from './book';
 import bookCategory from './bookCategory';
 import bookOffer from './bookOffer';
+import bookStoreSettings from './bookStoreSettings';
 
 export const schemaTypes = [
   offer,
@@ -16,4 +17,5 @@ export const schemaTypes = [
   book,
   bookCategory,
   bookOffer,
+  bookStoreSettings,
 ];

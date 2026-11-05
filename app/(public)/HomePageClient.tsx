@@ -9,7 +9,7 @@ import {
   Trophy, Star, ShieldCheck,
 } from 'lucide-react';
 import '../home3d.css';
-import { courses, videos, type Course } from '@/lib/data';
+import { videos, type Course } from '@/lib/data';
 import { DUR, EASE_OUT } from '@/lib/motion';
 import { useRouteTransition } from '@/components/motion/RouteTransition';
 import { HeroFade, HeroHeading, TypedWord } from '@/components/motion/HeroText';
@@ -43,16 +43,20 @@ const HERO_STATS: Array<{
   { icon: ShieldCheck, text: 'Learn', label: 'At Your Own Pace' },
 ];
 
+/** Home course card — Classplus-mapped or static fallback from lib/data */
+export type HomeCourse = Course & { enrollUrl?: string };
+
 type Props = {
   offer: SanityOffer | null;
   reels: SanityReel[];
   youtube: SanityYoutubeVideo[];
   settings: SiteSettings | null;
+  courses: HomeCourse[];
 };
 
-export default function HomePageClient({ offer, reels, youtube, settings }: Props) {
+export default function HomePageClient({ offer, reels, youtube, settings, courses }: Props) {
   const [modal, setModal] = useState<'video' | 'checkout' | 'offer' | null>(null);
-  const [selected, setSelected] = useState<Course | null>(null);
+  const [selected, setSelected] = useState<HomeCourse | null>(null);
   const { navigate } = useRouteTransition();
 
   const s = settings || fallbackSettings;
@@ -200,6 +204,7 @@ export default function HomePageClient({ offer, reels, youtube, settings }: Prop
                     fill
                     className="c3d-img object-cover"
                     sizes="(max-width: 640px) 100vw, 25vw"
+                    unoptimized={/^https?:\/\//i.test(course.image)}
                   />
                 </div>
                 {course.tag && <span className="h3d-tag c3d-z2">{course.tag}</span>}
@@ -216,7 +221,18 @@ export default function HomePageClient({ offer, reels, youtube, settings }: Prop
                           (course.price === 0 ? 'Enquire' : `₹${course.price.toLocaleString('en-IN')}`)}
                       </b>
                     </div>
-                    <button type="button" className="h3d-enroll" onClick={() => openCheckout(course)}>
+                    <button
+                      type="button"
+                      className="h3d-enroll"
+                      onClick={() => {
+                        const url = (course as HomeCourse).enrollUrl;
+                        if (url && /^https?:\/\//i.test(url)) {
+                          window.open(url, '_blank', 'noopener,noreferrer');
+                          return;
+                        }
+                        navigate(`/courses/${course.id}`);
+                      }}
+                    >
                       Enroll
                     </button>
                   </div>

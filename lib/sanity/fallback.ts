@@ -6,6 +6,7 @@ import type {
   SanityBook,
   SanityBookCategory,
   SanityBookOffer,
+  SanityBookStoreSettings,
 } from './client';
 
 /** Used when Sanity is not configured or fetch fails — keeps the site looking good in demo. */
@@ -245,10 +246,54 @@ export const fallbackBookOffer: SanityBookOffer = {
   badge: 'Limited Time Offer',
   title: 'Book Combo – Save More!',
   subtitle: 'Get Grammar + Vocabulary + Practice Sets at a special price.',
+  highlights: ['All 3 core books', 'Exam-focused content', 'Best value pack'],
   ctaLabel: 'Grab the Combo',
   ctaLink: '#featured',
+  price: 1099,
+  oldPrice: 1599,
+  savingsText: 'Save ₹500',
+  priceNote: 'Inclusive of all taxes',
+  comboLabel: 'Grammar + Vocabulary + Comprehension',
   showCountdown: true,
   countdownEnd: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000 + 23 * 60 * 60 * 1000).toISOString(),
   order: 0,
+};
+
+export const fallbackBookStoreSettings: SanityBookStoreSettings = {
+  heroEyebrow: 'Official Book Store',
+  heroTitleLine1: 'Persona Institute',
+  heroTitleAccent: 'Book Store',
+  heroSubtitle:
+    'Ajay Singh Rajput (Ajay Sir) की trusted books for English preparation — Concept, Practice & Exams.',
+  exploreCtaLabel: 'Explore Books',
+  comboCtaLabel: 'View Combos',
+  features: [
+    { label: 'Exam Focused', icon: 'book' },
+    { label: 'Concept Clarity', icon: 'zap' },
+    { label: 'Practice Sets', icon: 'layers' },
+    { label: 'Student Preferred', icon: 'star' },
+  ],
+  stats: [
+    { value: 10000, suffix: '+', decimals: 0, label: 'Happy Learners', icon: 'users' },
+    { value: 500, suffix: '+', decimals: 0, label: 'Video Lessons', icon: 'play' },
+    { value: 4.8, suffix: '/5', decimals: 1, label: 'Student Rating', icon: 'star' },
+    { value: 25000, suffix: '+', decimals: 0, label: 'Vocabulary Words', icon: 'layers' },
+    { value: 100, suffix: '%', decimals: 0, label: 'Exam Focused', icon: 'shield' },
+  ],
+  whyEyebrow: 'Why choose Persona Books?',
+  whyTitle: 'Designed for Real Learning & Exam Success',
+  whyItems: [
+    { title: 'By Ajay Sir', description: 'Curated by Ajay Singh Rajput (Ajay Sir)', icon: 'target' },
+    { title: 'Exam Oriented', description: 'Syllabus-based and completely practical', icon: 'award' },
+    { title: 'Concept + Practice', description: 'Complete learning with examples & sets', icon: 'book' },
+    { title: 'Proven Results', description: 'Trusted by 10,000+ learners across India', icon: 'trending' },
+  ],
+  testimonials: [
+    { text: 'Persona books made English so simple and score-friendly!', by: 'A Verified Learner' },
+  ],
+  categoriesEyebrow: 'Browse by category',
+  categoriesTitle: 'Find the right book for your goal',
+  featuredEyebrow: 'Most popular',
+  featuredTitle: 'Books learners love',
 };
 

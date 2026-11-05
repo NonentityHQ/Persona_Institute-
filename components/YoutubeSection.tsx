@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight, Play, Youtube } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Play, Youtube, ExternalLink } from 'lucide-react';
 import type { SanityYoutubeVideo } from '@/lib/sanity/client';
 import { urlFor, sanityConfigured } from '@/lib/sanity/client';
 
@@ -10,11 +10,12 @@ function extractYoutubeId(url?: string): string | null {
   if (!url) return null;
   try {
     const u = new URL(url);
-    if (u.hostname.includes('youtu.be')) return u.pathname.replace(/^\//, '') || null;
+    if (u.hostname.includes('youtu.be')) return u.pathname.replace(/^\//, '').split('?')[0] || null;
     if (u.searchParams.get('v')) return u.searchParams.get('v');
     const parts = u.pathname.split('/').filter(Boolean);
     if (parts[0] === 'embed' && parts[1]) return parts[1];
     if (parts[0] === 'shorts' && parts[1]) return parts[1];
+    if (parts[0] === 'live' && parts[1]) return parts[1];
   } catch {
     /* ignore */
   }
@@ -49,7 +50,7 @@ type Props = {
 };
 
 /**
- * Template YouTube strip — all fields from Sanity:
+ * YouTube strip — all content from Sanity:
  * title, youtubeUrl, custom thumbnail, duration, category.
  */
 export default function YoutubeSection({
@@ -77,7 +78,7 @@ export default function YoutubeSection({
 
       <div className="relative mx-auto max-w-[1440px] px-4 sm:px-5 lg:px-10">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <div>
+          <div className="min-w-0 max-w-2xl">
             <p className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-rose-400">
               <Youtube size={14} className="text-red-500" /> {kicker}
             </p>
@@ -86,7 +87,7 @@ export default function YoutubeSection({
             </h2>
             {subtitle && <p className="mt-2 max-w-lg text-sm text-slate-400">{subtitle}</p>}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             {channelUrl && (
               <a
                 href={channelUrl}
@@ -118,20 +119,22 @@ export default function YoutubeSection({
 
         <div
           ref={scrollerRef}
-          className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide"
-          style={{ scrollSnapType: 'x mandatory' }}
+          className="-mx-1 flex gap-5 overflow-x-auto px-1 pb-3 scrollbar-hide"
+          style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}
         >
           {list.map((video, index) => {
             const ytId = extractYoutubeId(video.youtubeUrl);
             const isPlaying = playingId === video._id && Boolean(ytId);
+            const canPlay = Boolean(ytId || video.youtubeUrl);
 
             return (
               <article
                 key={video._id}
-                className="group relative w-[min(88vw,340px)] shrink-0 snap-start"
+                className="group relative w-[min(88vw,320px)] shrink-0 snap-start sm:w-[300px]"
               >
-                <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/40 transition hover:border-white/20">
-                  <div className="relative aspect-video bg-black">
+                <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/40 transition hover:border-white/20">
+                  {/* Thumbnail / player */}
+                  <div className="relative aspect-video shrink-0 bg-black">
                     {isPlaying && ytId ? (
                       <iframe
                         title={video.title || 'YouTube'}
@@ -147,9 +150,9 @@ export default function YoutubeSection({
                           alt={video.title || 'Video'}
                           fill
                           className="object-cover transition duration-500 group-hover:scale-105"
-                          sizes="340px"
+                          sizes="(max-width: 640px) 88vw, 300px"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                         <button
                           type="button"
                           onClick={() => {
@@ -157,42 +160,54 @@ export default function YoutubeSection({
                             else if (video.youtubeUrl) window.open(video.youtubeUrl, '_blank');
                           }}
                           className="absolute inset-0 grid place-items-center"
-                          aria-label={`Play ${video.title || 'video'}`}
+                          aria-label={canPlay ? `Play ${video.title || 'video'}` : video.title || 'Video'}
+                          disabled={!canPlay}
                         >
-                          <span className="grid h-14 w-14 place-items-center rounded-full bg-red-600 text-white shadow-lg shadow-red-600/40 transition group-hover:scale-110">
+                          <span
+                            className={`grid h-14 w-14 place-items-center rounded-full text-white shadow-lg transition group-hover:scale-110 ${
+                              canPlay
+                                ? 'bg-red-600 shadow-red-600/40'
+                                : 'bg-white/20 shadow-black/30'
+                            }`}
+                          >
                             <Play size={22} fill="currentColor" className="ml-0.5" />
                           </span>
                         </button>
                         {video.duration && (
-                          <span className="absolute bottom-2 right-2 rounded bg-black/75 px-1.5 py-0.5 text-[11px] font-bold text-white">
+                          <span className="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 text-[11px] font-bold tabular-nums text-white">
                             {video.duration}
                           </span>
                         )}
                       </>
                     )}
                   </div>
-                  <div className="p-4">
-                    {video.category && (
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-rose-400">
+
+                  {/* Meta — fixed structure so text never clips weirdly */}
+                  <div className="flex min-h-[96px] flex-1 flex-col p-3.5 sm:p-4">
+                    {video.category ? (
+                      <p className="truncate text-[10px] font-bold uppercase tracking-wider text-rose-400">
                         {video.category}
                       </p>
+                    ) : (
+                      <p className="h-[14px]" aria-hidden />
                     )}
-                    <h3 className="mt-1 line-clamp-2 text-[15px] font-bold leading-snug text-white">
-                      {video.title}
+                    <h3 className="mt-1 line-clamp-2 text-[14px] font-bold leading-snug text-white sm:text-[15px]">
+                      {video.title || 'Untitled video'}
                     </h3>
-                    {video.youtubeUrl && !isPlaying && (
-                      <a
-                        href={video.youtubeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-2 inline-flex text-xs font-semibold text-slate-400 hover:text-white"
-                      >
-                        Open on YouTube →
-                      </a>
-                    )}
-                    {!video.youtubeUrl && (
-                      <p className="mt-2 text-[11px] text-slate-500">Add YouTube URL in Sanity</p>
-                    )}
+                    <div className="mt-auto pt-2">
+                      {video.youtubeUrl && !isPlaying ? (
+                        <a
+                          href={video.youtubeUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 transition hover:text-white"
+                        >
+                          Open on YouTube <ExternalLink size={12} />
+                        </a>
+                      ) : !video.youtubeUrl ? (
+                        <span className="text-[11px] text-slate-600">Coming soon</span>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
               </article>

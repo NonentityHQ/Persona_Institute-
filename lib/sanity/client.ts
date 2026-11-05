@@ -192,6 +192,11 @@ export type SanityBook = {
   description?: string;
   isCombo?: boolean;
   comboLabel?: string;
+  comboBooks?: Array<{
+    _id: string;
+    title?: string;
+    cover?: { asset?: { _ref: string }; hotspot?: unknown };
+  }>;
   featured?: boolean;
   heroFeatured?: boolean;
   buyUrl?: string;
@@ -205,26 +210,74 @@ export type SanityBookOffer = {
   badge?: string;
   title?: string;
   subtitle?: string;
+  highlights?: string[];
   ctaLabel?: string;
   ctaLink?: string;
+  secondaryCtaLabel?: string;
+  secondaryCtaLink?: string;
   image?: { asset?: { _ref: string }; hotspot?: unknown };
+  price?: number;
+  oldPrice?: number;
+  savingsText?: string;
+  priceNote?: string;
+  comboLabel?: string;
+  includedBooks?: Array<{
+    _id: string;
+    title?: string;
+    cover?: { asset?: { _ref: string }; hotspot?: unknown };
+  }>;
   showCountdown?: boolean;
   countdownEnd?: string;
   order?: number;
+};
+
+export type SanityBookStoreSettings = {
+  heroEyebrow?: string;
+  heroTitleLine1?: string;
+  heroTitleAccent?: string;
+  heroSubtitle?: string;
+  exploreCtaLabel?: string;
+  comboCtaLabel?: string;
+  features?: Array<{ label?: string; icon?: string }>;
+  stats?: Array<{
+    value?: number;
+    suffix?: string;
+    decimals?: number;
+    label?: string;
+    icon?: string;
+  }>;
+  whyEyebrow?: string;
+  whyTitle?: string;
+  whyItems?: Array<{ title?: string; description?: string; icon?: string }>;
+  testimonials?: Array<{ text?: string; by?: string }>;
+  categoriesEyebrow?: string;
+  categoriesTitle?: string;
+  featuredEyebrow?: string;
+  featuredTitle?: string;
 };
 
 const bookFields = `
   _id, title, slug, cover, badge, price, oldPrice, rating, reviewCount,
   shortDescription, description, isCombo, comboLabel, featured, heroFeatured,
   buyUrl, active, order,
-  category->{ _id, title, slug }
+  category->{ _id, title, slug },
+  comboBooks[]->{ _id, title, cover }
 `;
 
 const bookCategoryFields = `_id, title, slug, subtitle, icon, order, active`;
 
 const bookOfferFields = `
-  _id, active, badge, title, subtitle, ctaLabel, ctaLink, image,
-  showCountdown, countdownEnd, order
+  _id, active, badge, title, subtitle, highlights, ctaLabel, ctaLink,
+  secondaryCtaLabel, secondaryCtaLink, image, price, oldPrice, savingsText,
+  priceNote, comboLabel, showCountdown, countdownEnd, order,
+  includedBooks[]->{ _id, title, cover }
+`;
+
+const bookStoreSettingsFields = `
+  heroEyebrow, heroTitleLine1, heroTitleAccent, heroSubtitle,
+  exploreCtaLabel, comboCtaLabel, features, stats,
+  whyEyebrow, whyTitle, whyItems, testimonials,
+  categoriesEyebrow, categoriesTitle, featuredEyebrow, featuredTitle
 `;
 
 export async function getBooks(): Promise<SanityBook[]> {
@@ -260,6 +313,19 @@ export async function getBookOffer(): Promise<SanityBookOffer | null> {
     return rows?.[0] ?? null;
   } catch (e) {
     console.warn('[sanity] getBookOffer failed', e);
+    return null;
+  }
+}
+
+export async function getBookStoreSettings(): Promise<SanityBookStoreSettings | null> {
+  if (!sanityConfigured) return null;
+  try {
+    const rows = await client.fetch<SanityBookStoreSettings[]>(
+      `*[_type == "bookStoreSettings"][0...1]{ ${bookStoreSettingsFields} }`
+    );
+    return rows?.[0] ?? null;
+  } catch (e) {
+    console.warn('[sanity] getBookStoreSettings failed', e);
     return null;
   }
 }

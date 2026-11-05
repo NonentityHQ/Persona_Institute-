@@ -2,11 +2,13 @@ import {
   getBooks,
   getBookCategories,
   getBookOffer,
+  getBookStoreSettings,
 } from '@/lib/sanity/client';
 import {
   fallbackBooks,
   fallbackBookCategories,
   fallbackBookOffer,
+  fallbackBookStoreSettings,
 } from '@/lib/sanity/fallback';
 import BookStoreClient from './BookStoreClient';
 
@@ -19,10 +21,11 @@ export const metadata = {
 };
 
 export default async function BookStorePage() {
-  const [books, categories, offer] = await Promise.all([
+  const [books, categories, offer, settings] = await Promise.all([
     getBooks(),
     getBookCategories(),
     getBookOffer(),
+    getBookStoreSettings(),
   ]);
 
   return (
@@ -30,6 +33,7 @@ export default async function BookStorePage() {
       books={books.length ? books : fallbackBooks}
       categories={categories.length ? categories : fallbackBookCategories}
       offer={offer || fallbackBookOffer}
+      settings={settings || fallbackBookStoreSettings}
     />
   );
 }

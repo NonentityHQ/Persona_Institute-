@@ -1,14 +1,52 @@
-import CourseDetailView from "@/components/CourseDetailView";
-import { courseDetails } from "@/lib/course-details";
+import { notFound } from 'next/navigation';
+import CourseDetailView from '@/components/CourseDetailView';
+import {
+  fetchAllBrandCourses,
+  fetchCourseById,
+  toCourseDetail,
+} from '@/lib/classplus/client';
+import { courseDetails } from '@/lib/course-details';
 
-// Pre-rendered at build time: course navigation is instant (no server round trip on click).
-export function generateStaticParams() {
+export const revalidate = 300;
+
+/** Prefer Classplus IDs; keep static ids so old links still build */
+export async function generateStaticParams() {
+  try {
+    const list = await fetchAllBrandCourses();
+    if (list.length) {
+      return list.map((c) => ({ slug: c.id }));
+    }
+  } catch {
+    /* offline build */
+  }
   return courseDetails.map((course) => ({ slug: course.id }));
 }
 
-export default async function CourseDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CourseDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
-  // Unknown slugs keep the original behaviour: fall back to the first course.
-  const course = courseDetails.find((item) => item.id === slug) ?? courseDetails[0];
-  return <CourseDetailView course={course} />;
+
+  // 1) Live Classplus course
+  const live = await fetchCourseById(slug);
+  if (live) {
+    return <CourseDetailView course={toCourseDetail(live)} />;
+  }
+
+  // 2) Legacy static fallback (old marketing slugs)
+  const staticCourse = courseDetails.find((item) => item.id === slug);
+  if (staticCourse) {
+    return (
+      <CourseDetailView
+        course={{
+          ...staticCourse,
+          enrollUrl: '/contact',
+        }}
+      />
+    );
+  }
+
+  notFound();
 }

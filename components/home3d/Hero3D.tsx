@@ -279,19 +279,20 @@ export default function Hero3D({ children, after, learnersLabel = '10,000+ Learn
                   <div className="h3d-chip h3d-t-violet"><span className="h3d-chip-ico"><Trophy /></span><span><b>Build</b><small>Confidence</small></span></div>
                 </div>
               </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="h3d-statcards">
-            <div className="h3d-statcard">
-              <span className="h3d-statcard-ico"><Users /></span>
-              <span><b>{learnersLabel}</b><small>learning with us</small></span>
-            </div>
-            <i className="h3d-slash" aria-hidden="true" />
-            <div className="h3d-statcard h3d-statcard-r">
-              <span className="h3d-statcard-ico h3d-gold"><Star fill="currentColor" /></span>
-              <span><b>4.8/5</b><small>Student Rating</small></span>
+              {/* Stats inside scene so mobile 2-col grid places them under chips */}
+              <div className="h3d-statcards">
+                <div className="h3d-statcard">
+                  <span className="h3d-statcard-ico"><Users /></span>
+                  <span><b>{learnersLabel}</b><small>learning with us</small></span>
+                </div>
+                <i className="h3d-slash" aria-hidden="true" />
+                <div className="h3d-statcard h3d-statcard-r">
+                  <span className="h3d-statcard-ico h3d-gold"><Star fill="currentColor" /></span>
+                  <span><b>4.8/5</b><small>Student Rating</small></span>
+                </div>
+              </div>
+              </div>
             </div>
           </div>
         </div>

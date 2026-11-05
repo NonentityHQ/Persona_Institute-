@@ -7,15 +7,25 @@ import {
   Layers, LayoutGrid, PenLine, Play, ShieldCheck, ShoppingCart, Star, Target, TrendingUp,
   Type, Users, Zap, Quote, ShoppingBag, Sparkles, type LucideIcon,
 } from 'lucide-react';
-import type { SanityBook, SanityBookCategory, SanityBookOffer } from '@/lib/sanity/client';
+import type {
+  SanityBook,
+  SanityBookCategory,
+  SanityBookOffer,
+  SanityBookStoreSettings,
+} from '@/lib/sanity/client';
 import { urlFor, sanityConfigured } from '@/lib/sanity/client';
 import { EASE_OUT } from '@/lib/motion';
 import CountUp from '@/components/motion/CountUp';
 import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
 
-type Props = { books: SanityBook[]; categories: SanityBookCategory[]; offer: SanityBookOffer };
+type Props = {
+  books: SanityBook[];
+  categories: SanityBookCategory[];
+  offer: SanityBookOffer;
+  settings: SanityBookStoreSettings;
+};
 
-/* ───────────── EDIT HERE (static text — later you can move these to Sanity) ───────────── */
+/* ───────────── helpers / static maps ───────────── */
 // false = CSS placeholder covers · true = use the PNGs already in /public/images/books
 const USE_LOCAL_COVERS = false;
 const LOCAL_COVERS: Array<[RegExp, string]> = [
@@ -24,19 +34,22 @@ const LOCAL_COVERS: Array<[RegExp, string]> = [
   [/error/i, '/images/books/error-detection.png'],
 ];
 const AVATARS = ['/images/avatars/a1.png', '/images/avatars/a2.png', '/images/avatars/a3.png', '/images/avatars/a4.png'];
-const FEATURES: Array<[LucideIcon, string]> = [[BookOpen, 'Exam Focused'], [Zap, 'Concept Clarity'], [Layers, 'Practice Sets'], [Star, 'Student Preferred']];
-const STATS: Array<[LucideIcon, number, string, number, string]> = [
-  [Users, 10000, '+', 0, 'Happy Learners'], [Play, 500, '+', 0, 'Video Lessons'], [Star, 4.8, '/5', 1, 'Student Rating'],
-  [Layers, 25000, '+', 0, 'Vocabulary Words'], [ShieldCheck, 100, '%', 0, 'Exam Focused'],
-];
-const WHY: Array<[LucideIcon, string, string]> = [
-  [Target, 'By Ajay Sir', 'Curated by Ajay Singh Rajput (Ajay Sir)'], [Award, 'Exam Oriented', 'Syllabus-based and completely practical'],
-  [BookOpen, 'Concept + Practice', 'Complete learning with examples & sets'], [TrendingUp, 'Proven Results', 'Trusted by 10,000+ learners across India'],
-];
-const TESTIMONIALS = [{ text: 'Persona books made English so simple and score-friendly!', by: 'A Verified Learner' }]; // add more entries → banner auto-rotates
-const ICONS: Record<string, LucideIcon> = { grid: LayoutGrid, book: Layers, vocab: Type, practice: FileText, comprehension: BookOpen, writing: PenLine, combo: Gift };
+const FEATURE_ICON: Record<string, LucideIcon> = {
+  book: BookOpen, zap: Zap, layers: Layers, star: Star, users: Users, play: Play,
+  shield: ShieldCheck, target: Target, award: Award, trending: TrendingUp, gift: Gift, cart: ShoppingCart,
+};
+const CAT_ICONS: Record<string, LucideIcon> = {
+  grid: LayoutGrid, book: Layers, vocab: Type, practice: FileText, comprehension: BookOpen, writing: PenLine, combo: Gift,
+};
 const TONES: Array<[string, string, string]> = [['#6b2f9c', '#2b0f4d', '#f7c948'], ['#12356b', '#071a3d', '#f5a524'], ['#12703d', '#06391f', '#f7c948']];
-const BADGE: Record<string, string> = { Bestseller: 'bg-gradient-to-r from-amber-300 to-amber-400 text-[#5a3b00]', Trending: 'bg-gradient-to-r from-rose-500 to-red-500 text-white', 'Combo Pack': 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white', New: 'bg-emerald-500 text-white' };
+const BADGE: Record<string, string> = {
+  Bestseller: 'bg-gradient-to-r from-amber-300 to-amber-400 text-[#5a3b00]',
+  Trending: 'bg-gradient-to-r from-rose-500 to-red-500 text-white',
+  'Combo Pack': 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white',
+  New: 'bg-emerald-500 text-white',
+};
+const iconOf = (key?: string, fallback: LucideIcon = BookOpen) =>
+  (key && FEATURE_ICON[key]) || fallback;
 
 /* ───────────── helpers ───────────── */
 const inr = (n?: number) => (n == null ? '' : `₹${n.toLocaleString('en-IN')}`);
@@ -66,7 +79,6 @@ function Cover({ book, i = 0 }: { book?: SanityBook; i?: number }) {
 }
 
 const SLOTS = [[0, 32, .94], [30, 40, 1], [68, 32, .94]];
-const COMBO_PARTS: SanityBook[] = [{ _id: 'c1', title: 'Vocabulary' }, { _id: 'c2', title: 'Grammar' }, { _id: 'c3', title: 'Comprehension' }];
 
 function Trio({ books }: { books: Array<SanityBook | undefined> }) {
   return (
@@ -196,15 +208,24 @@ function useCountdown(end?: string, on = true) {
   return p;
 }
 
-/** "Loved by Thousands" banner. Add more entries to TESTIMONIALS and it auto-rotates. */
-function TrustBanner({ wrap }: { wrap: string }) {
+/** "Loved by Thousands" banner. Testimonials come from Sanity Book Store Settings. */
+function TrustBanner({
+  wrap,
+  testimonials,
+}: {
+  wrap: string;
+  testimonials: Array<{ text?: string; by?: string }>;
+}) {
+  const list = testimonials.length
+    ? testimonials
+    : [{ text: 'Persona books made English so simple and score-friendly!', by: 'A Verified Learner' }];
   const [ti, setTi] = useState(0);
   useEffect(() => {
-    if (TESTIMONIALS.length < 2) return;
-    const id = window.setInterval(() => setTi((i) => (i + 1) % TESTIMONIALS.length), 4800);
+    if (list.length < 2) return;
+    const id = window.setInterval(() => setTi((i) => (i + 1) % list.length), 4800);
     return () => window.clearInterval(id);
-  }, []);
-  const t = TESTIMONIALS[ti];
+  }, [list.length]);
+  const t = list[ti] || list[0];
   const stars = (
     <div className="flex gap-0.5">
       {[0, 1, 2, 3, 4].map((k) => (
@@ -248,14 +269,14 @@ function TrustBanner({ wrap }: { wrap: string }) {
             <div className="relative mt-2 min-h-[76px]">
               <AnimatePresence mode="wait" initial={false}>
                 <m.div key={ti} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }} transition={{ duration: .4, ease: EASE_OUT }}>
-                  <p className="text-[16px] font-semibold italic leading-snug">“{t.text}”</p>
-                  <p className="mt-1.5 text-[12px] text-white/70">— {t.by}</p>
+                  <p className="text-[16px] font-semibold italic leading-snug">“{t?.text}”</p>
+                  <p className="mt-1.5 text-[12px] text-white/70">— {t?.by}</p>
                 </m.div>
               </AnimatePresence>
             </div>
-            {TESTIMONIALS.length > 1 && (
+            {list.length > 1 && (
               <div className="mt-3 flex gap-1.5">
-                {TESTIMONIALS.map((_, k) => <button key={k} aria-label={`Testimonial ${k + 1}`} onClick={() => setTi(k)} className={`h-1.5 rounded-full transition-all ${k === ti ? 'w-6 bg-[#f51632]' : 'w-1.5 bg-white/35'}`} />)}
+                {list.map((_, k) => <button key={k} aria-label={`Testimonial ${k + 1}`} onClick={() => setTi(k)} className={`h-1.5 rounded-full transition-all ${k === ti ? 'w-6 bg-[#f51632]' : 'w-1.5 bg-white/35'}`} />)}
               </div>
             )}
           </div>
@@ -266,12 +287,43 @@ function TrustBanner({ wrap }: { wrap: string }) {
 }
 
 /* ───────────── page ───────────── */
-export default function BookStoreClient({ books, categories, offer }: Props) {
+export default function BookStoreClient({ books, categories, offer, settings }: Props) {
   const [cat, setCat] = useState('all');
   const [liked, setLiked] = useState<Set<string>>(new Set());
   const [added, setAdded] = useState<string | null>(null);
   const row = useRef<HTMLDivElement>(null);
   const cd = useCountdown(offer.countdownEnd, offer.showCountdown !== false);
+
+  const features = (settings.features?.length
+    ? settings.features.map((f) => [iconOf(f.icon, BookOpen), f.label || ''] as [LucideIcon, string])
+    : [[BookOpen, 'Exam Focused'], [Zap, 'Concept Clarity'], [Layers, 'Practice Sets'], [Star, 'Student Preferred']] as Array<[LucideIcon, string]>);
+
+  const stats = (settings.stats?.length
+    ? settings.stats.map((s) => [iconOf(s.icon, Users), s.value ?? 0, s.suffix || '', s.decimals ?? 0, s.label || ''] as [LucideIcon, number, string, number, string])
+    : [
+      [Users, 10000, '+', 0, 'Happy Learners'], [Play, 500, '+', 0, 'Video Lessons'], [Star, 4.8, '/5', 1, 'Student Rating'],
+      [Layers, 25000, '+', 0, 'Vocabulary Words'], [ShieldCheck, 100, '%', 0, 'Exam Focused'],
+    ] as Array<[LucideIcon, number, string, number, string]>);
+
+  const whyItems = (settings.whyItems?.length
+    ? settings.whyItems.map((w) => [iconOf(w.icon, Target), w.title || '', w.description || ''] as [LucideIcon, string, string])
+    : [
+      [Target, 'By Ajay Sir', 'Curated by Ajay Singh Rajput (Ajay Sir)'], [Award, 'Exam Oriented', 'Syllabus-based and completely practical'],
+      [BookOpen, 'Concept + Practice', 'Complete learning with examples & sets'], [TrendingUp, 'Proven Results', 'Trusted by 10,000+ learners across India'],
+    ] as Array<[LucideIcon, string, string]>);
+
+  const savings =
+    offer.savingsText ||
+    (offer.price && offer.oldPrice && offer.oldPrice > offer.price
+      ? `Save ₹${(offer.oldPrice - offer.price).toLocaleString('en-IN')}`
+      : null);
+
+  const offerTrioBooks: Array<SanityBook | undefined> = (() => {
+    if (offer.includedBooks?.length) {
+      return [0, 1, 2].map((i) => offer.includedBooks?.[i] as SanityBook | undefined);
+    }
+    return undefined as unknown as Array<SanityBook | undefined>;
+  })();
 
   // hero mouse-parallax
   const mx = useMotionValue(0), my = useMotionValue(0);
@@ -299,20 +351,20 @@ export default function BookStoreClient({ books, categories, offer }: Props) {
         <div className={`${wrap} relative grid items-center gap-6 pb-10 pt-10 lg:grid-cols-[1.1fr_1fr] lg:pt-12`}>
           <div>
             <m.span initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5, ease: EASE_OUT }} className="inline-flex items-center gap-2 rounded-full bg-[#ffd9e0] px-3.5 py-1.5 text-[13px] font-bold text-[#d6123a]">
-              <ShoppingCart className="h-4 w-4" /> Official Book Store
+              <ShoppingCart className="h-4 w-4" /> {settings.heroEyebrow || 'Official Book Store'}
             </m.span>
             <h1 className="mt-5 whitespace-nowrap text-[clamp(32px,4.2vw,56px)] font-black italic leading-[1.1] tracking-tight">
-              {['Persona', 'Institute'].map((w, i) => (
-                <m.span key={w} className="mr-[.26em] inline-block pr-[.1em] text-[#0c1f4a]" initial={{ opacity: 0, y: 38, filter: 'blur(10px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: .8, ease: EASE_OUT, delay: .1 + i * .12 }}>{w}</m.span>
+              {(settings.heroTitleLine1 || 'Persona Institute').split(/\s+/).map((w, i) => (
+                <m.span key={`${w}-${i}`} className="mr-[.26em] inline-block pr-[.1em] text-[#0c1f4a]" initial={{ opacity: 0, y: 38, filter: 'blur(10px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: .8, ease: EASE_OUT, delay: .1 + i * .12 }}>{w}</m.span>
               ))}
               <br />
-              <m.span className="inline-block bg-gradient-to-r from-[#ff2547] to-[#e30f2f] bg-clip-text pb-[.1em] pr-[.18em] text-transparent" initial={{ opacity: 0, y: 38, filter: 'blur(10px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: .8, ease: EASE_OUT, delay: .38 }}>Book Store</m.span>
+              <m.span className="inline-block bg-gradient-to-r from-[#ff2547] to-[#e30f2f] bg-clip-text pb-[.1em] pr-[.18em] text-transparent" initial={{ opacity: 0, y: 38, filter: 'blur(10px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: .8, ease: EASE_OUT, delay: .38 }}>{settings.heroTitleAccent || 'Book Store'}</m.span>
             </h1>
             <m.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .55, duration: .6, ease: EASE_OUT }} className="mt-5 max-w-[470px] text-[17px] leading-relaxed text-[#0c1f4a]">
-              Ajay Singh Rajput (Ajay Sir) की trusted books for English preparation — Concept, Practice &amp; Exams.
+              {settings.heroSubtitle || 'Ajay Singh Rajput (Ajay Sir) की trusted books for English preparation — Concept, Practice & Exams.'}
             </m.p>
             <Stagger className="mt-6 flex flex-wrap gap-x-3 gap-y-4 lg:flex-nowrap" delay={.6}>
-              {FEATURES.map(([Ic, l]) => (
+              {features.map(([Ic, l]) => (
                 <StaggerItem key={l} className="flex items-center gap-2.5">
                   <m.span whileHover={{ rotate: -10, scale: 1.12 }} className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-[#f51632] shadow-[0_6px_16px_-6px_rgba(245,22,50,.4)] ring-1 ring-rose-100"><Ic className="h-5 w-5" /></m.span>
                   <span className="max-w-[64px] text-[12px] font-semibold leading-tight text-[#0c1f4a]">{l}</span>
@@ -320,8 +372,8 @@ export default function BookStoreClient({ books, categories, offer }: Props) {
               ))}
             </Stagger>
             <Reveal delay={.8} className="mt-7 flex flex-wrap gap-3">
-              <m.a href="#featured" whileHover={{ y: -3 }} whileTap={{ scale: .97 }} className={btnRed}><Shine />Explore Books <ArrowRight className="h-4 w-4" /></m.a>
-              <m.a href="#offer" whileHover={{ y: -3 }} whileTap={{ scale: .97 }} className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-white px-6 py-3.5 text-[15px] font-bold text-[#e30f2f] shadow-sm"><Gift className="h-4 w-4" /> View Combos</m.a>
+              <m.a href="#featured" whileHover={{ y: -3 }} whileTap={{ scale: .97 }} className={btnRed}><Shine />{settings.exploreCtaLabel || 'Explore Books'} <ArrowRight className="h-4 w-4" /></m.a>
+              <m.a href="#offer" whileHover={{ y: -3 }} whileTap={{ scale: .97 }} className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-white px-6 py-3.5 text-[15px] font-bold text-[#e30f2f] shadow-sm"><Gift className="h-4 w-4" /> {settings.comboCtaLabel || 'View Combos'}</m.a>
             </Reveal>
             <Reveal delay={.95} className="mt-6 flex items-center gap-3">
               <div className="flex -space-x-3">{AVATARS.map((a, i) => <m.img key={i} src={a} alt="" whileHover={{ y: -4, zIndex: 5 }} className="h-9 w-9 rounded-full border-2 border-white object-cover shadow" />)}</div>
@@ -353,7 +405,7 @@ export default function BookStoreClient({ books, categories, offer }: Props) {
       {/* ─── STATS ─── */}
       <div className={wrap}>
         <Stagger className="grid grid-cols-2 gap-y-5 rounded-[22px] bg-white/90 px-3 py-5 shadow-[0_18px_45px_-20px_rgba(15,39,79,.25)] ring-1 ring-rose-50 backdrop-blur sm:grid-cols-3 lg:grid-cols-5 lg:divide-x lg:divide-rose-100">
-          {STATS.map(([Ic, v, suf, dec, l]) => (
+          {stats.map(([Ic, v, suf, dec, l]) => (
             <StaggerItem key={l} className="flex items-center justify-center gap-3 px-3">
               <span className="grid h-12 w-12 place-items-center rounded-full bg-rose-50 text-[#f51632]"><Ic className="h-6 w-6" /></span>
               <div><b className="block text-[22px] font-extrabold leading-none text-[#0c1f4a]"><CountUp value={v} suffix={suf} decimals={dec} /></b><span className="text-[12px] text-slate-500">{l}</span></div>
@@ -364,10 +416,10 @@ export default function BookStoreClient({ books, categories, offer }: Props) {
 
       {/* ─── CATEGORIES ─── */}
       <section className={`${wrap} mt-14`}>
-        <Head eyebrow="Browse by category" title="Find the Right Book for You" right={<a href="#featured" onClick={() => setCat('all')} className="hidden items-center gap-1 text-[13px] font-bold text-[#e30f2f] sm:flex">View All Categories <ArrowRight className="h-4 w-4" /></a>} />
+        <Head eyebrow={settings.categoriesEyebrow || 'Browse by category'} title={settings.categoriesTitle || 'Find the Right Book for You'} right={<a href="#featured" onClick={() => setCat('all')} className="hidden items-center gap-1 text-[13px] font-bold text-[#e30f2f] sm:flex">View All Categories <ArrowRight className="h-4 w-4" /></a>} />
         <Stagger className="mt-6 flex gap-3 overflow-x-auto pb-4 pt-1 [scrollbar-width:none] lg:grid lg:grid-cols-7 lg:overflow-visible" stagger={.06}>
           {cats.map((c) => {
-            const slug = c.slug?.current || 'all', Ic = ICONS[c.icon || 'book'] || Layers, on = cat === slug;
+            const slug = c.slug?.current || 'all', Ic = CAT_ICONS[c.icon || 'book'] || Layers, on = cat === slug;
             return (
               <StaggerItem key={c._id} className="min-w-[138px] lg:min-w-0">
                 <m.button onClick={() => setCat(slug)} whileHover={{ y: -5 }} whileTap={{ scale: .96 }} className={`relative h-full w-full overflow-hidden rounded-2xl px-2 py-4 text-center ring-1 transition-shadow ${on ? 'text-white shadow-[0_16px_28px_-10px_rgba(245,22,50,.6)] ring-transparent' : 'bg-white text-[#0c1f4a] shadow-[0_8px_22px_-12px_rgba(15,39,79,.25)] ring-rose-50 hover:shadow-[0_14px_28px_-12px_rgba(245,22,50,.3)]'}`}>
@@ -386,7 +438,7 @@ export default function BookStoreClient({ books, categories, offer }: Props) {
 
       {/* ─── FEATURED ─── */}
       <section id="featured" className={`${wrap} mt-12 scroll-mt-24`}>
-        <Head eyebrow="Featured books" title="Most Popular Books" right={
+        <Head eyebrow={settings.featuredEyebrow || 'Featured books'} title={settings.featuredTitle || 'Most Popular Books'} right={
           <div className="flex gap-2">{[-1, 1].map((d) => (
             <m.button key={d} aria-label={d < 0 ? 'Previous' : 'Next'} whileHover={{ scale: 1.1 }} whileTap={{ scale: .9 }} onClick={() => row.current?.scrollBy({ left: d * 260, behavior: 'smooth' })} className="grid h-10 w-10 place-items-center rounded-full bg-white text-[#0c1f4a] shadow-md ring-1 ring-rose-100">{d < 0 ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}</m.button>
           ))}</div>
@@ -406,7 +458,11 @@ export default function BookStoreClient({ books, categories, offer }: Props) {
                     </m.button>
                     <div className="flex h-[196px] items-end justify-center pb-2 pt-9 [perspective:800px]">
                       <m.div className={b.isCombo && !coverSrc(b) ? 'h-[132px] w-[92%]' : 'w-[54%]'} whileHover={{ rotateY: -14, scale: 1.07 }} transition={{ type: 'spring', stiffness: 220, damping: 20 }}>
-                        {b.isCombo && !coverSrc(b) ? <Trio books={COMBO_PARTS} /> : <Cover book={b} i={i} />}
+                        {b.isCombo && !coverSrc(b) ? (
+                          <Trio books={(b.comboBooks?.length ? b.comboBooks : offer.includedBooks || []) as Array<SanityBook | undefined>} />
+                        ) : (
+                          <Cover book={b} i={i} />
+                        )}
                       </m.div>
                     </div>
                     <h3 className="mt-2 text-[14px] font-extrabold leading-tight text-[#0c1f4a]">{b.title}</h3>
@@ -428,7 +484,7 @@ export default function BookStoreClient({ books, categories, offer }: Props) {
         </div>
       </section>
 
-      {/* ─── OFFER BANNER ─── */}
+      {/* ─── OFFER / COMBO BANNER (fully Sanity-driven) ─── */}
       <section id="offer" className={`${wrap} scroll-mt-24`}>
         <Reveal>
           <div className="relative grid items-center gap-4 overflow-hidden rounded-[28px] bg-[linear-gradient(100deg,#1a1347_0,#3b1767_55%,#7b1d6d_100%)] px-6 py-8 text-white shadow-[0_28px_60px_-28px_rgba(40,10,80,.8)] md:grid-cols-[170px_1fr_300px] md:px-10">
@@ -436,16 +492,57 @@ export default function BookStoreClient({ books, categories, offer }: Props) {
             <GiftBox3D />
             <div className="relative">
               <span className="inline-block rounded-full bg-gradient-to-r from-rose-500 to-red-500 px-3 py-1 text-[11px] font-bold">{offer.badge || 'Limited Time Offer'}</span>
-              <h3 className="mt-2 pb-1 pr-3 text-[clamp(28px,3.4vw,40px)] font-black italic leading-[1.15]">{(offer.title || 'Book Combo – Save More!').split(/[–-]/)[0]}– <span className="text-[#ff3b5c]">{(offer.title || 'Book Combo – Save More!').split(/[–-]/).slice(1).join('–').trim() || 'Save More!'}</span></h3>
+              <h3 className="mt-2 pb-1 pr-3 text-[clamp(28px,3.4vw,40px)] font-black italic leading-[1.15]">
+                {(offer.title || 'Book Combo – Save More!').split(/[–-]/)[0]}–{' '}
+                <span className="text-[#ff3b5c]">
+                  {(offer.title || 'Book Combo – Save More!').split(/[–-]/).slice(1).join('–').trim() || 'Save More!'}
+                </span>
+              </h3>
               <p className="mt-1 text-[14px] text-white/80">{offer.subtitle}</p>
+              {offer.comboLabel && (
+                <p className="mt-1 text-[12px] font-semibold text-amber-200/90">{offer.comboLabel}</p>
+              )}
+              {!!offer.highlights?.length && (
+                <ul className="mt-2 flex flex-wrap gap-2">
+                  {offer.highlights.map((h) => (
+                    <li key={h} className="rounded-full bg-white/10 px-2.5 py-0.5 text-[11px] font-semibold text-white/90 ring-1 ring-white/15">
+                      {h}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {(offer.price != null || savings) && (
+                <div className="mt-3 flex flex-wrap items-baseline gap-2">
+                  {offer.price != null && <b className="text-2xl font-black tabular-nums">{inr(offer.price)}</b>}
+                  {offer.oldPrice != null && <s className="text-[14px] text-white/50">{inr(offer.oldPrice)}</s>}
+                  {savings && <span className="rounded-md bg-emerald-400/20 px-2 py-0.5 text-[12px] font-extrabold text-emerald-300">{savings}</span>}
+                  {offer.priceNote && <span className="w-full text-[11px] text-white/55">{offer.priceNote}</span>}
+                </div>
+              )}
               <div className="mt-4 flex flex-wrap items-center gap-3">
-                {offer.showCountdown !== false && <div className="flex gap-2"><Tick v={cd.d} label="Days" /><Tick v={cd.h} label="Hours" /><Tick v={cd.m} label="Minutes" /><Tick v={cd.s} label="Seconds" /></div>}
-                <m.a href={offer.ctaLink || '#featured'} whileHover={{ y: -3, scale: 1.03 }} whileTap={{ scale: .97 }} className={btnRed}><Shine />{offer.ctaLabel || 'Grab the Combo'} <ArrowRight className="h-4 w-4" /></m.a>
+                {offer.showCountdown !== false && (
+                  <div className="flex gap-2">
+                    <Tick v={cd.d} label="Days" />
+                    <Tick v={cd.h} label="Hours" />
+                    <Tick v={cd.m} label="Minutes" />
+                    <Tick v={cd.s} label="Seconds" />
+                  </div>
+                )}
+                <m.a href={offer.ctaLink || '#featured'} whileHover={{ y: -3, scale: 1.03 }} whileTap={{ scale: .97 }} className={btnRed}>
+                  <Shine />{offer.ctaLabel || 'Grab the Combo'} <ArrowRight className="h-4 w-4" />
+                </m.a>
+                {offer.secondaryCtaLabel && (
+                  <m.a href={offer.secondaryCtaLink || '#featured'} whileHover={{ y: -2 }} className="text-[13px] font-bold text-white/85 underline-offset-4 hover:underline">
+                    {offer.secondaryCtaLabel}
+                  </m.a>
+                )}
               </div>
             </div>
             <div className="relative mx-auto hidden h-[190px] w-full md:block">
               <div className="absolute inset-x-0 bottom-0 h-10 rounded-[50%] bg-white/10 ring-1 ring-white/20" />
-              <m.div className="absolute inset-x-2 bottom-3 top-0" animate={{ y: [0, -8, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}><Trio books={hero} /></m.div>
+              <m.div className="absolute inset-x-2 bottom-3 top-0" animate={{ y: [0, -8, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}>
+                <Trio books={(offerTrioBooks?.[0] ? offerTrioBooks : hero) as Array<SanityBook | undefined>} />
+              </m.div>
             </div>
           </div>
         </Reveal>
@@ -453,9 +550,12 @@ export default function BookStoreClient({ books, categories, offer }: Props) {
 
       {/* ─── WHY ─── */}
       <section className={`${wrap} mt-14`}>
-        <Head eyebrow="Why choose Persona Books?" title="Designed for Real Learning & Exam Success" />
+        <Head
+          eyebrow={settings.whyEyebrow || 'Why choose Persona Books?'}
+          title={settings.whyTitle || 'Designed for Real Learning & Exam Success'}
+        />
         <Stagger className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {WHY.map(([Ic, t, d]) => (
+          {whyItems.map(([Ic, t, d]) => (
             <StaggerItem key={t}>
               <m.div whileHover={{ y: -6 }} className="flex h-full items-center gap-4 rounded-2xl bg-white p-4 shadow-[0_10px_28px_-16px_rgba(15,39,79,.3)] ring-1 ring-rose-50">
                 <m.span whileHover={{ rotate: 12, scale: 1.1 }} className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-rose-100 text-[#f51632]"><Ic className="h-7 w-7" /></m.span>
@@ -466,7 +566,7 @@ export default function BookStoreClient({ books, categories, offer }: Props) {
         </Stagger>
       </section>
 
-      <TrustBanner wrap={wrap} />
+      <TrustBanner wrap={wrap} testimonials={settings.testimonials || []} />
     </main>
   );
 }
