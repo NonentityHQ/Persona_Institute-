@@ -29,8 +29,11 @@ export default defineType({
       title: 'Cover Image',
       type: 'image',
       options: { hotspot: true },
+      fields: [
+        defineField({ name: 'altText', title: 'Accessible Image Description', type: 'string' }),
+      ],
       validation: (Rule) => Rule.required(),
-      description: 'Main book cover shown on cards and hero.',
+      description: 'Main book cover shown on cards and hero. Use the hotspot editor to adjust crop and focal point.',
     }),
     defineField({
       name: 'category',

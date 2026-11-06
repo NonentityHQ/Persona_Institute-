@@ -1,5 +1,6 @@
 'use client';
 
+import { cleanSanityString } from '@/lib/sanity/client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Instagram } from 'lucide-react';
@@ -237,7 +238,7 @@ export default function GrowCarousel({
             {loop.map((reel, i) => {
               const base = i % reels.length;
               const thumb = getThumb(reel, base);
-              const href = reel.instagramUrl || reel.videoUrl || instagramUrl;
+              const href = cleanSanityString(reel.instagramUrl) || cleanSanityString(reel.videoUrl) || instagramUrl;
 
               return (
                 <a

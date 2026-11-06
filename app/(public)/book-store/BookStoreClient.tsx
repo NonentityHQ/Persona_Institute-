@@ -15,6 +15,8 @@ import type {
 } from '@/lib/sanity/client';
 import { urlFor, sanityConfigured } from '@/lib/sanity/client';
 import { EASE_OUT } from '@/lib/motion';
+import { sanityFieldAttribute } from '@/lib/sanity/visual';
+import { cleanSanityString } from '@/lib/sanity/client';
 import CountUp from '@/components/motion/CountUp';
 import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
 
@@ -64,7 +66,7 @@ function coverSrc(b?: SanityBook): string | null {
 /** Sanity cover → (optional local PNG) → CSS placeholder. Uploading a cover in Sanity replaces the placeholder automatically. */
 function Cover({ book, i = 0 }: { book?: SanityBook; i?: number }) {
   const src = coverSrc(book);
-  if (src) return <img src={src} alt={book?.title || 'Book cover'} className="block h-auto w-full select-none drop-shadow-[0_18px_22px_rgba(20,20,60,.35)]" draggable={false} loading="lazy" />;
+  if (src) return <img src={src} alt={book?.cover?.altText || book?.title || 'Book cover'} data-sanity={book?._id ? sanityFieldAttribute(book._id, 'book', 'cover') : undefined} className="block h-auto w-full select-none drop-shadow-[0_18px_22px_rgba(20,20,60,.35)]" draggable={false} loading="lazy" />;
   const t = book?.title || '';
   const [a, b, c] = TONES[/vocab/i.test(t) ? 0 : /grammar/i.test(t) ? 1 : /compre|error/i.test(t) ? 2 : i % 3];
   return (
@@ -381,24 +383,21 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
             </Reveal>
           </div>
 
-          {/* podium + books */}
-          <div className="relative mx-auto h-[340px] w-full max-w-[600px] sm:h-[440px]">
-            <m.div className="absolute inset-x-[2%] bottom-0 h-[22%] rounded-[50%] bg-gradient-to-b from-white to-rose-100 shadow-[0_28px_50px_-18px_rgba(245,22,50,.35)]" initial={{ scale: .6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: .8, ease: EASE_OUT }} />
-            <m.div className="absolute inset-x-[10%] bottom-[7%] h-[16%] rounded-[50%] bg-white shadow-[0_8px_20px_-8px_rgba(245,22,50,.25)]" initial={{ scale: .6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: .8, ease: EASE_OUT, delay: .1 }} />
-            <m.div className="absolute inset-0" style={{ rotateX: rotX, rotateY: rotY, transformPerspective: 1100 }}>
-              {[
-                { c: 'left-[2%] bottom-[18%] w-[28%]', r: 22, d: .35, f: 5.5 },
-                { c: 'left-[30%] bottom-[22%] w-[40%] z-10', r: 0, d: .2, f: 6 },
-                { c: 'right-[2%] bottom-[18%] w-[28%]', r: -22, d: .5, f: 5 },
-              ].map((s, i) => (
-                <m.div key={i} className={`absolute ${s.c}`} initial={{ opacity: 0, y: 80, scale: .9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: .9, ease: EASE_OUT, delay: s.d }}>
-                  <m.div animate={{ y: [0, -12, 0] }} transition={{ duration: s.f, repeat: Infinity, ease: 'easeInOut', delay: i * .4 }} style={{ rotateY: s.r, transformPerspective: 900 }}>
-                    <Cover book={hero[i]} i={i} />
-                  </m.div>
-                </m.div>
-              ))}
-            </m.div>
-          </div>
+          {/* Official branded book display — shared with the homepage book-store feature. */}
+          <m.div
+            className="relative mx-auto w-full max-w-[650px] overflow-hidden rounded-[28px] border border-white/80 bg-white/45 shadow-[0_24px_60px_-24px_rgba(91,45,110,.35)]"
+            initial={{ opacity: 0, y: 28, scale: .97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: .8, ease: EASE_OUT, delay: .18 }}
+            whileHover={{ y: -4, scale: 1.01 }}
+          >
+            <img
+              src="/images/persona-books-display.png"
+              alt="Persona Institute books: Spoken English Practice Book, English Grammar and Vocabulary Booster, with the official Persona Institute logo on the mug"
+              className="block h-auto w-full object-contain"
+              loading="eager"
+            />
+          </m.div>
         </div>
       </section>
 
@@ -448,10 +447,10 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
           {list.length === 0 && <p className="py-10 text-center text-slate-500">No books in this category yet.</p>}
           <Stagger key={cat} className="grid grid-flow-col auto-cols-[218px] gap-4 lg:auto-cols-[calc((100%-4rem)/5)]" stagger={.08}>
             {list.map((b, i) => {
-              const d = off(b.price, b.oldPrice), isLiked = liked.has(b._id), done = added === b._id;
+              const d = off(b.price, b.oldPrice), isLiked = liked.has(b._id), done = added === b._id, buyUrl = cleanSanityString(b.buyUrl);
               return (
-                <StaggerItem key={b._id} className="snap-start">
-                  <m.article whileHover={{ y: -8 }} transition={{ type: 'spring', stiffness: 300, damping: 24 }} className="group relative h-full rounded-[20px] bg-white p-3 pb-4 shadow-[0_14px_34px_-16px_rgba(15,39,79,.3)] ring-1 ring-rose-50">
+                <StaggerItem key={b._id} className="snap-start h-full">
+                  <m.article whileHover={{ y: -8 }} transition={{ type: 'spring', stiffness: 300, damping: 24 }} className="group relative flex h-full min-h-[445px] flex-col rounded-[20px] bg-white p-3 pb-4 shadow-[0_14px_34px_-16px_rgba(15,39,79,.3)] ring-1 ring-rose-50" data-sanity-edit-target>
                     {b.badge && <span className={`absolute left-3 top-3 z-10 inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[11px] font-extrabold ${BADGE[b.badge] || BADGE.New}`}>{b.badge === 'Bestseller' && <Crown className="h-3 w-3" />}{b.badge}</span>}
                     <m.button aria-label="Wishlist" whileTap={{ scale: .75 }} onClick={() => toggleLike(b._id)} className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-white shadow ring-1 ring-rose-100">
                       <m.span key={String(isLiked)} initial={{ scale: .5 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 500, damping: 14 }}><Heart className={`h-4 w-4 ${isLiked ? 'fill-[#f51632] text-[#f51632]' : 'text-[#f51632]'}`} /></m.span>
@@ -465,11 +464,11 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
                         )}
                       </m.div>
                     </div>
-                    <h3 className="mt-2 text-[14px] font-extrabold leading-tight text-[#0c1f4a]">{b.title}</h3>
-                    {b.isCombo && b.comboLabel && <p className="text-[10px] text-slate-500">({b.comboLabel})</p>}
-                    <div className="mt-1.5 flex items-center gap-1.5 text-[12px]"><span className="flex">{[0, 1, 2, 3, 4].map((k) => <Star key={k} className="h-3 w-3 fill-amber-400 text-amber-400" />)}</span><b className="text-[#0c1f4a]">{b.rating?.toFixed(1)}</b><span className="text-slate-400">({(b.reviewCount ?? 0).toLocaleString('en-IN')})</span></div>
-                    <div className="mt-2 flex flex-wrap items-center gap-1.5"><b className="text-[17px] font-black text-[#0c1f4a]">{inr(b.price)}</b>{b.oldPrice && <s className="text-[12px] text-slate-400">{inr(b.oldPrice)}</s>}{d && <span className="rounded-md bg-emerald-100 px-1.5 py-0.5 text-[10px] font-extrabold text-emerald-600">{d}</span>}</div>
-                    <m.a href={b.buyUrl || '#'} target="_blank" rel="noopener noreferrer" onClick={(e) => { if (!b.buyUrl) { e.preventDefault(); setAdded(b._id); window.setTimeout(() => setAdded(null), 1800); } }} whileHover={{ y: -2 }} whileTap={{ scale: .95 }} className={`relative mt-3 flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl py-2.5 text-[13px] font-bold text-white transition-colors ${done ? 'bg-slate-500' : 'bg-gradient-to-b from-[#ff3355] to-[#e30f2f] shadow-[0_10px_20px_-10px_rgba(245,22,50,.7)]'}`}>
+                    <h3 className="mt-2 min-h-[34px] line-clamp-2 text-[14px] font-extrabold leading-tight text-[#0c1f4a]">{b.title}</h3>
+                    <p className="mt-1 min-h-[30px] line-clamp-2 text-[10px] leading-[15px] text-slate-500">{b.shortDescription || (b.isCombo ? b.comboLabel : '') || '\u00a0'}</p>
+                    <div className="mt-1.5 flex h-[18px] items-center gap-1.5 text-[12px]"><span className="flex">{[0, 1, 2, 3, 4].map((k) => <Star key={k} className="h-3 w-3 fill-amber-400 text-amber-400" />)}</span><b className="text-[#0c1f4a]">{b.rating?.toFixed(1)}</b><span className="text-slate-400">({(b.reviewCount ?? 0).toLocaleString('en-IN')})</span></div>
+                    <div className="mt-2 flex min-h-[28px] flex-wrap items-center gap-1.5"><b className="text-[17px] font-black text-[#0c1f4a]">{inr(b.price)}</b>{b.oldPrice && <s className="text-[12px] text-slate-400">{inr(b.oldPrice)}</s>}{d && <span className="rounded-md bg-emerald-100 px-1.5 py-0.5 text-[10px] font-extrabold text-emerald-600">{d}</span>}</div>
+                    <m.a href={buyUrl || '#'} target="_blank" rel="noopener noreferrer" onClick={(e) => { if (!buyUrl) { e.preventDefault(); setAdded(b._id); window.setTimeout(() => setAdded(null), 1800); } }} whileHover={{ y: -2 }} whileTap={{ scale: .95 }} className={`relative mt-auto flex h-12 min-h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-xl px-3 text-[13px] font-bold leading-none text-white transition-colors ${done ? 'bg-slate-500' : 'bg-gradient-to-b from-[#ff3355] to-[#e30f2f] shadow-[0_10px_20px_-10px_rgba(245,22,50,.7)]'}`}>
                       <AnimatePresence mode="wait" initial={false}>
                         <m.span key={String(done)} className="flex items-center gap-2" initial={{ y: 14, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -14, opacity: 0 }} transition={{ duration: .18 }}>
                           {done ? 'Link coming soon' : <><ShoppingBag className="h-4 w-4" /> Buy Now</>}
@@ -528,11 +527,11 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
                     <Tick v={cd.s} label="Seconds" />
                   </div>
                 )}
-                <m.a href={offer.ctaLink || '#featured'} whileHover={{ y: -3, scale: 1.03 }} whileTap={{ scale: .97 }} className={btnRed}>
+                <m.a href={cleanSanityString(offer.ctaLink) || '#featured'} whileHover={{ y: -3, scale: 1.03 }} whileTap={{ scale: .97 }} className={btnRed}>
                   <Shine />{offer.ctaLabel || 'Grab the Combo'} <ArrowRight className="h-4 w-4" />
                 </m.a>
                 {offer.secondaryCtaLabel && (
-                  <m.a href={offer.secondaryCtaLink || '#featured'} whileHover={{ y: -2 }} className="text-[13px] font-bold text-white/85 underline-offset-4 hover:underline">
+                  <m.a href={cleanSanityString(offer.secondaryCtaLink) || '#featured'} whileHover={{ y: -2 }} className="text-[13px] font-bold text-white/85 underline-offset-4 hover:underline">
                     {offer.secondaryCtaLabel}
                   </m.a>
                 )}

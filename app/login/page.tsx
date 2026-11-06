@@ -30,7 +30,7 @@ function BrandOption({ brand }: { brand: BrandConfig }) {
         style={{ background: brand.accentSoft }}
       >
         {brand.logo ? (
-          <Image src={brand.logo} alt="" width={64} height={64} className="h-full w-full object-cover" />
+          <Image src={brand.logo} alt="" width={64} height={64} className="h-full w-full object-contain p-1" />
         ) : (
           <BookOpen size={28} style={{ color: brand.accent }} />
         )}

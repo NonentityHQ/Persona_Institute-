@@ -216,9 +216,9 @@ main a:hover, main button:hover { transition-duration: .22s; }
 }
 
 
-/* Mobile navigation: a real, full-width dropdown instead of a clipped pill. */
-.story-mobile-menu { position: relative; z-index: 80; animation: siteFadeUp .22s ease-out both; }
-.story-mobile-menu a { min-height: 42px; }
+/* Mobile navigation panel rises above the persistent bottom navigation. */
+.mobile-menu-panel { animation: siteFadeUp .22s ease-out both; }
+.mobile-menu-panel a { min-height: 42px; }
 
 /* Course-app selector matches the separate app catalogue concept in the reference. */
 .course-app-picker { margin-bottom: 12px; }
@@ -947,3 +947,108 @@ main section[class*="hero"] .rounded-xl.border { will-change: auto; }
 @media(max-width:1023px){.persona-video-hero section>div:first-child{width:min(64%,680px)}.persona-hero-video{object-position:70% center}.persona-hero-stats{grid-template-columns:repeat(5,minmax(0,1fr));left:18px;right:18px;padding:12px 8px}.persona-hero-stats>div{gap:7px;padding:4px}.persona-hero-stats svg{width:23px;height:23px}.persona-hero-stats span{font-size:9px}}
 @media(max-width:767px){.persona-video-hero,.persona-video-hero section{min-height:780px}.persona-hero-video{object-position:68% center}.persona-hero-wash{background:linear-gradient(180deg,rgba(255,253,250,.98) 0%,rgba(255,252,248,.95) 39%,rgba(255,250,245,.72) 58%,rgba(255,248,240,.15) 82%,rgba(255,248,240,.04) 100%)}.persona-video-hero section{padding:42px 20px 190px;align-items:flex-start}.persona-video-hero section>div:first-child{width:100%;max-width:100%}.persona-video-hero h1{max-width:11.5ch;font-size:clamp(2.7rem,11vw,3.65rem)}.persona-video-hero p{max-width:33ch;font-size:1rem}.persona-hero-actions{gap:10px;margin-top:22px}.persona-hero-actions button{min-height:48px;padding:0 17px;font-size:13px}.persona-hero-learners{margin-top:20px}.persona-hero-stats{left:12px;right:12px;bottom:12px;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:10px 6px;border-radius:16px}.persona-hero-stats>div{justify-content:flex-start;border-right:0;padding:6px 5px}.persona-hero-stats>div:nth-child(4),.persona-hero-stats>div:nth-child(5){display:none}.persona-hero-stats svg{width:20px;height:20px}.persona-hero-stats strong{font-size:14px}.persona-hero-stats span{font-size:9px;white-space:normal}.persona-hero-controls{right:12px;bottom:105px}.persona-hero-controls button{min-height:36px;padding:8px 10px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.persona-hero-video{display:none}}
+
+
+/* Contact page hero: composed layout, full portrait visibility, no accidental crop. */
+.contact-hero-section {
+  min-height: 590px;
+  background:
+    radial-gradient(ellipse at 58% 58%, rgba(255,174,92,.23) 0%, transparent 32%),
+    radial-gradient(ellipse at 96% 4%, rgba(204,225,255,.48) 0%, transparent 34%),
+    linear-gradient(112deg,#fffaf4 0%,#fff 48%,#f3f7ff 100%);
+}
+.contact-hero-inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0,1.04fr) minmax(330px,.9fr) minmax(270px,.62fr);
+  align-items: center;
+  gap: clamp(18px,2.2vw,34px);
+  width: min(100% - 64px, 1560px);
+  min-height: 590px;
+  margin: 0 auto;
+  padding: 34px 0 42px;
+}
+.contact-hero-copy { position: relative; z-index: 4; max-width: 650px; }
+.contact-title-accent { position: relative; display: inline-block; color: #f04422; white-space: nowrap; }
+.contact-title-accent::after {
+  position: absolute; content: ""; height: .085em; left: 8%; right: 3%; bottom: -.08em;
+  border-radius: 99px; background: #ff4b18; transform: rotate(-2deg);
+}
+.contact-hero-visual {
+  position: relative; align-self: stretch; display: flex; align-items: flex-end; justify-content: center;
+  min-width: 0; min-height: 510px; isolation: isolate;
+}
+.contact-hero-orbit {
+  position: absolute; z-index: -1; width: min(95%,440px); aspect-ratio: 1;
+  left: 50%; bottom: 12px; transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 32%,#ffb13e 0%,#ff8b22 46%,#ffd6ad 73%,rgba(255,220,192,.12) 74%);
+  box-shadow: 0 22px 55px rgba(240,116,35,.17);
+}
+.contact-hero-person {
+  position: relative; z-index: 2; display: block; width: min(100%, 470px); height: auto;
+  max-height: 535px; object-fit: contain; object-position: center bottom;
+  filter: drop-shadow(0 20px 24px rgba(16,35,73,.18));
+}
+.contact-hero-logo {
+  position: absolute; z-index: 3; top: 18px; right: -8px; display: block;
+  width: clamp(112px,11vw,166px); height: auto; object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgba(15,39,87,.12));
+}
+.contact-hero-floor-shadow {
+  position: absolute; z-index: -2; bottom: 8px; left: 10%; right: 10%; height: 26px;
+  border-radius: 50%; background: rgba(22,43,78,.14); filter: blur(15px);
+}
+.contact-hero-books { position:absolute; z-index:1; right:-5px; bottom:14px; width:110px; height:58px; }
+.contact-hero-books span { position:absolute; right:0; width:100px; height:13px; border-radius:3px; box-shadow:0 3px 7px #18345a22; }
+.contact-hero-books span:nth-child(1){bottom:0;background:#f36b24}
+.contact-hero-books span:nth-child(2){bottom:14px;right:8px;background:#17458a}
+.contact-hero-books span:nth-child(3){bottom:28px;right:2px;background:#fff;border:1px solid #dbe3ee}
+.contact-hero-card {
+  position: relative; z-index: 5; width: 100%; padding: 25px 23px;
+  border: 1px solid rgba(255,255,255,.95); border-radius: 28px;
+  background: rgba(255,255,255,.92); box-shadow: 0 22px 55px rgba(25,49,87,.12);
+  backdrop-filter: blur(16px); transition: transform .28s ease, box-shadow .28s ease;
+}
+.contact-hero-card:hover { transform: translateY(-3px); box-shadow: 0 26px 58px rgba(25,49,87,.16); }
+.contact-quote-mark { margin-top:-8px; color:#ff5a24; font-size:54px; font-weight:900; line-height:.8; }
+.contact-hero-glow { position:absolute; z-index:0; pointer-events:none; border-radius:50%; filter:blur(34px); }
+.contact-hero-glow-one { width:310px;height:310px;left:39%;top:20%;background:rgba(255,176,106,.2); }
+.contact-hero-glow-two { width:330px;height:330px;right:-80px;top:-140px;background:rgba(176,208,255,.34); }
+.contact-hero-wave {
+  position:absolute; z-index:0; left:-5%; right:-5%; bottom:-112px; height:180px;
+  border-radius:50% 50% 0 0; background:linear-gradient(100deg,#ffe6d0 0%,#fff 43%,#dfeaff 100%);
+  transform:rotate(-2deg);
+}
+@media (max-width: 1100px) {
+  .contact-hero-inner { grid-template-columns:minmax(0,1fr) minmax(300px,.85fr); width:min(100% - 48px,1000px); gap:22px; }
+  .contact-hero-visual { grid-column:2; grid-row:1; min-height:470px; }
+  .contact-hero-copy { grid-column:1; grid-row:1; }
+  .contact-hero-card { grid-column:1 / -1; max-width:620px; justify-self:end; }
+}
+@media (max-width: 767px) {
+  .contact-hero-section { min-height:0; background:linear-gradient(155deg,#fff9f3 0%,#fff 58%,#f1f6ff 100%); }
+  .contact-hero-inner { display:flex; flex-direction:column; align-items:stretch; gap:18px; width:100%; min-height:0; padding:20px 18px 30px; }
+  .contact-hero-copy { max-width:none; padding:0; }
+  .contact-hero-copy h1 { max-width:12ch; font-size:clamp(2.65rem,12vw,3.65rem); }
+  .contact-hero-copy p { max-width:38rem; font-size:15px; }
+  .contact-hero-visual { order:2; align-self:center; width:min(100%,440px); min-height:350px; height:350px; }
+  .contact-hero-person { width:auto; height:100%; max-width:100%; max-height:350px; }
+  .contact-hero-orbit { width:min(82%,320px); bottom:8px; }
+  .contact-hero-logo { width:112px; top:0; right:0; }
+  .contact-hero-books { right:0; bottom:6px; transform:scale(.8); transform-origin:bottom right; }
+  .contact-hero-card { order:3; max-width:none; padding:18px; border-radius:22px; }
+  .contact-hero-card ul { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+  .contact-hero-card ul li { align-items:flex-start; font-size:12px; line-height:1.35; }
+  .contact-hero-wave { bottom:-135px; }
+}
+@media (max-width: 390px) {
+  .contact-hero-card ul { grid-template-columns:1fr; }
+  .contact-hero-visual { height:315px; min-height:315px; }
+  .contact-hero-person { max-height:315px; }
+}
+
+/* Image fit corrections: logos and complete product artwork should never be cropped. */
+.brand-login-logo img, .login-brand-logo img { object-fit: contain !important; }
+.course-product-image, .h3d-course-img img, .store-course-image { object-fit: contain !important; }

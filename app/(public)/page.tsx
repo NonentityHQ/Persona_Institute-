@@ -1,4 +1,4 @@
-import { getActiveOffer, getReels, getYoutubeVideos, getSiteSettings } from '@/lib/sanity/client';
+import { getActiveOffer, getReels, getYoutubeVideos, getSiteSettings, getSiteCards } from '@/lib/sanity/server';
 import { fetchAllBrandCourses, toHomeCourse } from '@/lib/classplus/client';
 import { courses as staticCourses } from '@/lib/data';
 import HomePageClient from './HomePageClient';
@@ -6,11 +6,12 @@ import HomePageClient from './HomePageClient';
 export const revalidate = 60; // ISR — marketing + Classplus courses
 
 export default async function HomePage() {
-  const [offer, reels, youtube, settings, classplusCourses] = await Promise.all([
+  const [offer, reels, youtube, settings, siteCards, classplusCourses] = await Promise.all([
     getActiveOffer(),
     getReels(),
     getYoutubeVideos(),
     getSiteSettings(),
+    getSiteCards('home'),
     fetchAllBrandCourses().catch(() => []),
   ]);
 
@@ -26,6 +27,7 @@ export default async function HomePage() {
       youtube={youtube}
       settings={settings}
       courses={homeCourses}
+      siteCards={siteCards}
     />
   );
 }

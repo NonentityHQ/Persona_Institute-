@@ -1,5 +1,6 @@
 'use client';
 
+import { cleanSanityString } from '@/lib/sanity/client';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { AnimatePresence, m as motion } from 'framer-motion';
@@ -67,9 +68,10 @@ export default function OfferBanner({ offer, onCta }: Props) {
   }
 
   const handleCta = () => {
-    if (offer.ctaLink) {
-      if (offer.ctaLink.startsWith('http')) window.open(offer.ctaLink, '_blank');
-      else window.location.href = offer.ctaLink;
+    const ctaLink = cleanSanityString(offer.ctaLink);
+    if (ctaLink) {
+      if (ctaLink.startsWith('http')) window.open(ctaLink, '_blank');
+      else window.location.href = ctaLink;
       return;
     }
     onCta?.();

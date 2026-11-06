@@ -1,9 +1,12 @@
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
+import { presentationTool } from 'sanity/presentation';
 import { schemaTypes } from './sanity/schemas';
+import { presentationResolve } from './sanity/presentation/resolve';
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'your-project-id';
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production';
+const previewUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
 export default defineConfig({
   name: 'persona-institute',
@@ -11,7 +14,21 @@ export default defineConfig({
   projectId,
   dataset,
   basePath: '/studio',
-  plugins: [structureTool()],
+  plugins: [
+    structureTool(),
+    presentationTool({
+      title: 'Visual Website Editor',
+      previewUrl: {
+        initial: previewUrl,
+        previewMode: { enable: '/api/draft-mode/enable' },
+      },
+      allowOrigins: [
+        'http://localhost:3000',
+        previewUrl,
+      ],
+      resolve: presentationResolve,
+    }),
+  ],
   schema: {
     types: schemaTypes,
   },

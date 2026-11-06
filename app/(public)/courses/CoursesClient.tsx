@@ -8,6 +8,9 @@ import Card3D from '@/components/motion/Card3D';
 import { HeroFade, HeroHeading } from '@/components/motion/HeroText';
 import { Reveal } from '@/components/motion/Reveal';
 import { DUR, EASE_IN_OUT, cardItem, staggerParent } from '@/lib/motion';
+import type { SanitySiteCard } from '@/lib/sanity/client';
+import { sanityFieldAttribute } from '@/lib/sanity/visual';
+import { cleanSanityString } from '@/lib/sanity/client';
 import {
   ArrowRight,
   Search,
@@ -35,11 +38,17 @@ export type CourseCard = {
   learners: string;
   features: string[];
   enrollUrl?: string;
+  imageAlt?: string;
+  imageFit?: 'contain' | 'cover';
+  imagePosition?: string;
+  buttonLabel?: string;
+  sanityCardId?: string;
 };
 
 type Props = {
   courseList: CourseCard[];
   live?: boolean;
+  siteCards?: SanitySiteCard[];
 };
 
 function CourseCta({
@@ -66,14 +75,36 @@ function CourseCta({
   );
 }
 
-export default function CoursesClient({ courseList, live = false }: Props) {
+export default function CoursesClient({ courseList, live = false, siteCards = [] }: Props) {
   const [appFilter, setAppFilter] = useState('All Courses');
   const [query, setQuery] = useState('');
   const [offset, setOffset] = useState(0);
   const boxes = useRef<Record<string, HTMLElement | null>>({});
 
+  const editableCourseList = useMemo(() => courseList.map((course) => {
+    const override = siteCards.find((card) => cleanSanityString(card.externalId) === course.id);
+    if (!override) return course;
+    return {
+      ...course,
+      title: override.title || course.title,
+      desc: override.description || course.desc,
+      image: cleanSanityString(override.imageUrl) || course.image,
+      imageAlt: override.imageAlt || override.title || course.title,
+      imageFit: (cleanSanityString(override.imageFit) === 'cover' ? 'cover' : 'contain') as 'cover' | 'contain',
+      imagePosition: cleanSanityString(override.imagePosition) || 'center',
+      tag: override.badge || course.tag,
+      price: override.priceText || course.price,
+      old: override.oldPriceText || course.old,
+      discount: override.discountText || course.discount,
+      features: override.features?.length ? override.features : course.features,
+      buttonLabel: override.buttonLabel || undefined,
+      enrollUrl: cleanSanityString(override.buttonUrl) || course.enrollUrl,
+      sanityCardId: override._id,
+    };
+  }), [courseList, siteCards]);
+
   const filtered = useMemo(() => {
-    return courseList.filter((c) => {
+    return editableCourseList.filter((c) => {
       const appOk = appFilter === 'All Courses' || c.app === appFilter;
       const q = query.trim().toLowerCase();
       const textOk =
@@ -81,7 +112,7 @@ export default function CoursesClient({ courseList, live = false }: Props) {
         `${c.title} ${c.desc} ${c.app} ${c.tag}`.toLowerCase().includes(q);
       return appOk && textOk;
     });
-  }, [courseList, appFilter, query]);
+  }, [editableCourseList, appFilter, query]);
 
   const visible =
     filtered.length > 4
@@ -293,6 +324,7 @@ export default function CoursesClient({ courseList, live = false }: Props) {
                   exit="exit"
                   transition={{ layout: { duration: DUR.routeEnter, ease: EASE_IN_OUT } }}
                   className="min-w-0"
+                  data-sanity-edit-target
                 >
                   <Card3D
                     as="article"
@@ -306,11 +338,13 @@ export default function CoursesClient({ courseList, live = false }: Props) {
                     >
                       <Image
                         src={c.image}
-                        alt={c.title}
+                        alt={c.imageAlt || c.title}
+                        data-sanity={c.sanityCardId ? sanityFieldAttribute(c.sanityCardId, 'siteCard', 'image') : undefined}
                         width={720}
                         height={540}
                         sizes="(max-width:640px) 92vw, (max-width:1280px) 46vw, 24vw"
-                        className="course-product-image h-[190px] w-full object-cover sm:h-[180px] xl:h-[200px]"
+                        className="course-product-image h-[190px] w-full sm:h-[180px] xl:h-[200px]"
+                        style={{ objectFit: c.imageFit || 'contain', objectPosition: c.imagePosition || 'center' }}
                         unoptimized={typeof c.image === 'string' && c.image.startsWith('http')}
                       />
                       <span
@@ -376,15 +410,15 @@ export default function CoursesClient({ courseList, live = false }: Props) {
                       <div className="c3d-z2 mt-auto grid grid-cols-2 gap-2 pt-3">
                         <CourseCta
                           c={c}
-                          className="rounded-xl border border-red-500 px-2 py-2.5 text-center text-xs font-bold text-red-600 transition hover:bg-red-50"
+                          className="inline-flex h-11 min-h-11 items-center justify-center rounded-xl border border-red-500 px-2 text-center text-xs font-bold leading-none text-red-600 transition hover:bg-red-50"
                         >
                           View Details
                         </CourseCta>
                         <CourseCta
                           c={c}
-                          className="inline-flex items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-[#ff1744] to-[#ff4b18] px-2 py-2.5 text-xs font-bold text-white shadow-sm transition hover:shadow-md"
+                          className="inline-flex h-11 min-h-11 items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-[#ff1744] to-[#ff4b18] px-2 text-xs font-bold leading-none text-white shadow-sm transition hover:shadow-md"
                         >
-                          Get this course <ArrowRight size={14} />
+                          {c.buttonLabel || 'Get this course'} <ArrowRight size={14} />
                         </CourseCta>
                       </div>
                     </div>

@@ -28,9 +28,9 @@ export type BrandConfig = {
 };
 
 const personaOrg = process.env.NEXT_PUBLIC_CLASSPLUS_PERSONA_ORG_CODE?.trim() || 'bspkr';
-const khushiOrg = process.env.NEXT_PUBLIC_CLASSPLUS_KHUSHI_ORG_CODE?.trim() || '';
+const khushiOrg = process.env.NEXT_PUBLIC_CLASSPLUS_KHUSHI_ORG_CODE?.trim() || 'ZUFVSJ';
 const personaOrgId = Number(process.env.NEXT_PUBLIC_CLASSPLUS_PERSONA_ORG_ID || '') || 279110;
-const khushiOrgId = Number(process.env.NEXT_PUBLIC_CLASSPLUS_KHUSHI_ORG_ID || '') || undefined;
+const khushiOrgId = Number(process.env.NEXT_PUBLIC_CLASSPLUS_KHUSHI_ORG_ID || '') || 617819;
 
 export const brands: Record<BrandId, BrandConfig> = {
   persona: {

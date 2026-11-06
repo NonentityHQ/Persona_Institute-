@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { m } from "framer-motion";
-import { ArrowRight, Menu, Search, X } from "lucide-react";
+import { ArrowRight, BookOpen, GraduationCap, Home, Menu, Search, X } from "lucide-react";
 import TransitionLink from "@/components/motion/TransitionLink";
 import ScrollProgress from "@/components/motion/ScrollProgress";
 import BrandLoginButton from "@/components/BrandLoginButton";
@@ -38,7 +38,7 @@ export default function PublicHeader({ active, className = "" }: Props) {
   useEffect(() => { setMenuOpen(false); }, [pathname]);
 
   return (
-    <header className={`sticky top-0 z-50 border-b border-orange-100/70 bg-white/95 ${className}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 border-b border-orange-100/70 bg-white/95 ${className}`}>
       <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-3 px-4 py-3 sm:px-5 lg:px-10">
         <TransitionLink href="/" aria-label="Persona Institute home" className="flex min-w-0 shrink-0 items-center gap-2.5">
           {/* Same official logo file; next/image serves a ~44px WebP instead of decoding the 1.3MB PNG. */}
@@ -72,13 +72,47 @@ export default function PublicHeader({ active, className = "" }: Props) {
         </div>
       </div>
 
-      {menuOpen && <nav id="public-mobile-menu" aria-label="Mobile navigation" className="story-mobile-menu mx-3 mb-3 grid gap-1 rounded-2xl border border-orange-100 bg-white p-3 shadow-[0_16px_40px_rgba(16,45,112,.16)] lg:hidden sm:mx-5">
-        {links.map(({ label, href }) => <TransitionLink key={href} href={href} onClick={() => setMenuOpen(false)} aria-current={isActive(href) ? "page" : undefined}
-          className={`flex min-h-11 items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${isActive(href) ? "bg-orange-50 text-[#f04422]" : "text-[#23417e] hover:bg-orange-50 hover:text-[#f04422]"}`}>
-          <span>{label}</span><ArrowRight size={15} />
-        </TransitionLink>)}
-        <div className="mt-1"><BrandLoginButton block onOpen={() => setMenuOpen(false)} /></div>
-      </nav>}
+      {/* Mobile navigation is anchored to the viewport bottom, so it remains reachable
+          even when a visitor is at the very end of a long page. */}
+      {menuOpen && (
+        <>
+          <button
+            type="button"
+            aria-label="Close navigation menu"
+            onClick={() => setMenuOpen(false)}
+            className="fixed inset-0 z-[58] bg-[#071b42]/35 backdrop-blur-[2px] lg:hidden"
+          />
+          <nav id="public-mobile-menu" aria-label="Mobile navigation"
+            className="mobile-menu-panel fixed bottom-[calc(4.7rem+env(safe-area-inset-bottom))] left-3 right-3 z-[61] grid max-h-[70dvh] gap-1 overflow-y-auto rounded-[24px] border border-orange-100 bg-white p-3 shadow-[0_20px_60px_rgba(16,45,112,.24)] lg:hidden sm:left-5 sm:right-5">
+            <div className="mb-1 flex items-center justify-between px-2 py-1">
+              <span className="text-sm font-extrabold text-[#102d70]">Explore Persona</span>
+              <button type="button" onClick={() => setMenuOpen(false)} aria-label="Close menu" className="grid h-8 w-8 place-items-center rounded-full bg-slate-100 text-slate-600"><X size={17} /></button>
+            </div>
+            {links.map(({ label, href }) => <TransitionLink key={href} href={href} onClick={() => setMenuOpen(false)} aria-current={isActive(href) ? "page" : undefined}
+              className={`flex min-h-11 items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${isActive(href) ? "bg-orange-50 text-[#f04422]" : "text-[#23417e] hover:bg-orange-50 hover:text-[#f04422]"}`}>
+              <span>{label}</span><ArrowRight size={15} />
+            </TransitionLink>)}
+            <div className="mt-1"><BrandLoginButton block onOpen={() => setMenuOpen(false)} /></div>
+          </nav>
+        </>
+      )}
+
+      <nav aria-label="Quick mobile navigation" className="fixed inset-x-0 bottom-0 z-[60] grid grid-cols-4 border-t border-orange-100 bg-white/95 px-2 pt-2 shadow-[0_-8px_28px_rgba(16,45,112,.10)] backdrop-blur-xl lg:hidden"
+        style={{ paddingBottom: "max(8px, env(safe-area-inset-bottom))" }}>
+        <TransitionLink href="/" aria-current={isActive("/") ? "page" : undefined} className={`flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-bold ${isActive("/") ? "text-[#f04422]" : "text-[#23417e]"}`}>
+          <Home size={19} strokeWidth={2.2} /><span>Home</span>
+        </TransitionLink>
+        <TransitionLink href="/courses" aria-current={isActive("/courses") ? "page" : undefined} className={`flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-bold ${isActive("/courses") ? "text-[#f04422]" : "text-[#23417e]"}`}>
+          <GraduationCap size={19} strokeWidth={2.2} /><span>Courses</span>
+        </TransitionLink>
+        <TransitionLink href="/book-store" aria-current={isActive("/book-store") ? "page" : undefined} className={`flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-bold ${isActive("/book-store") ? "text-[#f04422]" : "text-[#23417e]"}`}>
+          <BookOpen size={19} strokeWidth={2.2} /><span>Books</span>
+        </TransitionLink>
+        <button type="button" aria-expanded={menuOpen} aria-controls="public-mobile-menu" onClick={() => setMenuOpen((open) => !open)}
+          className={`flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-bold ${menuOpen ? "text-[#f04422]" : "text-[#23417e]"}`}>
+          {menuOpen ? <X size={19} /> : <Menu size={19} />}<span>Menu</span>
+        </button>
+      </nav>
       <ScrollProgress />
     </header>
   );

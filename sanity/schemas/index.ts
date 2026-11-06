@@ -7,6 +7,7 @@ import book from './book';
 import bookCategory from './bookCategory';
 import bookOffer from './bookOffer';
 import bookStoreSettings from './bookStoreSettings';
+import siteCard from './siteCard';
 
 export const schemaTypes = [
   offer,
@@ -18,4 +19,5 @@ export const schemaTypes = [
   bookCategory,
   bookOffer,
   bookStoreSettings,
+  siteCard,
 ];

@@ -1,6 +1,7 @@
 import { fetchAllBrandCourses, type ClassplusCourse } from '@/lib/classplus/client';
 import { brands } from '@/lib/classplus/brands';
 import CoursesClient, { type CourseCard } from './CoursesClient';
+import { getSiteCards } from '@/lib/sanity/server';
 
 export const revalidate = 300;
 
@@ -68,6 +69,7 @@ const FALLBACK: CourseCard[] = [
 ];
 
 export default async function CoursesPage() {
+  const siteCards = await getSiteCards('courses');
   let list: ClassplusCourse[] = [];
   try {
     list = await fetchAllBrandCourses();
@@ -78,5 +80,5 @@ export default async function CoursesPage() {
   const live = list.length > 0;
   const courseList = live ? list.map(mapCourse) : FALLBACK;
 
-  return <CoursesClient courseList={courseList} live={live} />;
+  return <CoursesClient courseList={courseList} live={live} siteCards={siteCards} />;
 }

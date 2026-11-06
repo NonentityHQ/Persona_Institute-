@@ -1,6 +1,7 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { cleanSanityString } from '@/lib/sanity/client';
+import { useMemo, useRef } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Play, Youtube, ExternalLink } from 'lucide-react';
 import type { SanityYoutubeVideo } from '@/lib/sanity/client';
@@ -30,7 +31,7 @@ function thumbFor(video: SanityYoutubeVideo, index: number): string {
       /* */
     }
   }
-  const id = extractYoutubeId(video.youtubeUrl);
+  const id = extractYoutubeId(cleanSanityString(video.youtubeUrl));
   if (id) return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
   const fallbacks = [
     '/images/course-live-spoken.jpg',
@@ -61,7 +62,6 @@ export default function YoutubeSection({
   channelUrl,
 }: Props) {
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const [playingId, setPlayingId] = useState<string | null>(null);
 
   const list = useMemo(() => videos.filter((v) => v.active !== false), [videos]);
 
@@ -123,9 +123,8 @@ export default function YoutubeSection({
           style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}
         >
           {list.map((video, index) => {
-            const ytId = extractYoutubeId(video.youtubeUrl);
-            const isPlaying = playingId === video._id && Boolean(ytId);
-            const canPlay = Boolean(ytId || video.youtubeUrl);
+            const ytUrl = cleanSanityString(video.youtubeUrl);
+            const ytId = extractYoutubeId(ytUrl);
 
             return (
               <article
@@ -135,13 +134,15 @@ export default function YoutubeSection({
                 <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/40 transition hover:border-white/20">
                   {/* Thumbnail / player */}
                   <div className="relative aspect-video shrink-0 bg-black">
-                    {isPlaying && ytId ? (
+                    {ytId ? (
                       <iframe
-                        title={video.title || 'YouTube'}
-                        src={`https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`}
+                        title={video.title || 'YouTube video'}
+                        src={`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=0&rel=0&playsinline=1&modestbranding=1`}
                         className="absolute inset-0 h-full w-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
                         allowFullScreen
+                        loading="lazy"
                       />
                     ) : (
                       <>
@@ -149,36 +150,24 @@ export default function YoutubeSection({
                           src={thumbFor(video, index)}
                           alt={video.title || 'Video'}
                           fill
-                          className="object-cover transition duration-500 group-hover:scale-105"
+                          className="object-cover"
                           sizes="(max-width: 640px) 88vw, 300px"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (ytId) setPlayingId(video._id);
-                            else if (video.youtubeUrl) window.open(video.youtubeUrl, '_blank');
-                          }}
-                          className="absolute inset-0 grid place-items-center"
-                          aria-label={canPlay ? `Play ${video.title || 'video'}` : video.title || 'Video'}
-                          disabled={!canPlay}
-                        >
-                          <span
-                            className={`grid h-14 w-14 place-items-center rounded-full text-white shadow-lg transition group-hover:scale-110 ${
-                              canPlay
-                                ? 'bg-red-600 shadow-red-600/40'
-                                : 'bg-white/20 shadow-black/30'
-                            }`}
-                          >
-                            <Play size={22} fill="currentColor" className="ml-0.5" />
-                          </span>
-                        </button>
-                        {video.duration && (
-                          <span className="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 text-[11px] font-bold tabular-nums text-white">
-                            {video.duration}
-                          </span>
-                        )}
+                        <div className="absolute inset-0 grid place-items-center bg-black/25">
+                          {ytUrl ? (
+                            <a href={ytUrl} target="_blank" rel="noopener noreferrer"
+                              className="grid h-14 w-14 place-items-center rounded-full bg-red-600 text-white shadow-lg"
+                              aria-label={`Open ${video.title || 'video'} on YouTube`}>
+                              <Play size={22} fill="currentColor" className="ml-0.5" />
+                            </a>
+                          ) : <span className="text-xs text-white/80">Coming soon</span>}
+                        </div>
                       </>
+                    )}
+                    {video.duration && (
+                      <span className="pointer-events-none absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 text-[11px] font-bold tabular-nums text-white">
+                        {video.duration}
+                      </span>
                     )}
                   </div>
 
@@ -195,16 +184,16 @@ export default function YoutubeSection({
                       {video.title || 'Untitled video'}
                     </h3>
                     <div className="mt-auto pt-2">
-                      {video.youtubeUrl && !isPlaying ? (
+                      {ytUrl ? (
                         <a
-                          href={video.youtubeUrl}
+                          href={ytUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 transition hover:text-white"
                         >
                           Open on YouTube <ExternalLink size={12} />
                         </a>
-                      ) : !video.youtubeUrl ? (
+                      ) : !ytUrl ? (
                         <span className="text-[11px] text-slate-600">Coming soon</span>
                       ) : null}
                     </div>

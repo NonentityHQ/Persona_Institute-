@@ -3,7 +3,7 @@ import {
   getBookCategories,
   getBookOffer,
   getBookStoreSettings,
-} from '@/lib/sanity/client';
+} from '@/lib/sanity/server';
 import {
   fallbackBooks,
   fallbackBookCategories,

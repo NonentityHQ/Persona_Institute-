@@ -6,7 +6,7 @@ import { AnimatePresence, m as motion } from 'framer-motion';
 import {
   ArrowRight, ClipboardCheck, BookOpen, Smartphone, Play,
   Video, BookMarked, LayoutGrid, MonitorPlay, X, CheckCircle2,
-  Trophy, Star, ShieldCheck,
+  Trophy, Star, ShieldCheck, ShoppingCart, Target, Layers, Users,
 } from 'lucide-react';
 import '../home3d.css';
 import { videos, type Course } from '@/lib/data';
@@ -20,8 +20,10 @@ import Reveal3D from '@/components/home3d/Reveal3D';
 import OfferBanner from '@/components/OfferBanner';
 import GrowCarousel from '@/components/reels/GrowCarousel';
 import YoutubeSection from '@/components/YoutubeSection';
-import type { SanityOffer, SanityReel, SanityYoutubeVideo, SiteSettings } from '@/lib/sanity/client';
+import type { SanityOffer, SanityReel, SanityYoutubeVideo, SiteSettings, SanitySiteCard } from '@/lib/sanity/client';
 import { fallbackOffer, fallbackReels, fallbackYoutube, fallbackSettings } from '@/lib/sanity/fallback';
+import { sanityFieldAttribute } from '@/lib/sanity/visual';
+import { cleanSanityString } from '@/lib/sanity/client';
 
 /** "10,000+" -> { n: 10000, suffix: '+' }. Falls back to the given defaults if it can't be parsed. */
 function parseStat(raw: string | undefined, n: number, suffix: string) {
@@ -40,11 +42,11 @@ const HERO_STATS: Array<{
   { icon: Video, n: 500, suffix: '+', label: 'Video Lessons' },
   { icon: Star, n: 4.8, decimals: 1, suffix: '/5', label: 'Student Rating', fill: true },
   { icon: BookOpen, n: 25000, suffix: '+', label: 'Vocabulary Words' },
-  { icon: ShieldCheck, text: 'Learn', label: 'At Your Own Pace' },
+  { icon: ShieldCheck, label: 'At Your Own Pace' },
 ];
 
 /** Home course card — Classplus-mapped or static fallback from lib/data */
-export type HomeCourse = Course & { enrollUrl?: string };
+export type HomeCourse = Course & { enrollUrl?: string; buttonLabel?: string; imageAlt?: string; imageFit?: 'contain' | 'cover'; imagePosition?: string };
 
 type Props = {
   offer: SanityOffer | null;
@@ -52,9 +54,10 @@ type Props = {
   youtube: SanityYoutubeVideo[];
   settings: SiteSettings | null;
   courses: HomeCourse[];
+  siteCards: SanitySiteCard[];
 };
 
-export default function HomePageClient({ offer, reels, youtube, settings, courses }: Props) {
+export default function HomePageClient({ offer, reels, youtube, settings, courses, siteCards }: Props) {
   const [modal, setModal] = useState<'video' | 'checkout' | 'offer' | null>(null);
   const [selected, setSelected] = useState<HomeCourse | null>(null);
   const { navigate } = useRouteTransition();
@@ -63,12 +66,32 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
   const activeOffer = offer || fallbackOffer;
   const activeReels = reels.length ? reels : fallbackReels;
   const activeYoutube = youtube.length ? youtube : fallbackYoutube;
+  const cardByKey = (key: string) => siteCards.find((card) => cleanSanityString(typeof card.key === 'string' ? card.key : card.key?.current) === key);
+  const editableHomeCourses = courses.map((course) => {
+    const override = siteCards.find((card) => cleanSanityString(card.externalId) === course.id && cleanSanityString(card.section) === 'course-card');
+    if (!override) return course;
+    const oldPriceText = cleanSanityString(override.oldPriceText);
+    const oldPrice = oldPriceText ? Number(oldPriceText.replace(/[^0-9.]/g, '')) : course.oldPrice;
+    return {
+      ...course,
+      title: override.title || course.title,
+      subtitle: override.description || override.subtitle || course.subtitle,
+      image: cleanSanityString(override.imageUrl) || course.image,
+      imageAlt: override.imageAlt || override.title || course.title,
+      imageFit: cleanSanityString(override.imageFit) === 'cover' ? 'cover' : 'contain',
+      imagePosition: cleanSanityString(override.imagePosition) || 'center',
+      tag: override.badge || course.tag,
+      priceLabel: override.priceText || course.priceLabel,
+      oldPrice: Number.isFinite(oldPrice) ? oldPrice : course.oldPrice,
+      enrollUrl: cleanSanityString(override.buttonUrl) || course.enrollUrl,
+      buttonLabel: override.buttonLabel || undefined,
+    };
+  });
   const openCheckout = (course: Course) => {
     setSelected(course);
     setModal('checkout');
   };
   const goCourses = () => navigate('/courses');
-  const goLogin = () => navigate('/login');
   const goTests = () => navigate('/free-tests');
 
   const trust = [
@@ -194,21 +217,23 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
         </Reveal3D>
 
         <div className="h3d-grid">
-          {courses.map((course, i) => (
+          {editableHomeCourses.map((course, i) => (
             <Reveal3D key={course.id} delay={i * 90}>
               <Card3D as="article" className="h3d-course" maxTilt={7} lift={10}>
                 <div className="h3d-course-img">
                   <Image
                     src={course.image}
-                    alt={course.title}
+                    alt={course.imageAlt || course.title}
+                    data-sanity={siteCards.find((card) => cleanSanityString(card.externalId) === course.id && cleanSanityString(card.section) === 'course-card')?._id ? sanityFieldAttribute(siteCards.find((card) => cleanSanityString(card.externalId) === course.id && cleanSanityString(card.section) === 'course-card')!._id, 'siteCard', 'image') : undefined}
                     fill
-                    className="c3d-img object-cover"
+                    className="c3d-img"
+                    style={{ objectFit: (course.imageFit || 'contain') as React.CSSProperties['objectFit'], objectPosition: course.imagePosition || 'center' }}
                     sizes="(max-width: 640px) 100vw, 25vw"
                     unoptimized={/^https?:\/\//i.test(course.image)}
                   />
                 </div>
                 {course.tag && <span className="h3d-tag c3d-z2">{course.tag}</span>}
-                <div className="h3d-course-body c3d-z1">
+                <div className="h3d-course-body c3d-z1" data-sanity-edit-target>
                   <h3>{course.title}</h3>
                   <p>{course.subtitle}</p>
                   <div className="h3d-course-foot">
@@ -233,7 +258,7 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
                         navigate(`/courses/${course.id}`);
                       }}
                     >
-                      Enroll
+                      {course.buttonLabel || 'Enroll'}
                     </button>
                   </div>
                 </div>
@@ -294,24 +319,72 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
         </Reveal3D>
         <div className="h3d-tiles">
           {[
-            { icon: Video, title: 'Live Courses', desc: 'Join live classes and interact with the teacher' },
-            { icon: BookMarked, title: 'Vocabulary Book', desc: '25,000+ useful words with examples' },
-            { icon: LayoutGrid, title: 'Spoken English & Practice Book', desc: 'Complete syllabus book with exercises' },
-            { icon: MonitorPlay, title: 'Recorded Courses', desc: 'Learn anytime, anywhere with lifetime access' },
-          ].map(({ icon: Icon, title, desc }, i) => (
-            <Reveal3D key={title} delay={i * 80}>
-              <Card3D className="h3d-tile" maxTilt={9} lift={8}>
-                <button type="button" className="h3d-tile-btn" onClick={goCourses}>
-                  <span className="h3d-tile-ico c3d-z2"><Icon size={22} /></span>
-                  <span className="c3d-z1">
-                    <b>{title}</b>
-                    <small>{desc}</small>
-                  </span>
-                </button>
-              </Card3D>
-            </Reveal3D>
-          ))}
+            { key: 'home-live-courses', icon: Video, title: 'Live Courses', desc: 'Join live classes and interact with the teacher' },
+            { key: 'home-vocabulary-book', icon: BookMarked, title: 'Vocabulary Book', desc: '25,000+ useful words with examples' },
+            { key: 'home-practice-book', icon: LayoutGrid, title: 'Spoken English & Practice Book', desc: 'Complete syllabus book with exercises' },
+            { key: 'home-recorded-courses', icon: MonitorPlay, title: 'Recorded Courses', desc: 'Learn anytime, anywhere with lifetime access' },
+          ].map((base, i) => {
+            const override = cardByKey(base.key);
+            const overrideImageUrl = cleanSanityString(override?.imageUrl);
+            const overrideImageAlt = override?.imageAlt || override?.title || base.title;
+            const overrideId = override?._id;
+            const overrideImageFit = cleanSanityString(override?.imageFit) === 'cover' ? 'cover' : 'contain';
+            const overrideImagePosition = cleanSanityString(override?.imagePosition) || 'center';
+            const title = override?.title || base.title;
+            const desc = override?.description || base.desc;
+            const Icon = base.icon;
+            return (
+              <Reveal3D key={base.key} delay={i * 80}>
+                <Card3D className="h3d-tile" maxTilt={9} lift={8}>
+                  <button type="button" className="h3d-tile-btn" onClick={goCourses} data-sanity-edit-target>
+                    <span className="h3d-tile-ico c3d-z2">
+                      {overrideImageUrl ? <img src={overrideImageUrl} alt={overrideImageAlt || title} data-sanity={overrideId ? sanityFieldAttribute(overrideId, 'siteCard', 'image') : undefined} className="h-8 w-8" style={{ objectFit: overrideImageFit, objectPosition: overrideImagePosition }} /> : <Icon size={22} />}
+                    </span>
+                    <span className="c3d-z1">
+                      <b>{title}</b>
+                      <small>{desc}</small>
+                    </span>
+                  </button>
+                </Card3D>
+              </Reveal3D>
+            );
+          })}
         </div>
+      </section>
+
+      {/* ===== PERSONA BOOK STORE FEATURE ===== */}
+      <section className="w-full px-4 py-10 sm:px-6 sm:py-14 lg:px-10">
+        <Reveal3D className="mx-auto max-w-[1600px]">
+          <div className="relative isolate overflow-hidden rounded-[28px] border border-white/90 bg-gradient-to-br from-[#fffaf8] via-[#fff7fb] to-[#f0f5ff] px-5 py-8 shadow-[0_24px_70px_rgba(35,55,110,.10)] sm:rounded-[36px] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+            <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-80 w-80 rounded-full bg-purple-200/35 blur-3xl" />
+            <div aria-hidden="true" className="pointer-events-none absolute -bottom-36 left-[38%] h-80 w-80 rounded-full bg-orange-100/55 blur-3xl" />
+            <div className="relative grid items-center gap-8 lg:grid-cols-[.92fr_1.08fr] lg:gap-10 xl:gap-14">
+              <div className="relative z-10">
+                <span className="inline-flex items-center gap-2 rounded-full border border-rose-200 bg-white/90 px-4 py-2 text-[11px] font-extrabold tracking-[0.04em] text-rose-600 shadow-sm"><BookOpen size={16} /> {cardByKey('home-book-store')?.eyebrow || 'Persona Book Store'}</span>
+                <h2 className="mt-5 max-w-[640px] text-[clamp(2rem,3.8vw,3.7rem)] font-black leading-[1.02] tracking-[-.045em] text-[#102d70]">{cardByKey('home-book-store')?.title || <>Study Better with <span className="relative inline-block bg-gradient-to-r from-[#c51e55] via-[#ed2450] to-[#f04422] bg-clip-text text-transparent">Persona Books<span aria-hidden="true" className="absolute -bottom-2 left-[38%] h-[5px] w-[58%] -rotate-2 rounded-full bg-gradient-to-r from-orange-400 to-orange-500" /></span></>}</h2>
+                <p className="mt-5 max-w-[560px] text-[15px] leading-7 text-[#4b5e86] sm:text-base"> {cardByKey('home-book-store')?.description || 'Handpicked books to build your English grammar, vocabulary and spoken skills.'}</p>
+                <div className="mt-7 grid max-w-[650px] grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-4 sm:gap-x-0 sm:gap-y-3">
+                  {[{ icon: BookOpen, label: "Expert", sub: "Curated", color: "text-rose-500" },{ icon: Target, label: "Exam", sub: "Focused", color: "text-orange-500" },{ icon: Layers, label: "Practice", sub: "Rich", color: "text-violet-600" },{ icon: Users, label: "Learner", sub: "Friendly", color: "text-blue-600" }].map(({ icon: Icon, label, sub, color }, i) => (
+                    <div key={label} className={`flex items-center gap-3 sm:flex-col sm:gap-2 sm:text-center ${i > 0 ? 'sm:border-l sm:border-slate-200/90' : ''}`}>
+                      <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white shadow-[0_5px_18px_rgba(24,45,90,.09)] ${color}`}><Icon size={23} strokeWidth={2.3} /></span>
+                      <span className="text-sm font-extrabold leading-tight text-[#102d70]">{label}<span className="block">{sub}</span></span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <a href={cleanSanityString(cardByKey('home-book-store')?.buttonUrl) || '/book-store'} className="inline-flex min-h-12 items-center gap-2 rounded-full bg-gradient-to-r from-[#ff7417] to-[#f22c16] px-6 py-3 text-sm font-extrabold text-white shadow-[0_12px_26px_rgba(244,75,28,.24)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_32px_rgba(244,75,28,.3)]"><ShoppingCart size={18} /> {cardByKey('home-book-store')?.buttonLabel || 'Explore Book Store'} <ArrowRight size={17} /></a>
+                  <a href={cleanSanityString(cardByKey('home-book-store')?.secondaryButtonUrl) || '/book-store'} className="inline-flex min-h-12 items-center gap-2 rounded-full border border-rose-200 bg-white/90 px-6 py-3 text-sm font-extrabold text-[#102d70] shadow-sm transition duration-300 hover:-translate-y-1 hover:border-rose-300 hover:shadow-lg"><BookOpen size={18} className="text-rose-500" /> {cardByKey('home-book-store')?.secondaryButtonLabel || 'View All Books'}</a>
+                </div>
+              </div>
+              <div className="relative mx-auto w-full max-w-[700px] lg:ml-auto">
+                <div aria-hidden="true" className="absolute -inset-3 rounded-[30px] bg-gradient-to-br from-violet-200/60 via-rose-100/50 to-orange-100/70 blur-xl" />
+                <div className="relative overflow-hidden rounded-[26px] border border-white/90 bg-white/70 shadow-[0_22px_55px_rgba(69,48,120,.16)] transition duration-500 hover:-translate-y-1 hover:shadow-[0_28px_65px_rgba(69,48,120,.22)]">
+                  <img data-sanity={cardByKey('home-book-store')?._id ? sanityFieldAttribute(cardByKey('home-book-store')!._id, 'siteCard', 'image') : undefined} src={cleanSanityString(cardByKey('home-book-store')?.imageUrl) || "/images/persona-books-display.png"} alt={cardByKey('home-book-store')?.imageAlt || "Persona Institute Spoken English, English Grammar and Vocabulary Booster books"} className={`block h-auto w-full ${cleanSanityString(cardByKey('home-book-store')?.imageFit) === 'cover' ? 'object-cover' : 'object-contain'}`} style={{ objectPosition: cleanSanityString(cardByKey('home-book-store')?.imagePosition) || 'center' }} loading="lazy" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Reveal3D>
       </section>
 
       {/* ===== INSTAGRAM REELS — Grow Carousel ===== */}
@@ -339,9 +412,9 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
               <p className="h3d-trust-p">
                 Join thousands of students who are building their English skills and confidence every day.
               </p>
-              <button type="button" className="h3d-btn h3d-btn-primary" onClick={goLogin}>
+              <a href="/login" target="_blank" rel="noopener noreferrer" className="h3d-btn h3d-btn-primary">
                 Join Now <ArrowRight size={17} />
-              </button>
+              </a>
             </div>
             <div className="h3d-trust-grid">
               {trust.map((t) => (

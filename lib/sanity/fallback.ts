@@ -134,17 +134,18 @@ export const fallbackSettings: SiteSettings = {
   youtubeSectionKicker: 'VISIT OUR YOUTUBE CHANNEL',
   youtubeSectionSubtitle: 'Free lessons, class highlights and student journeys.',
   youtubeChannelUrl: '',
-  instagramUrl: 'https://www.instagram.com/',
+  instagramUrl: 'https://www.instagram.com/personaenglish/',
   statLearners: '10,000+',
   statYears: '4+',
   statBatches: '50+',
   statSatisfaction: '98%',
   aboutTitle: 'About Persona Institute',
   aboutBody: 'Persona Institute helps students speak English with confidence through live classes, recorded courses and daily practice.',
-  contactEmail: 'hello@personaenglish.in',
-  contactPhone: '',
-  contactAddress: '',
-  contactWhatsapp: '',
+  contactEmail: 'Personaenglishknw@gmail.com',
+  contactPhone: '8719977802',
+  contactPhoneSecondary: '',
+  contactAddress: 'Navchandi Mandir Main Road, Rameshwar Nagar, Khandwa, Madhya Pradesh 450001, India',
+  contactWhatsapp: '8719977802',
 };
 
 /** Demo book categories when Sanity is empty / offline */
