@@ -1,4 +1,5 @@
 import 'server-only';
+import { unstable_cache } from 'next/cache';
 import { defineQuery } from 'next-sanity';
 import { client, sanityConfigured } from './client';
 import { sanityFetch } from './live';
@@ -97,19 +98,29 @@ function xmlText(entry: string, tag: string): string {
     .replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
 }
 
+const resolveYoutubeChannelIdCached = unstable_cache(
+  async (handle: string): Promise<string | null> => {
+    try {
+      // YouTube's channel HTML can exceed Vercel's 2 MB Data Cache item limit.
+      // Fetch it without the Next fetch cache, then cache only the tiny parsed channel ID.
+      const response = await fetch(`https://www.youtube.com/@${handle}`, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PersonaWebsite/1.0)' },
+        cache: 'no-store',
+      });
+      if (!response.ok) return null;
+      const html = await response.text();
+      const match = html.match(/(?:\"channelId\"|\"externalId\"|itemprop=\"channelId\" content=\")(?::\s*\"|\")?(UC[\w-]{20,})/i);
+      return match?.[1] || html.match(/UC[\w-]{20,}/)?.[0] || null;
+    } catch {
+      return null;
+    }
+  },
+  ['youtube-channel-id-by-handle'],
+  { revalidate: 86400, tags: ['youtube-channel-id'] },
+);
+
 async function resolveYoutubeChannelId(handle: string): Promise<string | null> {
-  try {
-    const response = await fetch(`https://www.youtube.com/@${handle}`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PersonaWebsite/1.0)' },
-      next: { revalidate: 3600 },
-    });
-    if (!response.ok) return null;
-    const html = await response.text();
-    const match = html.match(/(?:\"channelId\"|\"externalId\"|itemprop=\"channelId\" content=\")(?::\s*\"|\")?(UC[\w-]{20,})/i);
-    return match?.[1] || html.match(/UC[\w-]{20,}/)?.[0] || null;
-  } catch {
-    return null;
-  }
+  return resolveYoutubeChannelIdCached(handle);
 }
 
 async function getLatestYoutubeFeed(): Promise<SanityYoutubeVideo[]> {

@@ -40,13 +40,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Draft Mode handler could not be initialized.' }, { status: 500 });
   }
 
-  try {
-    return await enableDraftMode.GET(request);
-  } catch (error) {
-    console.error('[Sanity Draft Mode] Failed to enable draft mode:', error);
-    return NextResponse.json(
-      { error: 'Unable to enable Sanity Draft Mode. Check the Vercel Function logs and verify the Sanity Viewer token.' },
-      { status: 500 },
-    );
-  }
+  // next-sanity enables Draft Mode by issuing a Next.js redirect. Redirects are
+  // represented internally as NEXT_REDIRECT exceptions; do not catch them here.
+  return enableDraftMode.GET(request);
 }
