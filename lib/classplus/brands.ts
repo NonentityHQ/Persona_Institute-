@@ -4,7 +4,7 @@
  * Persona (from live site personaenglish.in):
  *   orgCode = bspkr
  *   orgId   = 279110
- *   login   = https://login.personaenglish.in/login?orgCode=bspkr
+ *   login   = https://web.classplusapp.com/login?orgCode=bspkr
  *
  * Khushi: fill from client when available.
  */
@@ -40,8 +40,9 @@ export const brands: Record<BrandId, BrandConfig> = {
     tagline: 'Persona Institute',
     orgCode: personaOrg,
     orgId: personaOrgId,
-    loginBaseUrl: process.env.NEXT_PUBLIC_CLASSPLUS_PERSONA_LOGIN_URL?.trim() || 'https://login.personaenglish.in/login',
-    storeBaseUrl: process.env.NEXT_PUBLIC_CLASSPLUS_PERSONA_STORE_URL?.trim() || 'https://www.personaenglish.in',
+    // Use the same standard Classplus login host as English with Khushi.
+    // Do not route Persona through the retired personaenglish.in login subdomain.
+    storeBaseUrl: 'https://bspkr.courses.store',
     accent: '#f51632',
     accentSoft: '#fff1f2',
     logo: '/images/persona-logo.png',

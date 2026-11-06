@@ -83,7 +83,13 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
       tag: override.badge || course.tag,
       priceLabel: override.priceText || course.priceLabel,
       oldPrice: Number.isFinite(oldPrice) ? oldPrice : course.oldPrice,
-      enrollUrl: cleanSanityString(override.buttonUrl) || course.enrollUrl,
+      enrollUrl: (() => {
+        const cmsUrl = cleanSanityString(override.buttonUrl);
+        // Ignore legacy Persona website URLs saved in Sanity; use the Classplus store/course link.
+        return /(^|\.)personaenglish\.in(\/|$)/i.test(cmsUrl.replace(/^https?:\/\//i, ''))
+          ? course.enrollUrl
+          : cmsUrl || course.enrollUrl;
+      })(),
       buttonLabel: override.buttonLabel || undefined,
     };
   });

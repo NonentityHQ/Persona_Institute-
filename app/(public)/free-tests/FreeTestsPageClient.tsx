@@ -10,8 +10,8 @@ import { sanityFieldAttribute } from "@/lib/sanity/visual";
 import { brands, classplusLoginUrl } from "@/lib/classplus/brands";
 import { ArrowRight, Search, Menu, X, FileText, BookOpen, Languages, Headphones, Pencil, Clock3, Folder, ChartNoAxesColumnIncreasing, Trophy, GraduationCap, ClipboardList, CheckCircle2, XCircle, Sparkles } from "lucide-react";
 
-// "Attempt" goes straight to the Persona Classplus login (https://login.personaenglish.in/login?orgCode=bspkr)
-const ATTEMPT_URL = classplusLoginUrl(brands.persona) ?? "https://login.personaenglish.in/login?orgCode=bspkr";
+// "Attempt" goes to the standard Persona Classplus login, matching the shared brand login flow.
+const ATTEMPT_URL = classplusLoginUrl(brands.persona) ?? "https://web.classplusapp.com/login?orgCode=bspkr";
 const nav = [["Home","/"],["Courses","/courses"],["Free Tests","/free-tests"],["Success Stories","/reviews"],["About Us","/about"],["Contact","/contact"]];
 const tests = [
   {id:"demo-6th",title:"Demo 6th",kind:"Demo Test",level:"Class 6",category:"Demo Tests",questions:25,minutes:30,tone:"blue"},

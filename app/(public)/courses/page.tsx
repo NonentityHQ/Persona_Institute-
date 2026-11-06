@@ -1,5 +1,5 @@
 import { fetchAllBrandCourses, type ClassplusCourse } from '@/lib/classplus/client';
-import { brands } from '@/lib/classplus/brands';
+import { brands, classplusStoreUrl } from '@/lib/classplus/brands';
 import CoursesClient, { type CourseCard } from './CoursesClient';
 import { getSiteCards } from '@/lib/sanity/server';
 
@@ -64,7 +64,7 @@ const FALLBACK: CourseCard[] = [
     rating: '4.8',
     learners: '2.1K students',
     features: ['Recorded Classes', 'Practice Sessions', 'PDF Notes', 'Lifetime Access'],
-    enrollUrl: 'https://www.personaenglish.in/courses',
+    enrollUrl: classplusStoreUrl(brands.persona) || 'https://bspkr.courses.store',
   },
 ];
 

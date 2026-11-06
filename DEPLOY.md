@@ -12,9 +12,9 @@ NEXT_PUBLIC_SANITY_API_VERSION=2024-01-01
 # Persona English (known live values — can override)
 NEXT_PUBLIC_CLASSPLUS_PERSONA_ORG_CODE=bspkr
 NEXT_PUBLIC_CLASSPLUS_PERSONA_ORG_ID=279110
-# optional overrides:
-# NEXT_PUBLIC_CLASSPLUS_PERSONA_LOGIN_URL=https://login.personaenglish.in/login
+# optional store override:
 # NEXT_PUBLIC_CLASSPLUS_PERSONA_STORE_URL=https://www.personaenglish.in
+# Persona login always uses https://web.classplusapp.com/login?orgCode=bspkr
 
 # English with Khushi — ONLY from env (empty = brand hidden from Classplus fetch)
 NEXT_PUBLIC_CLASSPLUS_KHUSHI_ORG_CODE=
