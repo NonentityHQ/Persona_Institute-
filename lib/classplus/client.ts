@@ -69,13 +69,20 @@ export async function fetchBrandCourses(brand: BrandConfig): Promise<ClassplusCo
 
     if (json.status !== 'success' || !json.data) return [];
 
-    const raw =
-      json.data.all?.coursesData ||
-      json.data.popular?.coursesData ||
-      json.data.featured?.coursesData ||
-      [];
-
-    return raw
+    // Some Classplus tenants return an empty `all` array while `popular` or
+    // `featured` contains the published courses. Merge all buckets and dedupe
+    // by the real Classplus course ID instead of letting an empty array win.
+    const buckets = [
+      json.data.all?.coursesData,
+      json.data.popular?.coursesData,
+      json.data.featured?.coursesData,
+    ].filter((items): items is RawCourse[] => Array.isArray(items));
+    const byId = new Map<string, RawCourse>();
+    for (const course of buckets.flat()) {
+      const id = String(course?.id ?? '').trim();
+      if (id && !byId.has(id)) byId.set(id, course);
+    }
+    return [...byId.values()]
       .filter((c) => c && !c.isHidden && c.isPublished !== false)
       .map((c) => mapCourse(c, brand));
   } catch (e) {
@@ -103,11 +110,12 @@ type RawCourse = {
 
 function mapCourse(c: RawCourse, brand: BrandConfig): ClassplusCourse {
   const id = String(c.id ?? '');
-  const enrollUrl =
-    c.singlePaymentLink ||
-    c.shareableLink ||
-    classplusCourseUrl(brand, id) ||
-    `https://${brand.orgCode}.courses.store/${id}`;
+  // Persona's storefront course pages are https://bspkr.courses.store/{id}.
+  // Do not use Classplus payment/share links for Persona: they can route to a
+  // generic checkout or a stale domain instead of the individual course page.
+  const enrollUrl = brand.id === 'persona'
+    ? classplusCourseUrl(brand, id) || `https://${brand.orgCode}.courses.store/${id}`
+    : c.singlePaymentLink || c.shareableLink || classplusCourseUrl(brand, id) || `https://${brand.orgCode}.courses.store/${id}`;
 
   return {
     id,

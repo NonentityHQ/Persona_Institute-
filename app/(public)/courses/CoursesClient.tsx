@@ -100,13 +100,9 @@ export default function CoursesClient({ courseList, live = false, siteCards = []
       discount: override.discountText || course.discount,
       features: override.features?.length ? override.features : course.features,
       buttonLabel: override.buttonLabel || undefined,
-      enrollUrl: (() => {
-        const cmsUrl = cleanSanityString(override.buttonUrl);
-        // Ignore legacy Persona website URLs saved in Sanity; use the real Classplus course link.
-        return /(^|\.)personaenglish\.in(\/|$)/i.test(cmsUrl.replace(/^https?:\/\//i, ''))
-          ? course.enrollUrl
-          : cmsUrl || course.enrollUrl;
-      })(),
+      // Persona course destinations must remain tied to the live Classplus ID.
+      // Sanity buttonUrl is intentionally ignored for these course cards.
+      enrollUrl: course.app === 'Persona English' ? course.enrollUrl : (cleanSanityString(override.buttonUrl) || course.enrollUrl),
       sanityCardId: override._id,
     };
   }), [courseList, siteCards]);

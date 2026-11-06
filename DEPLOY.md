@@ -13,7 +13,7 @@ NEXT_PUBLIC_SANITY_API_VERSION=2024-01-01
 NEXT_PUBLIC_CLASSPLUS_PERSONA_ORG_CODE=bspkr
 NEXT_PUBLIC_CLASSPLUS_PERSONA_ORG_ID=279110
 # optional store override:
-# NEXT_PUBLIC_CLASSPLUS_PERSONA_STORE_URL=https://www.personaenglish.in
+NEXT_PUBLIC_CLASSPLUS_PERSONA_STORE_URL=https://bspkr.courses.store
 # Persona login always uses https://web.classplusapp.com/login?orgCode=bspkr
 
 # English with Khushi — ONLY from env (empty = brand hidden from Classplus fetch)
@@ -42,6 +42,6 @@ Add production origin: `https://your-domain.com`
 ## What is live
 
 - `/courses` → Classplus preview API (Persona + Khushi if env set)
-- Enroll → Classplus store / personaenglish.in course URL
+- Enroll → Persona individual Classplus course page (`https://bspkr.courses.store/{courseId}`)
 - Login → dual brand → Classplus login (org from env)
 - Offers / Reels / YouTube / Hero image → Sanity

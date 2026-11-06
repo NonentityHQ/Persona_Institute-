@@ -42,7 +42,7 @@ export const brands: Record<BrandId, BrandConfig> = {
     orgId: personaOrgId,
     // Use the same standard Classplus login host as English with Khushi.
     // Do not route Persona through the retired personaenglish.in login subdomain.
-    storeBaseUrl: 'https://bspkr.courses.store',
+    storeBaseUrl: process.env.NEXT_PUBLIC_CLASSPLUS_PERSONA_STORE_URL?.trim() || 'https://bspkr.courses.store',
     accent: '#f51632',
     accentSoft: '#fff1f2',
     logo: '/images/persona-logo.png',
@@ -89,7 +89,9 @@ export function classplusStoreUrl(brand: BrandConfig): string | null {
 export function classplusCourseUrl(brand: BrandConfig, courseId: string | number): string | null {
   const store = classplusStoreUrl(brand);
   if (!store) return null;
-  return `${store}/courses/${courseId}`;
+  // Persona's public Classplus storefront uses /{courseId} (not /courses/{courseId}).
+  if (brand.id === 'persona') return `${store}/${encodeURIComponent(String(courseId))}`;
+  return `${store}/courses/${encodeURIComponent(String(courseId))}`;
 }
 
 export function isBrandConfigured(brand: BrandConfig): boolean {
