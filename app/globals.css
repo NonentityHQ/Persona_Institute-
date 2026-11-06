@@ -1052,3 +1052,65 @@ main section[class*="hero"] .rounded-xl.border { will-change: auto; }
 /* Image fit corrections: logos and complete product artwork should never be cropped. */
 .brand-login-logo img, .login-brand-logo img { object-fit: contain !important; }
 .course-product-image, .h3d-course-img img, .store-course-image { object-fit: contain !important; }
+
+
+/* Hero portrait framing: fit the complete founder photo vertically so the
+   welcoming hand/forearm is not clipped by the shallow panoramic hero. */
+@media (min-width: 768px) {
+  .about-hero-bg,
+  .courses-hero-bg,
+  .tests-hero-bg {
+    background-size: auto 100% !important;
+    background-position: 80% center !important;
+    background-repeat: no-repeat !important;
+    transform: none !important;
+  }
+  .success-hero-bg {
+    background-size: auto 100% !important;
+    background-position: 55% center !important;
+    background-repeat: no-repeat !important;
+  }
+  .contact-hero-bg {
+    background-size: auto 100% !important;
+    background-position: 80% center !important;
+    background-repeat: no-repeat !important;
+    transform: none !important;
+  }
+}
+@media (max-width: 767px) {
+  .courses-hero-bg {
+    background-size: auto 100% !important;
+    background-position: 80% center !important;
+    transform: none !important;
+  }
+}
+
+
+/* Full-bleed hero width correction: prevent intrinsic image width from leaving a blank strip. */
+.about-hero-section,
+.courses-hero-section,
+.tests-hero-section,
+.success-hero-section,
+.contact-hero-section {
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+  box-sizing: border-box;
+}
+.about-hero-bg,
+.courses-hero-bg,
+.tests-hero-bg,
+.success-hero-bg,
+.contact-hero-bg {
+  width: 100%;
+  height: 100%;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  transform: none !important;
+}
+@media (max-width: 767px) {
+  .courses-hero-bg, .tests-hero-bg { background-size: cover !important; }
+}

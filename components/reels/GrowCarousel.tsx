@@ -13,7 +13,7 @@ const FALLBACKS = [
   '/images/course-grammar-booster.jpg',
   '/images/course-winter-special.jpg',
   '/images/course-persona.jpg',
-  '/images/course-khushi.jpg',
+  '/images/english-with-khushi-logo.png',
 ];
 
 type Props = {
@@ -172,8 +172,13 @@ export default function GrowCarousel({
 
   if (!reels.length) {
     return (
-      <div className="rounded-3xl border border-dashed border-rose-200 bg-rose-50/40 px-6 py-16 text-center text-sm text-slate-500">
-        No reels yet. Add <strong>Instagram Reel</strong> in Sanity (title + thumbnail + link).
+      <div className="rounded-3xl border border-rose-100 bg-gradient-to-br from-rose-50 via-white to-orange-50 px-6 py-10 text-center">
+        <Instagram className="mx-auto h-8 w-8 text-[#dd2a7b]" />
+        <h3 className="mt-3 text-lg font-extrabold text-slate-900">Latest Reels from Persona</h3>
+        <p className="mx-auto mt-1 max-w-md text-sm text-slate-500">Watch the newest public reels on our official Instagram account.</p>
+        <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#f58529] via-[#dd2a7b] to-[#8134af] px-5 py-2.5 text-sm font-bold text-white shadow-md">
+          <Instagram size={16} /> View latest Instagram Reels
+        </a>
       </div>
     );
   }

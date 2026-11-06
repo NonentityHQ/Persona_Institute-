@@ -1,7 +1,7 @@
 'use client';
 
 import { cleanSanityString } from '@/lib/sanity/client';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Play, Youtube, ExternalLink } from 'lucide-react';
 import type { SanityYoutubeVideo } from '@/lib/sanity/client';
@@ -62,6 +62,7 @@ export default function YoutubeSection({
   channelUrl,
 }: Props) {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [playingId, setPlayingId] = useState<string | null>(null);
 
   const list = useMemo(() => videos.filter((v) => v.active !== false), [videos]);
 
@@ -69,7 +70,21 @@ export default function YoutubeSection({
     scrollerRef.current?.scrollBy({ left: dir * 360, behavior: 'smooth' });
   };
 
-  if (!list.length) return null;
+  if (!list.length) {
+    return (
+      <section className="relative overflow-hidden bg-[#0b1220] py-12 text-white sm:py-16">
+        <div className="relative mx-auto max-w-[1440px] px-4 text-center sm:px-5 lg:px-10">
+          <p className="text-[11px] font-bold uppercase tracking-[.2em] text-rose-400">YOUTUBE</p>
+          <h2 className="mt-2 text-2xl font-black sm:text-3xl">Latest Lessons & Shorts</h2>
+          <p className="mt-2 text-sm text-slate-400">Open the official channels to watch the newest uploads.</p>
+          <div className="mt-5 flex flex-wrap justify-center gap-3">
+            <a href={channelUrl || 'https://www.youtube.com/@PersonaInstituteForEnglish'} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-2.5 text-sm font-bold text-white"><Youtube size={16}/> Persona Institute</a>
+            <a href="https://www.youtube.com/@englishwithkhushi" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-bold text-white"><Youtube size={16}/> English with Khushi</a>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative overflow-hidden bg-[#0b1220] py-16 text-white sm:py-20">
@@ -87,17 +102,23 @@ export default function YoutubeSection({
             </h2>
             {subtitle && <p className="mt-2 max-w-lg text-sm text-slate-400">{subtitle}</p>}
           </div>
-          <div className="flex shrink-0 items-center gap-2">
-            {channelUrl && (
-              <a
-                href={channelUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden items-center gap-1.5 rounded-full bg-red-600 px-4 py-2 text-xs font-bold text-white hover:bg-red-500 sm:inline-flex"
-              >
-                <Youtube size={14} /> Visit channel
-              </a>
-            )}
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+            <a
+              href={channelUrl || 'https://www.youtube.com/@PersonaInstituteForEnglish'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full bg-red-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-red-500"
+            >
+              <Youtube size={14} /> Persona Institute
+            </a>
+            <a
+              href="https://www.youtube.com/@englishwithkhushi"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 py-2 text-xs font-bold text-white hover:bg-white/10"
+            >
+              <Youtube size={14} /> English with Khushi
+            </a>
             <button
               type="button"
               aria-label="Previous"
@@ -134,15 +155,14 @@ export default function YoutubeSection({
                 <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/40 transition hover:border-white/20">
                   {/* Thumbnail / player */}
                   <div className="relative aspect-video shrink-0 bg-black">
-                    {ytId ? (
+                    {ytId && playingId === video._id ? (
                       <iframe
                         title={video.title || 'YouTube video'}
-                        src={`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=0&rel=0&playsinline=1&modestbranding=1`}
+                        src={`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0&playsinline=1&modestbranding=1`}
                         className="absolute inset-0 h-full w-full"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         referrerPolicy="strict-origin-when-cross-origin"
                         allowFullScreen
-                        loading="lazy"
                       />
                     ) : (
                       <>
@@ -154,7 +174,16 @@ export default function YoutubeSection({
                           sizes="(max-width: 640px) 88vw, 300px"
                         />
                         <div className="absolute inset-0 grid place-items-center bg-black/25">
-                          {ytUrl ? (
+                          {ytId ? (
+                            <button
+                              type="button"
+                              onClick={() => setPlayingId(video._id)}
+                              className="grid h-14 w-14 place-items-center rounded-full bg-red-600 text-white shadow-lg transition hover:scale-105 hover:bg-red-500"
+                              aria-label={`Play ${video.title || 'video'}`}
+                            >
+                              <Play size={22} fill="currentColor" className="ml-0.5" />
+                            </button>
+                          ) : ytUrl ? (
                             <a href={ytUrl} target="_blank" rel="noopener noreferrer"
                               className="grid h-14 w-14 place-items-center rounded-full bg-red-600 text-white shadow-lg"
                               aria-label={`Open ${video.title || 'video'} on YouTube`}>

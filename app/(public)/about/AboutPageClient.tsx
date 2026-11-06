@@ -3,7 +3,7 @@
 import TransitionLink from "@/components/motion/TransitionLink";
 import { m } from "framer-motion";
 import { fadeUp } from "@/lib/motion";
-import { brands, classplusLoginUrl } from "@/lib/classplus/brands";
+import { brands } from "@/lib/classplus/brands";
 import type { SanitySiteCard } from "@/lib/sanity/client";
 import { sanityFieldAttribute } from "@/lib/sanity/visual";
 import { cleanSanityString } from "@/lib/sanity/client";
@@ -74,19 +74,19 @@ export default function AboutPageClient({ siteCards = [] }: { siteCards: SanityS
       image: "/images/persona-logo.png",
       badge: "PERSONA INSTITUTE",
       points: ["Live & recorded classes", "Grammar and spoken English", "Practice with guidance"],
-      href: classplusLoginUrl(brands.persona),
+      href: "https://play.google.com/store/apps/details?id=co.martin.bspkr&hl=en_IN",
       tone: "persona",
     },
     {
       key: "about-khushi-app",
       brand: brands.khushi,
       title: "English with Khushi",
-      subtitle: "Learn with Khushi Ma’am",
+      subtitle: "Official Android Learning App",
       description: "Practice everyday English, grow your confidence and make speaking a regular habit.",
-      image: "/images/course-khushi.jpg",
+      image: "/images/english-with-khushi-logo.png",
       badge: "A FRIENDLY LEARNING SPACE",
       points: ["Daily speaking practice", "Confidence building", "Learner-friendly lessons"],
-      href: classplusLoginUrl(brands.khushi),
+      href: "https://play.google.com/store/apps/details?id=co.diaz.fbusn&hl=en_IN",
       tone: "khushi",
     },
   ].map((base) => {
@@ -99,13 +99,13 @@ export default function AboutPageClient({ siteCards = [] }: { siteCards: SanityS
       title: override?.title || base.title,
       subtitle: override?.subtitle || base.subtitle,
       description: override?.description || base.description,
-      image: cleanSanityString(override?.imageUrl) || base.image,
-      imageFit: (cleanSanityString(override?.imageFit) === 'cover' ? 'cover' : 'contain') as 'cover' | 'contain',
-      imagePosition: cleanSanityString(override?.imagePosition) || 'center',
+      image: base.brand.id === "khushi" ? "/images/english-with-khushi-logo.png" : (cleanSanityString(override?.imageUrl) || base.image),
+      imageFit: base.brand.id === "khushi" ? "contain" : ((cleanSanityString(override?.imageFit) === 'cover' ? 'cover' : 'contain') as 'cover' | 'contain'),
+      imagePosition: base.brand.id === "khushi" ? "center" : (cleanSanityString(override?.imagePosition) || 'center'),
       badge: override?.badge || base.badge,
       points: override?.features?.length ? override.features : base.points,
-      href: cleanSanityString(override?.buttonUrl) || base.href,
-      buttonLabel: override?.buttonLabel || `Open ${override?.title || base.title}`,
+      href: base.href,
+      buttonLabel: "Download on Google Play",
       sanityCardId: override?._id,
     };
   });

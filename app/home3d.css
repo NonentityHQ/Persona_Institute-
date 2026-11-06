@@ -423,3 +423,24 @@
 .h3d-chip { min-height: 4.4em; } .h3d-chip-ico { width: 2.85em; height: 2.85em; } .h3d-chip-ico svg { width: 60%; height: 60%; stroke-width: 2.1; }
 /* real avatar photos */
 .h3d-avatars span { overflow: hidden; background: #fff; } .h3d-avatars img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* Cross-browser hero video: load player on user gesture and keep controls clickable. */
+.h3d-frame { isolation: isolate; }
+.h3d-video-poster,
+.h3d-video-player { position: absolute; inset: 0; width: 100%; height: 100%; background: #101626; }
+.h3d-video-poster img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
+.h3d-video-start { position: absolute; left: 50%; top: 50%; display: grid; place-items: center; width: clamp(54px, 7vw, 78px); height: clamp(54px, 7vw, 78px); padding: 0; transform: translate(-50%, -50%); border: 3px solid #fff; border-radius: 50%; color: #fff; background: #ed1736; box-shadow: 0 5px 24px #0006; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.h3d-video-start svg { margin-left: 4px; }
+.h3d-video-hint { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); padding: 6px 10px; border-radius: 999px; color: #fff; background: #101626c9; font: 700 12px/1.2 system-ui, sans-serif; white-space: nowrap; pointer-events: none; }
+.h3d-video-player iframe { display: block; width: 100%; height: 100%; border: 0; }
+.h3d-video-fallback { position: absolute; right: 8px; bottom: 8px; z-index: 2; display: inline-flex; align-items: center; gap: 4px; padding: 5px 8px; border-radius: 999px; color: #fff; background: #111a; font: 700 11px/1 system-ui, sans-serif; text-decoration: none; }
+@media (max-width: 1023px) {
+  .h3d-scene { transform: none !important; }
+  .h3d-sway { transform: none !important; animation: none !important; }
+  .h3d-layer-device { transform: none !important; }
+  .h3d-device { transform: none !important; }
+  .h3d-frame { transform: translateZ(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .h3d-video-start { transition: none !important; }
+}

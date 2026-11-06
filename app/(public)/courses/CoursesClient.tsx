@@ -88,6 +88,8 @@ export default function CoursesClient({ courseList, live = false, siteCards = []
       ...course,
       title: override.title || course.title,
       desc: override.description || course.desc,
+      // Keep the real Classplus course thumbnail unless a deliberate Sanity override exists.
+      // The English with Khushi logo belongs in app selectors, not on every course thumbnail.
       image: cleanSanityString(override.imageUrl) || course.image,
       imageAlt: override.imageAlt || override.title || course.title,
       imageFit: (cleanSanityString(override.imageFit) === 'cover' ? 'cover' : 'contain') as 'cover' | 'contain',
@@ -245,16 +247,16 @@ export default function CoursesClient({ courseList, live = false, siteCards = []
           >
             <span className="course-app-icon">
               <Image
-                src="/images/course-khushi.jpg"
+                src="/images/english-with-khushi-logo.png"
                 alt=""
                 width={56}
                 height={56}
-                className="h-full w-full rounded-full object-cover"
+                className="h-full w-full rounded-full object-contain p-0.5"
               />
             </span>
             <span className="course-app-copy">
               <strong>English with Khushi</strong>
-              <small>Learn with Khushi Ma&apos;am</small>
+              <small>Official Android Learning App</small>
             </span>
             {appFilter === 'English with Khushi' && <CheckCircle2 className="course-app-check" size={22} />}
           </button>
@@ -345,7 +347,6 @@ export default function CoursesClient({ courseList, live = false, siteCards = []
                         sizes="(max-width:640px) 92vw, (max-width:1280px) 46vw, 24vw"
                         className="course-product-image h-[190px] w-full sm:h-[180px] xl:h-[200px]"
                         style={{ objectFit: c.imageFit || 'contain', objectPosition: c.imagePosition || 'center' }}
-                        unoptimized={typeof c.image === 'string' && c.image.startsWith('http')}
                       />
                       <span
                         className={`absolute left-2 top-2 rounded-full px-3 py-1 text-[11px] font-bold text-white shadow ${

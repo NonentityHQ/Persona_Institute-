@@ -49,8 +49,8 @@ export async function fetchBrandCourses(brand: BrandConfig): Promise<ClassplusCo
         Referer: `${originBase}/`,
         'User-Agent': 'Mozilla/5.0 (compatible; PersonaInstituteBot/1.0)',
       },
-      // Cache on our edge for 5 minutes
-      next: { revalidate: 300 },
+      // Refresh often so published Classplus changes reach the site promptly.
+      next: { revalidate: 60 },
     });
 
     if (!res.ok) {

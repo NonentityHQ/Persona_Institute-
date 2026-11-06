@@ -58,8 +58,8 @@ export const brands: Record<BrandId, BrandConfig> = {
     storeBaseUrl: process.env.NEXT_PUBLIC_CLASSPLUS_KHUSHI_STORE_URL?.trim() || undefined,
     accent: '#7c3aed',
     accentSoft: '#f5f3ff',
-    logo: '/images/course-khushi.jpg',
-    description: 'Friendly English practice, confidence building and daily speaking with Khushi.',
+    logo: '/images/english-with-khushi-logo.png',
+    description: 'English learning, daily speaking practice and confidence-building lessons in the English with Khushi app.',
   },
 };
 

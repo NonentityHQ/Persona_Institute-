@@ -21,7 +21,7 @@ import OfferBanner from '@/components/OfferBanner';
 import GrowCarousel from '@/components/reels/GrowCarousel';
 import YoutubeSection from '@/components/YoutubeSection';
 import type { SanityOffer, SanityReel, SanityYoutubeVideo, SiteSettings, SanitySiteCard } from '@/lib/sanity/client';
-import { fallbackOffer, fallbackReels, fallbackYoutube, fallbackSettings } from '@/lib/sanity/fallback';
+import { fallbackOffer, fallbackSettings } from '@/lib/sanity/fallback';
 import { sanityFieldAttribute } from '@/lib/sanity/visual';
 import { cleanSanityString } from '@/lib/sanity/client';
 
@@ -42,7 +42,7 @@ const HERO_STATS: Array<{
   { icon: Video, n: 500, suffix: '+', label: 'Video Lessons' },
   { icon: Star, n: 4.8, decimals: 1, suffix: '/5', label: 'Student Rating', fill: true },
   { icon: BookOpen, n: 25000, suffix: '+', label: 'Vocabulary Words' },
-  { icon: ShieldCheck, label: 'At Your Own Pace' },
+  { icon: ShieldCheck, text: '100%', label: 'At Your Own Pace' },
 ];
 
 /** Home course card — Classplus-mapped or static fallback from lib/data */
@@ -64,8 +64,8 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
 
   const s = settings || fallbackSettings;
   const activeOffer = offer || fallbackOffer;
-  const activeReels = reels.length ? reels : fallbackReels;
-  const activeYoutube = youtube.length ? youtube : fallbackYoutube;
+  const activeReels = reels;
+  const activeYoutube = youtube;
   const cardByKey = (key: string) => siteCards.find((card) => cleanSanityString(typeof card.key === 'string' ? card.key : card.key?.current) === key);
   const editableHomeCourses = courses.map((course) => {
     const override = siteCards.find((card) => cleanSanityString(card.externalId) === course.id && cleanSanityString(card.section) === 'course-card');
@@ -390,7 +390,7 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
       {/* ===== INSTAGRAM REELS — Grow Carousel ===== */}
       <section className="section-wrap pt-16 pb-10 sm:pt-20" id="reels">
         <div className="mx-auto max-w-[1440px] px-4 sm:px-5 lg:px-10">
-          <GrowCarousel reels={activeReels} instagramUrl={s.instagramUrl || undefined} />
+          <GrowCarousel reels={activeReels} instagramUrl={s.instagramUrl || fallbackSettings.instagramUrl} />
         </div>
       </section>
 
@@ -399,7 +399,7 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
         title={s.youtubeSectionTitle}
         kicker={s.youtubeSectionKicker}
         subtitle={s.youtubeSectionSubtitle}
-        channelUrl={s.youtubeChannelUrl}
+        channelUrl={s.youtubeChannelUrl || fallbackSettings.youtubeChannelUrl}
       />
 
       {/* ===== COMMUNITY + TRUST NUMBERS (3D, real numbers from first paint) ===== */}

@@ -3,7 +3,7 @@ import { brands } from '@/lib/classplus/brands';
 import CoursesClient, { type CourseCard } from './CoursesClient';
 import { getSiteCards } from '@/lib/sanity/server';
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 function formatInr(n: number) {
   return `₹${Number(n || 0).toLocaleString('en-IN')}`;

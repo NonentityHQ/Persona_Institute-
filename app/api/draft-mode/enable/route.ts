@@ -1,8 +1,49 @@
+import { NextResponse, type NextRequest } from 'next/server';
 import { defineEnableDraftMode } from 'next-sanity/draft-mode';
-import { client } from '@/lib/sanity/client';
+import { client, projectId, dataset } from '@/lib/sanity/client';
 
-export const { GET } = defineEnableDraftMode({
-  client: client.withConfig({
-    token: process.env.SANITY_API_READ_TOKEN || '',
-  }),
-});
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+const token = process.env.SANITY_API_READ_TOKEN;
+
+const enableDraftMode = token
+  ? defineEnableDraftMode({
+      client: client.withConfig({
+        projectId,
+        dataset,
+        token,
+        useCdn: false,
+      }),
+    })
+  : null;
+
+export async function GET(request: NextRequest) {
+  if (!projectId || projectId === 'placeholder') {
+    return NextResponse.json(
+      { error: 'Missing NEXT_PUBLIC_SANITY_PROJECT_ID on the deployed website.' },
+      { status: 500 },
+    );
+  }
+
+  if (!token) {
+    return NextResponse.json(
+      { error: 'Missing SANITY_API_READ_TOKEN. Add a Sanity Viewer token to Vercel Environment Variables and redeploy.' },
+      { status: 500 },
+    );
+  }
+
+  if (!enableDraftMode) {
+    return NextResponse.json({ error: 'Draft Mode handler could not be initialized.' }, { status: 500 });
+  }
+
+  try {
+    return await enableDraftMode.GET(request);
+  } catch (error) {
+    console.error('[Sanity Draft Mode] Failed to enable draft mode:', error);
+    return NextResponse.json(
+      { error: 'Unable to enable Sanity Draft Mode. Check the Vercel Function logs and verify the Sanity Viewer token.' },
+      { status: 500 },
+    );
+  }
+}

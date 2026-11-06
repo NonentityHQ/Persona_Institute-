@@ -133,7 +133,7 @@ export const fallbackSettings: SiteSettings = {
   youtubeSectionTitle: 'Know About Free and Paid Courses',
   youtubeSectionKicker: 'VISIT OUR YOUTUBE CHANNEL',
   youtubeSectionSubtitle: 'Free lessons, class highlights and student journeys.',
-  youtubeChannelUrl: '',
+  youtubeChannelUrl: 'https://www.youtube.com/@PersonaInstituteForEnglish',
   instagramUrl: 'https://www.instagram.com/personaenglish/',
   statLearners: '10,000+',
   statYears: '4+',

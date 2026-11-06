@@ -7,7 +7,7 @@ import {
 } from '@/lib/classplus/client';
 import { courseDetails } from '@/lib/course-details';
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 /** Prefer Classplus IDs; keep static ids so old links still build */
 export async function generateStaticParams() {

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
 import { GraduationCap, BarChart3, Target, Trophy, Users, Star } from 'lucide-react';
+import HeroVideo from './HeroVideo';
 
 type Props = {
   /** Top of the copy column: eyebrow, heading, sub-title. */
@@ -117,15 +118,7 @@ export default function Hero3D({ children, after, learnersLabel = '10,000+ Learn
                 <div className="h3d-layer h3d-layer-device" style={depth(0, 0)}>
                   <div className="h3d-device">
                     <div className="h3d-frame">
-                      <iframe
-                        className="h3d-video h-full w-full"
-                        src="https://www.youtube-nocookie.com/embed/d3UyoUsg-08?autoplay=1&mute=1&loop=1&playlist=d3UyoUsg-08&controls=1&playsinline=1&rel=0&modestbranding=1"
-                        title="Persona Institute introduction with Ajay Sir"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerPolicy="strict-origin-when-cross-origin"
-                        allowFullScreen
-                        loading="eager"
-                      />
+                      <HeroVideo />
                     </div>
                   </div>
                 </div>
