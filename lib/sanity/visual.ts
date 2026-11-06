@@ -1,6 +1,7 @@
 import { createDataAttribute } from '@sanity/visual-editing';
+import { getPublicSiteOrigin } from '@/lib/site-url';
 
-const siteOrigin = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(/\/+$/, '');
+const siteOrigin = getPublicSiteOrigin();
 const studioBaseUrl = `${siteOrigin}/studio`;
 
 export function sanityFieldAttribute(
