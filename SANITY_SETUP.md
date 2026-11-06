@@ -84,3 +84,12 @@ Courses currently render from `lib/data.ts`. When Classplus API credentials are 
 
 After content is published in Studio, refresh the homepage — the offer banner and reels section update automatically.
 EOF
+
+
+## 9. Vercel token and Preview Mode
+
+- For a **public** Sanity dataset, published content can be fetched without `SANITY_API_READ_TOKEN`.
+- `SANITY_API_READ_TOKEN` is required only to use Sanity Presentation / Draft Mode, or to read from a **private** dataset.
+- To enable Preview Mode: open Sanity Manage → your project → API → Tokens → create a **Viewer** token. Add it in Vercel → Project → Settings → Environment Variables as `SANITY_API_READ_TOKEN` for Production (and Preview if needed), then redeploy.
+- Keep this token server-only. Do not prefix it with `NEXT_PUBLIC_`, and never commit the real token into Git.
+- If the token is absent, the Draft Mode endpoint now returns visitors to the published site instead of throwing a 500 error. Preview mode remains unavailable until the token is configured.

@@ -27,10 +27,13 @@ export async function GET(request: NextRequest) {
   }
 
   if (!token) {
-    return NextResponse.json(
-      { error: 'Missing SANITY_API_READ_TOKEN. Add a Sanity Viewer token to Vercel Environment Variables and redeploy.' },
-      { status: 500 },
-    );
+    // Published Sanity content can still be read from a public dataset without a token.
+    // Only Presentation / Draft Mode needs a Viewer token. Do not turn that optional
+    // preview feature into a site-wide runtime error when the token is not configured.
+    const fallback = request.headers.get('referer') || new URL('/', request.url).toString();
+    const target = new URL(fallback);
+    target.searchParams.set('sanityPreview', 'unavailable');
+    return NextResponse.redirect(target, 307);
   }
 
   if (!enableDraftMode) {
