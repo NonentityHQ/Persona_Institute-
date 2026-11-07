@@ -1,7 +1,7 @@
 import 'server-only';
 import { unstable_cache } from 'next/cache';
 import { defineQuery } from 'next-sanity';
-import { client, sanityConfigured } from './client';
+import { client, sanityConfigured, cleanSanityString } from './client';
 import { sanityFetch } from './live';
 import type {
   SanityOffer,
@@ -158,18 +158,30 @@ async function getLatestYoutubeFeed(): Promise<SanityYoutubeVideo[]> {
 }
 
 export async function getYoutubeVideos(): Promise<SanityYoutubeVideo[]> {
-  // Pull the current public uploads/Shorts from both official channels. Sanity is a fallback
-  // for curated videos if YouTube's public RSS feed is temporarily unavailable.
-  const latest = await getLatestYoutubeFeed();
-  if (latest.length) return latest;
-  if (!sanityConfigured) return [];
-  try {
-    return await fetchSanity<SanityYoutubeVideo[]>(
-      `*[_type == "youtubeVideo" && active != false] | order(order asc) { ${youtubeFields} }`
-    );
-  } catch {
-    return [];
+  // Keep both sources visible: public channel uploads plus manually curated Sanity videos.
+  // Previously, even one RSS result suppressed every curated Sanity video.
+  const [latest, curated] = await Promise.all([
+    getLatestYoutubeFeed(),
+    sanityConfigured
+      ? fetchSanity<SanityYoutubeVideo[]>(
+          `*[_type == "youtubeVideo" && active != false] | order(order asc) { ${youtubeFields} }`
+        ).catch(() => [] as SanityYoutubeVideo[])
+      : Promise.resolve([] as SanityYoutubeVideo[]),
+  ]);
+
+  const videoKey = (video: SanityYoutubeVideo) => {
+    const url = cleanSanityString(video.youtubeUrl);
+    const id = url.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?.*?v=|embed\/|shorts\/|live\/))([\w-]{11})/i)?.[1];
+    return id || video._id;
+  };
+  const byId = new Map<string, SanityYoutubeVideo>();
+  // Latest uploads first; curated records fill gaps and preserve manually selected lessons.
+  for (const video of [...curated.slice(0, 4), ...latest, ...curated.slice(4)]) {
+    if (video.active === false) continue;
+    const key = videoKey(video);
+    if (key && !byId.has(key)) byId.set(key, video);
   }
+  return [...byId.values()].slice(0, 12);
 }
 
 // ---------- Book Store ----------

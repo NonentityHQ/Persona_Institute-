@@ -280,6 +280,7 @@ export const fallbackBookStoreSettings: SanityBookStoreSettings = {
     { value: 4.8, suffix: '/5', decimals: 1, label: 'Student Rating', icon: 'star' },
     { value: 25000, suffix: '+', decimals: 0, label: 'Vocabulary Words', icon: 'layers' },
     { value: 100, suffix: '%', decimals: 0, label: 'Exam Focused', icon: 'shield' },
+    { value: 100, suffix: '%', decimals: 0, label: 'At Your Own Pace', icon: 'book' },
   ],
   whyEyebrow: 'Why choose Persona Books?',
   whyTitle: 'Designed for Real Learning & Exam Success',

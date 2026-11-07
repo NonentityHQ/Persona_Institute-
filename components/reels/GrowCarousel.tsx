@@ -8,12 +8,12 @@ import type { SanityReel } from '@/lib/sanity/client';
 import { urlFor, sanityConfigured } from '@/lib/sanity/client';
 
 const FALLBACKS = [
-  '/images/course-live-spoken.jpg',
-  '/images/course-recorded.jpg',
-  '/images/course-grammar-booster.jpg',
-  '/images/course-winter-special.jpg',
-  '/images/course-persona.jpg',
-  '/images/english-with-khushi-logo.png',
+  '/images/course-live-spoken.webp',
+  '/images/course-recorded.webp',
+  '/images/course-grammar-booster.webp',
+  '/images/course-winter-special.webp',
+  '/images/course-persona.webp',
+  '/images/english-with-khushi-logo.webp',
 ];
 
 type Props = {
@@ -38,6 +38,7 @@ export default function GrowCarousel({
   speedSeconds = 36,
 }: Props) {
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
@@ -58,6 +59,16 @@ export default function GrowCarousel({
     const fn = () => setReduceMotion(mq.matches);
     mq.addEventListener?.('change', fn);
     return () => mq.removeEventListener?.('change', fn);
+  }, []);
+
+  useEffect(() => {
+    const node = viewportRef.current;
+    if (!node || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsVisible(Boolean(entry?.isIntersecting));
+    }, { threshold: 0.05, rootMargin: '80px 0px' });
+    observer.observe(node);
+    return () => observer.disconnect();
   }, []);
 
   const getThumb = useCallback((reel: SanityReel, i: number) => {
@@ -88,7 +99,7 @@ export default function GrowCarousel({
 
   /* Auto-scroll via requestAnimationFrame — same axis as manual drag */
   useEffect(() => {
-    if (reduceMotion || reels.length < 2) return;
+    if (reduceMotion || !isVisible || reels.length < 2) return;
 
     const tick = (ts: number) => {
       const vp = viewportRef.current;
@@ -115,7 +126,7 @@ export default function GrowCarousel({
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       lastTs.current = 0;
     };
-  }, [reduceMotion, reels.length, speedSeconds]);
+  }, [reduceMotion, isVisible, reels.length, speedSeconds]);
 
   const onPointerDown = (e: React.PointerEvent) => {
     const vp = viewportRef.current;

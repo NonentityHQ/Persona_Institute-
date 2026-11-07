@@ -96,17 +96,16 @@
 .h3d-stage > * { font-size: 1cqw; }
 .h3d-orbit { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .h3d-persp { position: absolute; inset: 0; perspective: 600cqw; }
-.h3d-sway { position: absolute; inset: 0; transform-style: preserve-3d; animation: h3dStageIn 1.3s cubic-bezier(.22, .61, .36, 1) both, h3dSway 11s ease-in-out 1.3s infinite; }
-@keyframes h3dStageIn { from { opacity: 0; transform: translate3d(0, 40px, -260px) rotateY(-22deg); } to { opacity: 1; transform: none; } }
-@keyframes h3dSway { 0%, 100% { transform: rotateY(-1.5deg) rotateX(.6deg); } 50% { transform: rotateY(1.5deg) rotateX(-.6deg); } }
-.h3d-scene { --px: 0; --py: 0; position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateY(calc(var(--px) * 4deg)) rotateX(calc(var(--py) * -3deg)); will-change: transform; }
+.h3d-sway { position: absolute; inset: 0; transform-style: preserve-3d; animation: h3dStageIn 1.3s cubic-bezier(.22, .61, .36, 1) both; }
+@keyframes h3dStageIn { from { opacity: 0; transform: translate3d(0, 28px, -90px); } to { opacity: 1; transform: none; } }
+.h3d-scene { --px: 0; --py: 0; position: absolute; inset: 0; transform-style: preserve-3d; transform: none; }
 .h3d-layer { pointer-events: none; transform-style: preserve-3d; transform: translate3d(calc(var(--px, 0) * var(--k, 0) * 1px), calc(var(--py, 0) * var(--k, 0) * .7px), var(--z, 0px)); }
 .h3d-float { animation: h3dFloat var(--dur, 6s) ease-in-out var(--del, 0s) infinite; }
 @keyframes h3dFloat { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -9px, 0); } }
 
-/* the tilted video slab */
+/* the level 3D video slab */
 .h3d-layer-device { position: absolute; left: -4%; top: 8.03%; width: 79.72%; }
-.h3d-device { position: relative; aspect-ratio: 1.718 / 1; border-radius: 4.4em; transform-style: flat; transform: perspective(231cqw) rotateX(14.2deg) rotateY(-24.5deg) rotateZ(5.23deg); }
+.h3d-device { position: relative; aspect-ratio: 1.718 / 1; border-radius: 4.4em; transform-style: flat; transform: none; }
 .h3d-frame {
   pointer-events: auto; position: absolute; inset: 0; overflow: hidden; border-radius: inherit; background: #101626;
   border: 1em solid #fff; box-shadow: .2em .5em 0 0 #fff, .8em 1.6em 0 -.2em #f4d0d7, 0 3em 5em rgba(150, 30, 60, .28); font-size: max(5px, 1cqw); color: #fff;
@@ -276,9 +275,9 @@
   transform-origin: 50% 100%;
   transition: transform .95s cubic-bezier(.22, .61, .36, 1) var(--d, 0ms);
 }
-.h3d-reveal:not(.is-in).h3d-from-up    { transform: perspective(1300px) translate3d(0, 46px, -110px) rotateX(13deg) scale(.97); }
-.h3d-reveal:not(.is-in).h3d-from-left  { transform: perspective(1300px) translate3d(-60px, 24px, -110px) rotateY(16deg); }
-.h3d-reveal:not(.is-in).h3d-from-right { transform: perspective(1300px) translate3d(60px, 24px, -110px) rotateY(-16deg); }
+.h3d-reveal:not(.is-in).h3d-from-up    { transform: perspective(1300px) translate3d(0, 46px, -110px) scale(.97); }
+.h3d-reveal:not(.is-in).h3d-from-left  { transform: perspective(1300px) translate3d(-60px, 24px, -110px); }
+.h3d-reveal:not(.is-in).h3d-from-right { transform: perspective(1300px) translate3d(60px, 24px, -110px); }
 .h3d-reveal.is-in { transform: none; }
 
 /* -------------------------------------------------------------------------
@@ -286,29 +285,36 @@
    ------------------------------------------------------------------------- */
 .h3d-stats {
   position: relative; z-index: 5;
-  width: 100%; max-width: 1320px; margin: clamp(22px, 3vw, 40px) auto 0;
-  padding: 0 clamp(16px, 4vw, 56px);
+  width: 100%; max-width: 1240px; margin: clamp(22px, 3vw, 40px) auto 0;
+  padding: 0 clamp(12px, 3vw, 32px);
   perspective: 1400px;
 }
-.h3d-stats-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.h3d-stats-grid > :last-child { grid-column: 1 / -1; }
-@media (min-width: 720px)  { .h3d-stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .h3d-stats-grid > :last-child { grid-column: auto; } }
-@media (min-width: 1100px) { .h3d-stats-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; } }
+.h3d-stats-grid {
+  display: grid; width: min(100%, 1120px); margin-inline: auto;
+  gap: clamp(12px, 1.8vw, 18px);
+  grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch;
+}
+@media (min-width: 720px) {
+  .h3d-stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+}
+@media (min-width: 1100px) { .h3d-stats-grid { gap: 18px; } }
 
 .h3d-stat {
-  display: flex; align-items: center; gap: 14px; height: 100%; min-height: 96px;
-  padding: 18px 18px; border-radius: 22px; background: linear-gradient(180deg, #fff, #fffafa);
+  container-type: inline-size; min-width: 0; width: 100%; height: 100%; min-height: 92px;
+  display: flex; align-items: center; justify-content: flex-start; gap: clamp(10px, 3.5cqw, 16px);
+  padding: 14px clamp(12px, 4.5cqw, 22px); border-radius: 20px; background: linear-gradient(180deg, #fff, #fffafa);
   border: 1px solid #f6e3e6;
-  box-shadow: 0 6px 0 #f3dfe3, 0 24px 40px rgba(12, 46, 99, .13);
+  box-shadow: 0 4px 0 #f3dfe3, 0 15px 28px rgba(12, 46, 99, .10);
 }
 .h3d-stat-ico {
-  display: grid; place-items: center; flex: none; width: 50px; height: 50px; border-radius: 16px;
+  display: grid; place-items: center; flex: 0 0 clamp(36px, 20cqw, 46px); width: clamp(36px, 20cqw, 46px); height: clamp(36px, 20cqw, 46px); border-radius: 16px;
   color: #fff; background: linear-gradient(145deg, #ff5a70, #f51632);
   box-shadow: 0 5px 0 #b50f25, 0 14px 22px rgba(245, 22, 50, .28);
 }
-.h3d-stat:nth-child(even) .h3d-stat-ico { background: linear-gradient(145deg, #2a62c4, #0c2e63); box-shadow: 0 5px 0 #071a3d, 0 14px 22px rgba(12, 46, 99, .28); }
-.h3d-stat-txt b { display: block; font-size: clamp(1.25rem, 1.8vw, 1.6rem); font-weight: 900; letter-spacing: -.03em; color: #102f60; line-height: 1.1; }
-.h3d-stat-txt small { display: block; margin-top: 4px; font-size: 12px; color: #5b6e8c; }
+.h3d-stats-grid > .h3d-reveal:nth-child(even) .h3d-stat .h3d-stat-ico { background: linear-gradient(145deg, #2a62c4, #0c2e63); box-shadow: 0 5px 0 #071a3d, 0 14px 22px rgba(12, 46, 99, .28); }
+.h3d-stat-txt { min-width: 0; }
+.h3d-stat-txt b { display: block; white-space: nowrap; font-size: clamp(1rem, 8.2cqw, 1.4rem); font-weight: 900; letter-spacing: -.035em; color: #102f60; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.h3d-stat-txt small { display: block; margin-top: 5px; font-size: clamp(.7rem, 5cqw, .8rem); line-height: 1.25; color: #5b6e8c; }
 
 /* -------------------------------------------------------------------------
    SECTIONS (shared)
@@ -429,9 +435,6 @@
 .h3d-video-poster,
 .h3d-video-player { position: absolute; inset: 0; width: 100%; height: 100%; background: #101626; }
 .h3d-video-poster img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
-.h3d-video-start { position: absolute; left: 50%; top: 50%; display: grid; place-items: center; width: clamp(54px, 7vw, 78px); height: clamp(54px, 7vw, 78px); padding: 0; transform: translate(-50%, -50%); border: 3px solid #fff; border-radius: 50%; color: #fff; background: #ed1736; box-shadow: 0 5px 24px #0006; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-.h3d-video-start svg { margin-left: 4px; }
-.h3d-video-hint { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); padding: 6px 10px; border-radius: 999px; color: #fff; background: #101626c9; font: 700 12px/1.2 system-ui, sans-serif; white-space: nowrap; pointer-events: none; }
 .h3d-video-player iframe { display: block; width: 100%; height: 100%; border: 0; }
 .h3d-video-fallback { position: absolute; right: 8px; bottom: 8px; z-index: 2; display: inline-flex; align-items: center; gap: 4px; padding: 5px 8px; border-radius: 999px; color: #fff; background: #111a; font: 700 11px/1 system-ui, sans-serif; text-decoration: none; }
 @media (max-width: 1023px) {
@@ -442,5 +445,4 @@
   .h3d-frame { transform: translateZ(0); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .h3d-video-start { transition: none !important; }
 }

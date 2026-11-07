@@ -8,7 +8,7 @@ import { useFinePointer } from './useFinePointer';
 type Props = {
   children: ReactNode;
   className?: string;
-  /** Max rotation in degrees (kept 3–7° so it never feels shaky). */
+  /** Retained for backwards-compatible call sites; rotation is intentionally neutral. */
   maxTilt?: number;
   /** Hover lift in px. */
   lift?: number;
@@ -22,11 +22,8 @@ type Props = {
 const tags = { div: m.div, article: m.article, li: m.li } as const;
 
 /**
- * 3D tilt card.
- *  - Mouse/trackpad only (touch + reduced-motion get a static card).
- *  - Pointer position feeds MotionValues → no React re-render while moving.
- *  - Over-damped spring → returns to neutral without overshoot.
- *  - Depth: children can opt in with .c3d-z1 / .c3d-z2 (translateZ 14px / 26px).
+ * Straight 3D card. Perspective/depth and hover lift remain, but pointer tilt is neutral
+ * so cards stay level on desktop and touch devices. Depth layers still use .c3d-z1/.c3d-z2.
  */
 export default function Card3D({
   children, className = '', maxTilt = 5, lift = 6, glare = true, perspective = 900, as = 'div', disabled = false,
@@ -45,8 +42,9 @@ export default function Card3D({
   const sy = useSpring(py, SOFT_SPRING);
   const sh = useSpring(hover, SOFT_SPRING);
 
-  const rotateY = useTransform(sx, [0, 1], [-maxTilt, maxTilt]);
-  const rotateX = useTransform(sy, [0, 1], [maxTilt, -maxTilt]);
+  // Keep the surface level; only the small hover lift and light-follow effect remain.
+  const rotateY = useTransform(sx, [0, 1], [0, 0]);
+  const rotateX = useTransform(sy, [0, 1], [0, 0]);
   const y = useTransform(sh, [0, 1], [0, -lift]);
   const gx = useTransform(sx, [0, 1], ['0%', '100%']);
   const gy = useTransform(sy, [0, 1], ['0%', '100%']);

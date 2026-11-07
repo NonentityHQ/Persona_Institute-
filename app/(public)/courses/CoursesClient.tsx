@@ -230,7 +230,7 @@ export default function CoursesClient({ courseList, live = false, siteCards = []
             className={`course-app-tile course-app-persona ${appFilter === 'Persona English' ? 'is-active' : ''}`}
           >
             <span className="course-app-icon">
-              <Image src="/images/persona-logo.png" alt="" width={56} height={56} />
+              <Image src="/images/persona-logo.webp" alt="" width={56} height={56} />
             </span>
             <span className="course-app-copy">
               <strong>Persona English</strong>
@@ -249,7 +249,7 @@ export default function CoursesClient({ courseList, live = false, siteCards = []
           >
             <span className="course-app-icon">
               <Image
-                src="/images/english-with-khushi-logo.png"
+                src="/images/english-with-khushi-logo.webp"
                 alt=""
                 width={56}
                 height={56}
@@ -347,6 +347,7 @@ export default function CoursesClient({ courseList, live = false, siteCards = []
                         width={720}
                         height={540}
                         sizes="(max-width:640px) 92vw, (max-width:1280px) 46vw, 24vw"
+                        quality={75}
                         className="course-product-image h-[190px] w-full sm:h-[180px] xl:h-[200px]"
                         style={{ objectFit: c.imageFit || 'contain', objectPosition: c.imagePosition || 'center' }}
                       />

@@ -38,7 +38,7 @@ export function PortalFrame({ children }: { children: ReactNode }) {
   const sidebar = (
     <aside className="portal-sidebar">
       <TransitionLink href="/store" className="portal-brand">
-        <Image src="/images/persona-logo.png" alt="Persona Institute" width={54} height={54} priority />
+        <Image src="/images/persona-logo.webp" alt="Persona Institute" width={54} height={54} loading="eager" />
         <span><b><strong>Persona</strong> Institute</b><small>Learn · Practice · Grow</small></span>
       </TransitionLink>
       <div className="portal-nav-label">LEARNING SPACE</div>

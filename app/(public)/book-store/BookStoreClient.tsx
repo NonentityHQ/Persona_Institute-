@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AnimatePresence, m, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import {
   ArrowRight, Award, BookOpen, ChevronLeft, ChevronRight, Crown, FileText, Gift, Heart,
   Layers, LayoutGrid, PenLine, Play, ShieldCheck, ShoppingCart, Star, Target, TrendingUp,
@@ -31,11 +31,11 @@ type Props = {
 // false = CSS placeholder covers · true = use the PNGs already in /public/images/books
 const USE_LOCAL_COVERS = false;
 const LOCAL_COVERS: Array<[RegExp, string]> = [
-  [/combo/i, '/images/books/combo-pack.png'], [/grammar/i, '/images/books/grammar-mastery.png'],
-  [/vocab/i, '/images/books/vocabulary-booster.png'], [/compre/i, '/images/books/comprehension-practice.png'],
-  [/error/i, '/images/books/error-detection.png'],
+  [/combo/i, '/images/books/combo-pack.webp'], [/grammar/i, '/images/books/grammar-mastery.webp'],
+  [/vocab/i, '/images/books/vocabulary-booster.webp'], [/compre/i, '/images/books/comprehension-practice.webp'],
+  [/error/i, '/images/books/error-detection.webp'],
 ];
-const AVATARS = ['/images/avatars/a1.png', '/images/avatars/a2.png', '/images/avatars/a3.png', '/images/avatars/a4.png'];
+const AVATARS = ['/images/avatars/a1.webp', '/images/avatars/a2.webp', '/images/avatars/a3.webp', '/images/avatars/a4.webp'];
 const FEATURE_ICON: Record<string, LucideIcon> = {
   book: BookOpen, zap: Zap, layers: Layers, star: Star, users: Users, play: Play,
   shield: ShieldCheck, target: Target, award: Award, trending: TrendingUp, gift: Gift, cart: ShoppingCart,
@@ -300,12 +300,23 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
     ? settings.features.map((f) => [iconOf(f.icon, BookOpen), f.label || ''] as [LucideIcon, string])
     : [[BookOpen, 'Exam Focused'], [Zap, 'Concept Clarity'], [Layers, 'Practice Sets'], [Star, 'Student Preferred']] as Array<[LucideIcon, string]>);
 
-  const stats = (settings.stats?.length
-    ? settings.stats.map((s) => [iconOf(s.icon, Users), s.value ?? 0, s.suffix || '', s.decimals ?? 0, s.label || ''] as [LucideIcon, number, string, number, string])
-    : [
-      [Users, 10000, '+', 0, 'Happy Learners'], [Play, 500, '+', 0, 'Video Lessons'], [Star, 4.8, '/5', 1, 'Student Rating'],
-      [Layers, 25000, '+', 0, 'Vocabulary Words'], [ShieldCheck, 100, '%', 0, 'Exam Focused'],
-    ] as Array<[LucideIcon, number, string, number, string]>);
+  const defaultStats: Array<[LucideIcon, number, string, number, string]> = [
+    [Users, 10000, '+', 0, 'Happy Learners'],
+    [Play, 500, '+', 0, 'Video Lessons'],
+    [Star, 4.8, '/5', 1, 'Student Rating'],
+    [Layers, 25000, '+', 0, 'Vocabulary Words'],
+    [ShieldCheck, 100, '%', 0, 'Exam Focused'],
+    [BookOpen, 100, '%', 0, 'At Your Own Pace'],
+  ];
+  const configuredStats = settings.stats?.map((s) => [
+    iconOf(s.icon, Users), s.value ?? 0, s.suffix || '', s.decimals ?? 0, s.label || '',
+  ] as [LucideIcon, number, string, number, string]) ?? [];
+  // Keep the six most relevant configured metrics and fill any gaps from defaults.
+  const configuredLabels = new Set(configuredStats.map((stat) => stat[4].trim().toLowerCase()));
+  const stats = (configuredStats.length
+    ? [...configuredStats.slice(0, 6), ...defaultStats.filter((stat) => !configuredLabels.has(stat[4].trim().toLowerCase()))]
+    : defaultStats
+  ).slice(0, 6);
 
   const whyItems = (settings.whyItems?.length
     ? settings.whyItems.map((w) => [iconOf(w.icon, Target), w.title || '', w.description || ''] as [LucideIcon, string, string])
@@ -327,11 +338,6 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
     return undefined as unknown as Array<SanityBook | undefined>;
   })();
 
-  // hero mouse-parallax
-  const mx = useMotionValue(0), my = useMotionValue(0);
-  const sx = useSpring(mx, { stiffness: 120, damping: 20 }), sy = useSpring(my, { stiffness: 120, damping: 20 });
-  const rotY = useTransform(sx, [-.5, .5], [-9, 9]), rotX = useTransform(sy, [-.5, .5], [6, -6]);
-
   const cats = useMemo(() => (categories.some((c) => c.slug?.current === 'all') ? categories : [{ _id: 'all', title: 'All Books', slug: { current: 'all' }, subtitle: 'Explore Complete Collection', icon: 'grid' }, ...categories]), [categories]);
   const featured = useMemo(() => { const f = books.filter((b) => b.featured); return (f.length ? f : books).slice(0, 8); }, [books]);
   const list = useMemo(() => {
@@ -347,7 +353,7 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
   return (
     <main data-pm-skip className="relative overflow-x-clip bg-[linear-gradient(180deg,#ffe6ec_0,#fff3f6_420px,#fff_800px)] pb-16 text-slate-900">
       {/* ─── HERO ─── */}
-      <section className="relative overflow-hidden" onPointerMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); mx.set((e.clientX - r.left) / r.width - .5); my.set((e.clientY - r.top) / r.height - .5); }}>
+      <section className="relative overflow-hidden">
         <m.div aria-hidden className="absolute -right-24 -top-24 h-[420px] w-[420px] rounded-full bg-rose-300/40 blur-3xl" animate={{ x: [0, -30, 0], y: [0, 24, 0] }} transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }} />
         <m.div aria-hidden className="absolute -left-24 top-40 h-[300px] w-[300px] rounded-full bg-pink-200/50 blur-3xl" animate={{ x: [0, 26, 0], y: [0, -20, 0] }} transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }} />
         <div className={`${wrap} relative grid items-center gap-6 pb-10 pt-10 lg:grid-cols-[1.1fr_1fr] lg:pt-12`}>
@@ -392,7 +398,7 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
             whileHover={{ y: -4, scale: 1.01 }}
           >
             <img
-              src="/images/persona-books-display.png"
+              src="/images/persona-books-display.webp"
               alt="Persona Institute books: Spoken English Practice Book, English Grammar and Vocabulary Booster, with the official Persona Institute logo on the mug"
               className="block h-auto w-full object-contain"
               loading="eager"
@@ -403,11 +409,11 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
 
       {/* ─── STATS ─── */}
       <div className={wrap}>
-        <Stagger className="grid grid-cols-2 gap-y-5 rounded-[22px] bg-white/90 px-3 py-5 shadow-[0_18px_45px_-20px_rgba(15,39,79,.25)] ring-1 ring-rose-50 backdrop-blur sm:grid-cols-3 lg:grid-cols-5 lg:divide-x lg:divide-rose-100">
+        <Stagger className="bookstore-stats-grid rounded-[22px] bg-white/95 shadow-[0_18px_45px_-20px_rgba(15,39,79,.25)] ring-1 ring-rose-50 backdrop-blur">
           {stats.map(([Ic, v, suf, dec, l]) => (
-            <StaggerItem key={l} className="flex items-center justify-center gap-3 px-3">
-              <span className="grid h-12 w-12 place-items-center rounded-full bg-rose-50 text-[#f51632]"><Ic className="h-6 w-6" /></span>
-              <div><b className="block text-[22px] font-extrabold leading-none text-[#0c1f4a]"><CountUp value={v} suffix={suf} decimals={dec} /></b><span className="text-[12px] text-slate-500">{l}</span></div>
+            <StaggerItem key={l} className="bookstore-stat-card">
+              <span className="bookstore-stat-icon grid place-items-center rounded-full bg-rose-50 text-[#f51632]"><Ic className="h-6 w-6" /></span>
+              <div className="bookstore-stat-copy"><b className="bookstore-stat-value block font-extrabold leading-none text-[#0c1f4a]"><CountUp value={v} suffix={suf} decimals={dec} /></b><span className="bookstore-stat-label block text-slate-500">{l}</span></div>
             </StaggerItem>
           ))}
         </Stagger>

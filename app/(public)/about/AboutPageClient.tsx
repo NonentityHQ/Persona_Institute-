@@ -71,7 +71,7 @@ export default function AboutPageClient({ siteCards = [] }: { siteCards: SanityS
       title: "Persona English",
       subtitle: "Learn with Ajay Sir",
       description: "Build spoken English, grammar and vocabulary through structured live and recorded learning.",
-      image: "/images/persona-logo.png",
+      image: "/images/persona-logo.webp",
       badge: "PERSONA INSTITUTE",
       points: ["Live & recorded classes", "Grammar and spoken English", "Practice with guidance"],
       href: "https://play.google.com/store/apps/details?id=co.martin.bspkr&hl=en_IN",
@@ -83,7 +83,7 @@ export default function AboutPageClient({ siteCards = [] }: { siteCards: SanityS
       title: "English with Khushi",
       subtitle: "Official Android Learning App",
       description: "Practice everyday English, grow your confidence and make speaking a regular habit.",
-      image: "/images/english-with-khushi-logo.png",
+      image: "/images/english-with-khushi-logo.webp",
       badge: "A FRIENDLY LEARNING SPACE",
       points: ["Daily speaking practice", "Confidence building", "Learner-friendly lessons"],
       href: "https://play.google.com/store/apps/details?id=co.diaz.fbusn&hl=en_IN",
@@ -99,7 +99,7 @@ export default function AboutPageClient({ siteCards = [] }: { siteCards: SanityS
       title: override?.title || base.title,
       subtitle: override?.subtitle || base.subtitle,
       description: override?.description || base.description,
-      image: base.brand.id === "khushi" ? "/images/english-with-khushi-logo.png" : (cleanSanityString(override?.imageUrl) || base.image),
+      image: base.brand.id === "khushi" ? "/images/english-with-khushi-logo.webp" : (cleanSanityString(override?.imageUrl) || base.image),
       imageFit: base.brand.id === "khushi" ? "contain" : ((cleanSanityString(override?.imageFit) === 'cover' ? 'cover' : 'contain') as 'cover' | 'contain'),
       imagePosition: base.brand.id === "khushi" ? "center" : (cleanSanityString(override?.imagePosition) || 'center'),
       badge: override?.badge || base.badge,
@@ -151,7 +151,7 @@ export default function AboutPageClient({ siteCards = [] }: { siteCards: SanityS
       </m.section>
 
       <m.section initial="hidden" whileInView="show" viewport={{once:true,amount:.08,margin:"0px 0px -4% 0px"}} variants={fadeUp} className="mx-auto grid max-w-[1440px] items-center gap-5 px-5 py-3 md:grid-cols-[290px_1fr_230px] lg:px-10">
-        <div className="overflow-hidden rounded-2xl bg-orange-50"><img src="/images/ajay-sir-tablet.png" alt="Learning English with Persona Institute" className="h-[235px] w-full object-contain object-center sm:h-[260px]"/></div>
+        <div className="overflow-hidden rounded-2xl bg-orange-50"><img src="/images/ajay-sir-tablet.webp" alt="Learning English with Persona Institute" className="h-[235px] w-full object-contain object-center sm:h-[260px]"/></div>
         <div className="py-2">
           <span className="rounded-full bg-[#fff0df] px-3 py-1 text-[10px] font-extrabold tracking-wider text-[#f04c20]">OUR STORY</span>
           <h2 className="mt-3 text-2xl font-black tracking-tight sm:text-3xl">How Persona Institute Began</h2>

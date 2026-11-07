@@ -34,10 +34,10 @@ function thumbFor(video: SanityYoutubeVideo, index: number): string {
   const id = extractYoutubeId(cleanSanityString(video.youtubeUrl));
   if (id) return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
   const fallbacks = [
-    '/images/course-live-spoken.jpg',
-    '/images/course-recorded.jpg',
-    '/images/course-grammar-booster.jpg',
-    '/images/course-winter-special.jpg',
+    '/images/course-live-spoken.webp',
+    '/images/course-recorded.webp',
+    '/images/course-grammar-booster.webp',
+    '/images/course-winter-special.webp',
   ];
   return fallbacks[index % fallbacks.length];
 }
@@ -63,6 +63,7 @@ export default function YoutubeSection({
 }: Props) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
+  const [failedVideoIds, setFailedVideoIds] = useState<Set<string>>(() => new Set());
 
   const list = useMemo(() => videos.filter((v) => v.active !== false), [videos]);
 
@@ -156,14 +157,23 @@ export default function YoutubeSection({
                   {/* Thumbnail / player */}
                   <div className="relative aspect-video shrink-0 bg-black">
                     {ytId && playingId === video._id ? (
-                      <iframe
-                        title={video.title || 'YouTube video'}
-                        src={`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0&playsinline=1&modestbranding=1`}
-                        className="absolute inset-0 h-full w-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerPolicy="strict-origin-when-cross-origin"
-                        allowFullScreen
-                      />
+                      failedVideoIds.has(video._id) ? (
+                        <div className="absolute inset-0 grid place-items-center gap-2 bg-slate-950 p-4 text-center">
+                          <p className="text-sm font-semibold text-white">This video cannot be embedded here.</p>
+                          <a href={ytUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-xs font-bold text-white">Open on YouTube <ExternalLink size={13} /></a>
+                        </div>
+                      ) : (
+                        <iframe
+                          title={video.title || 'YouTube video'}
+                          src={`https://www.youtube.com/embed/${ytId}?autoplay=1&playsinline=1&rel=0&modestbranding=1&controls=1`}
+                          className="absolute inset-0 h-full w-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          loading="eager"
+                          allowFullScreen
+                          onError={() => setFailedVideoIds((current) => new Set(current).add(video._id))}
+                        />
+                      )
                     ) : (
                       <>
                         <Image
@@ -177,7 +187,7 @@ export default function YoutubeSection({
                           {ytId ? (
                             <button
                               type="button"
-                              onClick={() => setPlayingId(video._id)}
+                              onClick={() => { setFailedVideoIds((current) => { const next = new Set(current); next.delete(video._id); return next; }); setPlayingId(video._id); }}
                               className="grid h-14 w-14 place-items-center rounded-full bg-red-600 text-white shadow-lg transition hover:scale-105 hover:bg-red-500"
                               aria-label={`Play ${video.title || 'video'}`}
                             >

@@ -119,13 +119,13 @@ export default function ContactPageClient({ contactSettings, siteCards = [] }: {
           <div className="contact-hero-orbit" />
           <div className="contact-hero-floor-shadow" />
           <img
-            src="/images/ajay-sir-contact-person.png"
+            src="/images/ajay-sir-contact-person.webp"
             alt="Ajay Sir welcoming students"
             className="contact-hero-person"
             fetchPriority="high"
           />
           <img
-            src="/images/persona-logo-contact.png"
+            src="/images/persona-logo-contact.webp"
             alt="Persona Institute logo"
             className="contact-hero-logo"
           />
@@ -189,7 +189,7 @@ export default function ContactPageClient({ contactSettings, siteCards = [] }: {
       </div>
 
       <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_5px_24px_rgba(15,39,87,0.055)] sm:p-7"><div className="mb-4 flex items-center gap-3"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-orange-50 text-[#ff481d]"><MapPin size={27} fill="currentColor"/></span><div><h2 className="text-2xl font-black tracking-tight sm:text-3xl">Our Office</h2><p className="mt-1 text-sm text-[#526b9f]">Visit us for in-person guidance, course details or any other information.</p></div></div>
-        <div className="overflow-hidden rounded-xl bg-[#f8e6d5]"><img src={cleanSanityString(contactCard("contact-office")?.imageUrl) || "/images/contact-office-reference.jpg"} alt={contactCard("contact-office")?.imageAlt || "Persona Institute office"} data-sanity={contactCard("contact-office")?._id ? sanityFieldAttribute(contactCard("contact-office")!._id, "siteCard", "image") : undefined} className="h-40 w-full sm:h-44" style={{ objectFit: cleanSanityString(contactCard("contact-office")?.imageFit) === 'cover' ? 'cover' : 'contain', objectPosition: cleanSanityString(contactCard("contact-office")?.imagePosition) || 'center' }}/></div>
+        <div className="overflow-hidden rounded-xl bg-[#f8e6d5]"><img src={cleanSanityString(contactCard("contact-office")?.imageUrl) || "/images/contact-office-reference.webp"} alt={contactCard("contact-office")?.imageAlt || "Persona Institute office"} data-sanity={contactCard("contact-office")?._id ? sanityFieldAttribute(contactCard("contact-office")!._id, "siteCard", "image") : undefined} className="h-40 w-full sm:h-44" style={{ objectFit: cleanSanityString(contactCard("contact-office")?.imageFit) === 'cover' ? 'cover' : 'contain', objectPosition: cleanSanityString(contactCard("contact-office")?.imagePosition) || 'center' }}/></div>
         <div className="mt-3 flex flex-col gap-3 rounded-xl border border-orange-100 p-3 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-start gap-3"><MapPin size={21} className="mt-1 shrink-0 text-[#ff4920]"/><div className="text-xs leading-relaxed"><strong className="block">Address</strong><strong className="block">Persona Institute</strong><span className="text-[#526b9f]">{officeAddress}</span></div></div><a href={mapsUrl} target="_blank" rel="noreferrer" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full border border-orange-300 px-4 py-2 text-xs font-bold text-[#ff3b1a] hover:bg-orange-50">Get Directions <ArrowRight size={15}/></a></div>
         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">{[{icon:Clock,title:"Office Hours",desc:<>Mon - Sat<br/>10:00 AM - 6:00 PM</>},{icon:Building2,title:"Nearest Landmark",desc:<>Navchandi Mandir Main Road</>},{icon:MapPin,title:"Parking",desc:<>Please confirm availability</>}].map(({icon:Icon,title,desc})=><div key={title} className="rounded-xl bg-[#fffaf7] p-3"><Icon size={21} className="mb-2 text-[#ff4920]"/><strong className="block text-xs">{title}</strong><span className="mt-1 block text-[11px] leading-relaxed text-[#526b9f]">{desc}</span></div>)}</div>
         <div className="relative mt-4 h-36 overflow-hidden rounded-xl border border-slate-100 bg-[#edf2f6] sm:h-40"><iframe title="Map to Persona Institute in Rameshwar Nagar, Khandwa" src={`https://maps.google.com/maps?q=${encodeURIComponent(`Persona Institute, ${officeAddress}`)}&t=&z=15&ie=UTF8&iwloc=&output=embed`} className="h-full w-full border-0" loading="lazy" referrerPolicy="no-referrer-when-downgrade"/><a href={mapsUrl} target="_blank" rel="noreferrer" className="absolute bottom-2 right-2 rounded-full bg-white px-3 py-2 text-[11px] font-bold text-blue-700 shadow">View on Google Maps ↗</a></div>
@@ -221,7 +221,7 @@ export default function ContactPageClient({ contactSettings, siteCards = [] }: {
             <MessageCircle size={14} /> NEED GUIDANCE?
           </span>
           <h2 className="mt-4 text-[clamp(1.85rem,3.6vw,2.85rem)] font-black leading-[1.05] tracking-tight text-[#102d70]">
-            Talk to <span className="relative inline-block">Ajay Sir<span className="absolute -bottom-1 left-0 right-0 h-1.5 -rotate-1 rounded-full bg-[#3b82f6]/55" /></span>
+            Talk to Ajay Sir
           </h2>
           <p className="mt-3 max-w-lg text-sm leading-relaxed text-[#3b4f7a]">Get personalized guidance from Ajay Sir and our team. We&apos;ll help you choose the right course based on your current level and goals.</p>
           <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -248,7 +248,7 @@ export default function ContactPageClient({ contactSettings, siteCards = [] }: {
         </div>
         <div className="relative flex min-h-[260px] items-end justify-center overflow-hidden rounded-[26px] bg-[radial-gradient(ellipse_at_50%_35%,#dceaff_0%,#eff5ff_48%,#f8fbff_100%)] md:min-h-[390px] md:justify-end">
           <div className="absolute right-5 top-5 z-20 rounded-2xl border border-white/90 bg-white/95 px-4 py-2 text-sm font-bold italic text-[#1e40af] shadow-lg">Let&apos;s Talk!</div>
-          <img src="/images/ajay-sir-talk-cutout.png" alt="Ajay Sir" className="relative z-10 block h-auto max-h-[340px] w-auto max-w-full object-contain object-bottom drop-shadow-2xl sm:max-h-[390px] md:max-h-[440px]" />
+          <img src="/images/ajay-sir-talk-cutout.webp" alt="Ajay Sir" className="relative z-10 block h-auto max-h-[340px] w-auto max-w-full object-contain object-bottom drop-shadow-2xl sm:max-h-[390px] md:max-h-[440px]" />
         </div>
       </div>
     </m.section>

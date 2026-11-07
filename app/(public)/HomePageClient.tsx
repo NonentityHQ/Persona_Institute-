@@ -42,6 +42,7 @@ const HERO_STATS: Array<{
   { icon: Video, n: 500, suffix: '+', label: 'Video Lessons' },
   { icon: Star, n: 4.8, decimals: 1, suffix: '/5', label: 'Student Rating', fill: true },
   { icon: BookOpen, n: 25000, suffix: '+', label: 'Vocabulary Words' },
+  { icon: ClipboardCheck, text: '100%', label: 'Exam Focused' },
   { icon: ShieldCheck, text: '100%', label: 'At Your Own Pace' },
 ];
 
@@ -103,6 +104,12 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
     { ...parseStat(s.statSatisfaction, 98, '%'), label: 'Satisfaction' },
   ];
 
+  // Keep the original six headline metrics. The additional trust metrics remain
+  // in the community section below instead of overcrowding this compact card deck.
+  const deckStats = HERO_STATS.map((stat) => stat.label === 'Happy Learners'
+    ? { ...stat, ...parseStat(s.statLearners, 10000, '+') }
+    : stat);
+
   return (
     <main className="h3d-page">
       {/* ===== HERO: copy on the left, the video lives in a real 3D stage on the right ===== */}
@@ -139,7 +146,7 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
               <div className="h3d-proof">
                 <div className="h3d-avatars" aria-hidden="true">
                   {[1, 2, 3, 4].map((n) => (
-                    <span key={n}><Image src={`/images/avatars/a${n}.png`} alt="" width={96} height={96} /></span>
+                    <span key={n}><Image src={`/images/avatars/a${n}.webp`} alt="" width={96} height={96} sizes="24px" quality={75} /></span>
                   ))}
                 </div>
                 <p>
@@ -181,12 +188,12 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
         </HeroFade>
       </Hero3D>
 
-      {/* ===== NUMBER CARDS (3D, tilt on hover, always show the real numbers) ===== */}
+      {/* ===== SIX RESPONSIVE NUMBER CARDS ===== */}
       <div className="h3d-stats">
         <div className="h3d-stats-grid">
-          {HERO_STATS.map(({ icon: Icon, label, n, suffix, decimals, text, fill }, i) => (
+          {deckStats.map(({ icon: Icon, label, n, suffix, decimals, text, fill }, i) => (
             <Reveal3D key={label} delay={i * 70}>
-              <Card3D className="h3d-stat" maxTilt={9} lift={8}>
+              <Card3D className="h3d-stat" maxTilt={0} lift={4} glare={false}>
                 <span className="h3d-stat-ico c3d-z2"><Icon size={22} fill={fill ? 'currentColor' : 'none'} /></span>
                 <span className="h3d-stat-txt c3d-z1">
                   <b>{text ?? <CountUp value={n} suffix={suffix} decimals={decimals} />}</b>
@@ -231,7 +238,7 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
                     className="c3d-img"
                     style={{ objectFit: (course.imageFit || 'contain') as React.CSSProperties['objectFit'], objectPosition: course.imagePosition || 'center' }}
                     sizes="(max-width: 640px) 100vw, 25vw"
-                    unoptimized={/^https?:\/\//i.test(course.image)}
+                    quality={75}
                   />
                 </div>
                 {course.tag && <span className="h3d-tag c3d-z2">{course.tag}</span>}
@@ -363,7 +370,7 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
             <div className="relative grid items-center gap-8 lg:grid-cols-[.92fr_1.08fr] lg:gap-10 xl:gap-14">
               <div className="relative z-10">
                 <span className="inline-flex items-center gap-2 rounded-full border border-rose-200 bg-white/90 px-4 py-2 text-[11px] font-extrabold tracking-[0.04em] text-rose-600 shadow-sm"><BookOpen size={16} /> {cardByKey('home-book-store')?.eyebrow || 'Persona Book Store'}</span>
-                <h2 className="mt-5 max-w-[640px] text-[clamp(2rem,3.8vw,3.7rem)] font-black leading-[1.02] tracking-[-.045em] text-[#102d70]">{cardByKey('home-book-store')?.title || <>Study Better with <span className="relative inline-block bg-gradient-to-r from-[#c51e55] via-[#ed2450] to-[#f04422] bg-clip-text text-transparent">Persona Books<span aria-hidden="true" className="absolute -bottom-2 left-[38%] h-[5px] w-[58%] -rotate-2 rounded-full bg-gradient-to-r from-orange-400 to-orange-500" /></span></>}</h2>
+                <h2 className="mt-5 max-w-[640px] text-[clamp(2rem,3.8vw,3.7rem)] font-black leading-[1.02] tracking-[-.045em] text-[#102d70]">{cardByKey('home-book-store')?.title || <>Study Better with <span className="inline-block bg-gradient-to-r from-[#c51e55] via-[#ed2450] to-[#f04422] bg-clip-text text-transparent">Persona Books</span></>}</h2>
                 <p className="mt-5 max-w-[560px] text-[15px] leading-7 text-[#4b5e86] sm:text-base"> {cardByKey('home-book-store')?.description || 'Handpicked books to build your English grammar, vocabulary and spoken skills.'}</p>
                 <div className="mt-7 grid max-w-[650px] grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-4 sm:gap-x-0 sm:gap-y-3">
                   {[{ icon: BookOpen, label: "Expert", sub: "Curated", color: "text-rose-500" },{ icon: Target, label: "Exam", sub: "Focused", color: "text-orange-500" },{ icon: Layers, label: "Practice", sub: "Rich", color: "text-violet-600" },{ icon: Users, label: "Learner", sub: "Friendly", color: "text-blue-600" }].map(({ icon: Icon, label, sub, color }, i) => (
@@ -381,7 +388,7 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
               <div className="relative mx-auto w-full max-w-[700px] lg:ml-auto">
                 <div aria-hidden="true" className="absolute -inset-3 rounded-[30px] bg-gradient-to-br from-violet-200/60 via-rose-100/50 to-orange-100/70 blur-xl" />
                 <div className="relative overflow-hidden rounded-[26px] border border-white/90 bg-white/70 shadow-[0_22px_55px_rgba(69,48,120,.16)] transition duration-500 hover:-translate-y-1 hover:shadow-[0_28px_65px_rgba(69,48,120,.22)]">
-                  <img data-sanity={cardByKey('home-book-store')?._id ? sanityFieldAttribute(cardByKey('home-book-store')!._id, 'siteCard', 'image') : undefined} src={cleanSanityString(cardByKey('home-book-store')?.imageUrl) || "/images/persona-books-display.png"} alt={cardByKey('home-book-store')?.imageAlt || "Persona Institute Spoken English, English Grammar and Vocabulary Booster books"} className={`block h-auto w-full ${cleanSanityString(cardByKey('home-book-store')?.imageFit) === 'cover' ? 'object-cover' : 'object-contain'}`} style={{ objectPosition: cleanSanityString(cardByKey('home-book-store')?.imagePosition) || 'center' }} loading="lazy" />
+                  <Image data-sanity={cardByKey('home-book-store')?._id ? sanityFieldAttribute(cardByKey('home-book-store')!._id, 'siteCard', 'image') : undefined} src={cleanSanityString(cardByKey('home-book-store')?.imageUrl) || "/images/persona-books-display.webp"} alt={cardByKey('home-book-store')?.imageAlt || "Persona Institute Spoken English, English Grammar and Vocabulary Booster books"} width={1200} height={900} sizes="(max-width: 1024px) 100vw, 52vw" quality={78} className={`block h-auto w-full ${cleanSanityString(cardByKey('home-book-store')?.imageFit) === 'cover' ? 'object-cover' : 'object-contain'}`} style={{ objectPosition: cleanSanityString(cardByKey('home-book-store')?.imagePosition) || 'center' }} />
                 </div>
               </div>
             </div>

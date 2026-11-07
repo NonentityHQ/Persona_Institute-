@@ -45,7 +45,7 @@ export const brands: Record<BrandId, BrandConfig> = {
     storeBaseUrl: process.env.NEXT_PUBLIC_CLASSPLUS_PERSONA_STORE_URL?.trim() || 'https://bspkr.courses.store',
     accent: '#f51632',
     accentSoft: '#fff1f2',
-    logo: '/images/persona-logo.png',
+    logo: '/images/persona-logo.webp',
     description: 'Live & recorded spoken English, grammar and vocabulary with Ajay Sir.',
   },
   khushi: {
@@ -59,7 +59,7 @@ export const brands: Record<BrandId, BrandConfig> = {
     storeBaseUrl: process.env.NEXT_PUBLIC_CLASSPLUS_KHUSHI_STORE_URL?.trim() || undefined,
     accent: '#7c3aed',
     accentSoft: '#f5f3ff',
-    logo: '/images/english-with-khushi-logo.png',
+    logo: '/images/english-with-khushi-logo.webp',
     description: 'English learning, daily speaking practice and confidence-building lessons in the English with Khushi app.',
   },
 };

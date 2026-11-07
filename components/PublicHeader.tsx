@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { m } from "framer-motion";
 import { ArrowRight, BookOpen, GraduationCap, Home, Menu, Search, X } from "lucide-react";
 import TransitionLink from "@/components/motion/TransitionLink";
-import ScrollProgress from "@/components/motion/ScrollProgress";
 import BrandLoginButton from "@/components/BrandLoginButton";
 import { DUR, EASE_IN_OUT } from "@/lib/motion";
 
@@ -38,11 +37,11 @@ export default function PublicHeader({ active, className = "" }: Props) {
   useEffect(() => { setMenuOpen(false); }, [pathname]);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 border-b border-orange-100/70 bg-white/95 ${className}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 border-b border-orange-100/70 bg-white shadow-[0_6px_22px_rgba(16,45,112,.06)] ${className}`}>
       <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-3 px-4 py-3 sm:px-5 lg:px-10">
         <TransitionLink href="/" aria-label="Persona Institute home" className="flex min-w-0 shrink-0 items-center gap-2.5">
           {/* Same official logo file; next/image serves a ~44px WebP instead of decoding the 1.3MB PNG. */}
-          <Image src="/images/persona-logo.png" alt="Persona Institute logo" width={44} height={44} priority className="h-10 w-10 shrink-0 object-contain sm:h-11 sm:w-11" />
+          <Image src="/images/persona-logo.webp" alt="Persona Institute logo" width={44} height={44} loading="eager" className="h-10 w-10 shrink-0 object-contain sm:h-11 sm:w-11" />
           <span className="min-w-0 leading-tight">
             <strong className="block truncate text-[15px] font-extrabold tracking-tight text-[#102d70] sm:text-xl">Persona Institute</strong>
             <span className="block text-[10px] font-medium text-[#284b8e] sm:text-xs">Learn · Practice · Grow</span>
@@ -113,7 +112,6 @@ export default function PublicHeader({ active, className = "" }: Props) {
           {menuOpen ? <X size={19} /> : <Menu size={19} />}<span>Menu</span>
         </button>
       </nav>
-      <ScrollProgress />
     </header>
   );
 }
