@@ -5,9 +5,7 @@ import {
   getBookStoreSettings,
 } from '@/lib/sanity/server';
 import {
-  fallbackBooks,
   fallbackBookCategories,
-  fallbackBookOffer,
   fallbackBookStoreSettings,
 } from '@/lib/sanity/fallback';
 import BookStoreClient from './BookStoreClient';
@@ -30,9 +28,9 @@ export default async function BookStorePage() {
 
   return (
     <BookStoreClient
-      books={books.length ? books : fallbackBooks}
+      books={books}
       categories={categories.length ? categories : fallbackBookCategories}
-      offer={offer || fallbackBookOffer}
+      offer={offer}
       settings={settings || fallbackBookStoreSettings}
     />
   );

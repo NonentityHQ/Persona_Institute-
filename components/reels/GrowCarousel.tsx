@@ -74,7 +74,7 @@ export default function GrowCarousel({
   const getThumb = useCallback((reel: SanityReel, i: number) => {
     if (reel.thumbnail?.asset && sanityConfigured) {
       try {
-        return urlFor(reel.thumbnail).width(600).height(1066).fit('crop').url();
+        return urlFor(reel.thumbnail).width(600).height(1066).fit('crop').format('webp').url();
       } catch {
         /* */
       }

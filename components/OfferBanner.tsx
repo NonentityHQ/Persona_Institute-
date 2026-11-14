@@ -61,7 +61,7 @@ export default function OfferBanner({ offer, onCta }: Props) {
   let imageSrc: string | null = null;
   if (offer.image?.asset && sanityConfigured) {
     try {
-      imageSrc = urlFor(offer.image).width(400).height(400).fit('crop').url();
+      imageSrc = urlFor(offer.image).width(400).height(400).fit('crop').format('webp').url();
     } catch {
       imageSrc = null;
     }

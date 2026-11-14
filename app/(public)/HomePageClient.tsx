@@ -21,7 +21,7 @@ import OfferBanner from '@/components/OfferBanner';
 import GrowCarousel from '@/components/reels/GrowCarousel';
 import YoutubeSection from '@/components/YoutubeSection';
 import type { SanityOffer, SanityReel, SanityYoutubeVideo, SiteSettings, SanitySiteCard } from '@/lib/sanity/client';
-import { fallbackOffer, fallbackSettings } from '@/lib/sanity/fallback';
+import { fallbackSettings } from '@/lib/sanity/fallback';
 import { sanityFieldAttribute } from '@/lib/sanity/visual';
 import { cleanSanityString } from '@/lib/sanity/client';
 
@@ -64,7 +64,7 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
   const { navigate } = useRouteTransition();
 
   const s = settings || fallbackSettings;
-  const activeOffer = offer || fallbackOffer;
+  const activeOffer = offer;
   const activeReels = reels;
   const activeYoutube = youtube;
   const cardByKey = (key: string) => siteCards.find((card) => cleanSanityString(typeof card.key === 'string' ? card.key : card.key?.current) === key);
@@ -206,11 +206,13 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
       </div>
 
       {/* ===== OFFER (Sanity-driven) ===== */}
-      <div className="h3d-offer-wrap h3d-section">
-        <Reveal3D>
-          <OfferBanner offer={activeOffer} onCta={() => setModal('offer')} />
-        </Reveal3D>
-      </div>
+      {activeOffer && (
+        <div className="h3d-offer-wrap h3d-section">
+          <Reveal3D>
+            <OfferBanner offer={activeOffer} onCta={() => setModal('offer')} />
+          </Reveal3D>
+        </div>
+      )}
 
       {/* ===== COURSES ===== */}
       <section className="section-wrap h3d-section" id="courses">

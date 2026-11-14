@@ -26,7 +26,7 @@ function extractYoutubeId(url?: string): string | null {
 function thumbFor(video: SanityYoutubeVideo, index: number): string {
   if (video.thumbnail?.asset && sanityConfigured) {
     try {
-      return urlFor(video.thumbnail).width(720).height(405).fit('crop').url();
+      return urlFor(video.thumbnail).width(720).height(405).fit('crop').format('webp').url();
     } catch {
       /* */
     }

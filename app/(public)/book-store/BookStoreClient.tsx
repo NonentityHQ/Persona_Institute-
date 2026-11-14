@@ -5,7 +5,7 @@ import { AnimatePresence, m } from 'framer-motion';
 import {
   ArrowRight, Award, BookOpen, ChevronLeft, ChevronRight, Crown, FileText, Gift, Heart,
   Layers, LayoutGrid, PenLine, Play, ShieldCheck, ShoppingCart, Star, Target, TrendingUp,
-  Type, Users, Zap, Quote, ShoppingBag, Sparkles, type LucideIcon,
+  Type, Users, Zap, ShoppingBag, Sparkles, type LucideIcon,
 } from 'lucide-react';
 import type {
   SanityBook,
@@ -23,19 +23,18 @@ import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
 type Props = {
   books: SanityBook[];
   categories: SanityBookCategory[];
-  offer: SanityBookOffer;
+  offer: SanityBookOffer | null;
   settings: SanityBookStoreSettings;
 };
 
 /* ───────────── helpers / static maps ───────────── */
-// false = CSS placeholder covers · true = use the PNGs already in /public/images/books
+// false = CSS placeholder covers · true = use the local WebP book covers
 const USE_LOCAL_COVERS = false;
 const LOCAL_COVERS: Array<[RegExp, string]> = [
   [/combo/i, '/images/books/combo-pack.webp'], [/grammar/i, '/images/books/grammar-mastery.webp'],
   [/vocab/i, '/images/books/vocabulary-booster.webp'], [/compre/i, '/images/books/comprehension-practice.webp'],
   [/error/i, '/images/books/error-detection.webp'],
 ];
-const AVATARS = ['/images/avatars/a1.webp', '/images/avatars/a2.webp', '/images/avatars/a3.webp', '/images/avatars/a4.webp'];
 const FEATURE_ICON: Record<string, LucideIcon> = {
   book: BookOpen, zap: Zap, layers: Layers, star: Star, users: Users, play: Play,
   shield: ShieldCheck, target: Target, award: Award, trending: TrendingUp, gift: Gift, cart: ShoppingCart,
@@ -58,12 +57,12 @@ const inr = (n?: number) => (n == null ? '' : `₹${n.toLocaleString('en-IN')}`)
 const off = (p?: number, o?: number) => (p && o && o > p ? `${Math.round(((o - p) / o) * 100)}% OFF` : null);
 
 function coverSrc(b?: SanityBook): string | null {
-  if (b?.cover?.asset && sanityConfigured) { try { return urlFor(b.cover).width(560).fit('max').url(); } catch { /* ignore */ } }
+  if (b?.cover?.asset && sanityConfigured) { try { return urlFor(b.cover).width(560).fit('max').format('webp').url(); } catch { /* ignore */ } }
   if (USE_LOCAL_COVERS && b?.title) return LOCAL_COVERS.find(([re]) => re.test(b.title!))?.[1] ?? null;
   return null;
 }
 
-/** Sanity cover → (optional local PNG) → CSS placeholder. Uploading a cover in Sanity replaces the placeholder automatically. */
+/** Sanity WebP cover → (optional local WebP) → CSS placeholder. Uploading a cover in Sanity replaces the placeholder automatically. */
 function Cover({ book, i = 0 }: { book?: SanityBook; i?: number }) {
   const src = coverSrc(book);
   if (src) return <img src={src} alt={book?.cover?.altText || book?.title || 'Book cover'} data-sanity={book?._id ? sanityFieldAttribute(book._id, 'book', 'cover') : undefined} className="block h-auto w-full select-none drop-shadow-[0_18px_22px_rgba(20,20,60,.35)]" draggable={false} loading="lazy" />;
@@ -210,7 +209,7 @@ function useCountdown(end?: string, on = true) {
   return p;
 }
 
-/** "Loved by Thousands" banner. Testimonials come from Sanity Book Store Settings. */
+/** Render learner testimonials only when an actual Sanity testimonial is published. */
 function TrustBanner({
   wrap,
   testimonials,
@@ -218,66 +217,32 @@ function TrustBanner({
   wrap: string;
   testimonials: Array<{ text?: string; by?: string }>;
 }) {
-  const list = testimonials.length
-    ? testimonials
-    : [{ text: 'Persona books made English so simple and score-friendly!', by: 'A Verified Learner' }];
+  const list = testimonials.filter((item) => item.text?.trim());
   const [ti, setTi] = useState(0);
   useEffect(() => {
     if (list.length < 2) return;
     const id = window.setInterval(() => setTi((i) => (i + 1) % list.length), 4800);
     return () => window.clearInterval(id);
   }, [list.length]);
-  const t = list[ti] || list[0];
-  const stars = (
-    <div className="flex gap-0.5">
-      {[0, 1, 2, 3, 4].map((k) => (
-        <m.span key={k} initial={{ scale: 0, rotate: -90 }} whileInView={{ scale: 1, rotate: 0 }} viewport={{ once: true }} transition={{ delay: .4 + k * .08, type: 'spring', stiffness: 400, damping: 14 }}>
-          <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-        </m.span>
-      ))}
-    </div>
-  );
+  if (!list.length) return null;
+
+  const t = list[ti % list.length];
   return (
     <section className={`${wrap} mt-10`}>
       <Reveal>
-        <div className="relative grid items-center gap-7 overflow-hidden rounded-[28px] bg-[linear-gradient(110deg,#101a44,#1b2a63_60%,#2a2170)] px-6 py-8 text-white shadow-[0_28px_60px_-28px_rgba(20,33,79,.95)] md:grid-cols-[1.1fr_auto_1.2fr] md:px-10">
+        <div className="relative overflow-hidden rounded-[28px] bg-[linear-gradient(110deg,#101a44,#1b2a63_60%,#2a2170)] px-6 py-8 text-white shadow-[0_28px_60px_-28px_rgba(20,33,79,.95)] md:px-10">
           <m.span aria-hidden className="absolute -left-16 -top-20 h-64 w-64 rounded-full bg-[#f51632]/25 blur-3xl" animate={{ x: [0, 30, 0], y: [0, 20, 0] }} transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }} />
-          <m.span aria-hidden className="absolute -bottom-24 right-10 h-64 w-64 rounded-full bg-violet-500/25 blur-3xl" animate={{ x: [0, -26, 0], y: [0, -18, 0] }} transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }} />
-          <span aria-hidden className="absolute inset-0 opacity-[.07] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:18px_18px]" />
-
-          <div className="relative">
-            <p className="text-[11px] font-extrabold uppercase tracking-[.22em] text-rose-300">Learners’ Trust</p>
-            <h3 className="mt-1 pr-2 text-[clamp(26px,3vw,36px)] font-black leading-[1.12]">
-              Loved by <span className="bg-gradient-to-r from-amber-300 to-rose-400 bg-clip-text pr-1 text-transparent">Thousands</span><br />of Students
-            </h3>
-            <div className="mt-3 flex items-center gap-3">
-              <b className="text-3xl font-black tabular-nums"><CountUp value={4.8} decimals={1} /></b>
-              <div>{stars}<span className="text-[12px] text-white/70">Average student rating</span></div>
-            </div>
-          </div>
-
-          <div className="relative flex items-center">
-            <div className="flex -space-x-3">
-              {[...AVATARS, AVATARS[0]].map((a, i) => (
-                <m.img key={i} src={a} alt="" initial={{ opacity: 0, scale: .5, x: -20 }} whileInView={{ opacity: 1, scale: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: .15 + i * .09, type: 'spring', stiffness: 260, damping: 18 }} whileHover={{ y: -6 }} className="h-14 w-14 rounded-full border-[3px] border-white object-cover shadow-lg" />
-              ))}
-            </div>
-            <m.span className="-ml-3 grid h-14 w-14 place-items-center rounded-full border-[3px] border-white bg-[#f51632] text-[13px] font-black shadow-lg" initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: .75, type: 'spring', stiffness: 300, damping: 16 }}>10k+</m.span>
-          </div>
-
-          <div className="relative rounded-2xl border border-white/15 bg-white/[.07] p-5 backdrop-blur">
-            <Quote className="absolute right-4 top-3 h-9 w-9 text-[#f51632]/80" />
-            {stars}
-            <div className="relative mt-2 min-h-[76px]">
-              <AnimatePresence mode="wait" initial={false}>
-                <m.div key={ti} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }} transition={{ duration: .4, ease: EASE_OUT }}>
-                  <p className="text-[16px] font-semibold italic leading-snug">“{t?.text}”</p>
-                  <p className="mt-1.5 text-[12px] text-white/70">— {t?.by}</p>
-                </m.div>
-              </AnimatePresence>
-            </div>
+          <div className="relative max-w-3xl">
+            <p className="text-[11px] font-extrabold uppercase tracking-[.22em] text-rose-300">Learner Experiences</p>
+            <h3 className="mt-1 text-[clamp(26px,3vw,36px)] font-black leading-[1.12]">What Our Learners Say</h3>
+            <AnimatePresence mode="wait" initial={false}>
+              <m.div key={ti} className="mt-4" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }} transition={{ duration: .4, ease: EASE_OUT }}>
+                <p className="text-lg font-semibold italic leading-snug">“{t?.text}”</p>
+                {t?.by && <p className="mt-2 text-sm text-white/70">— {t.by}</p>}
+              </m.div>
+            </AnimatePresence>
             {list.length > 1 && (
-              <div className="mt-3 flex gap-1.5">
+              <div className="mt-4 flex gap-1.5">
                 {list.map((_, k) => <button key={k} aria-label={`Testimonial ${k + 1}`} onClick={() => setTi(k)} className={`h-1.5 rounded-full transition-all ${k === ti ? 'w-6 bg-[#f51632]' : 'w-1.5 bg-white/35'}`} />)}
               </div>
             )}
@@ -294,49 +259,33 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
   const [liked, setLiked] = useState<Set<string>>(new Set());
   const [added, setAdded] = useState<string | null>(null);
   const row = useRef<HTMLDivElement>(null);
-  const cd = useCountdown(offer.countdownEnd, offer.showCountdown !== false);
+  const cd = useCountdown(offer?.countdownEnd, offer?.showCountdown !== false);
 
   const features = (settings.features?.length
     ? settings.features.map((f) => [iconOf(f.icon, BookOpen), f.label || ''] as [LucideIcon, string])
     : [[BookOpen, 'Exam Focused'], [Zap, 'Concept Clarity'], [Layers, 'Practice Sets'], [Star, 'Student Preferred']] as Array<[LucideIcon, string]>);
 
-  const defaultStats: Array<[LucideIcon, number, string, number, string]> = [
-    [Users, 10000, '+', 0, 'Happy Learners'],
-    [Play, 500, '+', 0, 'Video Lessons'],
-    [Star, 4.8, '/5', 1, 'Student Rating'],
-    [Layers, 25000, '+', 0, 'Vocabulary Words'],
-    [ShieldCheck, 100, '%', 0, 'Exam Focused'],
-    [BookOpen, 100, '%', 0, 'At Your Own Pace'],
-  ];
   const configuredStats = settings.stats?.map((s) => [
     iconOf(s.icon, Users), s.value ?? 0, s.suffix || '', s.decimals ?? 0, s.label || '',
   ] as [LucideIcon, number, string, number, string]) ?? [];
-  // Keep the six most relevant configured metrics and fill any gaps from defaults.
-  const configuredLabels = new Set(configuredStats.map((stat) => stat[4].trim().toLowerCase()));
-  const stats = (configuredStats.length
-    ? [...configuredStats.slice(0, 6), ...defaultStats.filter((stat) => !configuredLabels.has(stat[4].trim().toLowerCase()))]
-    : defaultStats
-  ).slice(0, 6);
+  const stats = configuredStats.slice(0, 6);
 
   const whyItems = (settings.whyItems?.length
     ? settings.whyItems.map((w) => [iconOf(w.icon, Target), w.title || '', w.description || ''] as [LucideIcon, string, string])
     : [
       [Target, 'By Ajay Sir', 'Curated by Ajay Singh Rajput (Ajay Sir)'], [Award, 'Exam Oriented', 'Syllabus-based and completely practical'],
-      [BookOpen, 'Concept + Practice', 'Complete learning with examples & sets'], [TrendingUp, 'Proven Results', 'Trusted by 10,000+ learners across India'],
+      [BookOpen, 'Concept + Practice', 'Complete learning with examples & sets'], [TrendingUp, 'Structured Learning', 'Clear lessons supported by examples and practice'],
     ] as Array<[LucideIcon, string, string]>);
 
   const savings =
-    offer.savingsText ||
-    (offer.price && offer.oldPrice && offer.oldPrice > offer.price
+    offer?.savingsText ||
+    (offer?.price && offer.oldPrice && offer.oldPrice > offer.price
       ? `Save ₹${(offer.oldPrice - offer.price).toLocaleString('en-IN')}`
       : null);
 
-  const offerTrioBooks: Array<SanityBook | undefined> = (() => {
-    if (offer.includedBooks?.length) {
-      return [0, 1, 2].map((i) => offer.includedBooks?.[i] as SanityBook | undefined);
-    }
-    return undefined as unknown as Array<SanityBook | undefined>;
-  })();
+  const offerTrioBooks: Array<SanityBook | undefined> | undefined = offer?.includedBooks?.length
+    ? [0, 1, 2].map((i) => offer.includedBooks?.[i] as SanityBook | undefined)
+    : undefined;
 
   const cats = useMemo(() => (categories.some((c) => c.slug?.current === 'all') ? categories : [{ _id: 'all', title: 'All Books', slug: { current: 'all' }, subtitle: 'Explore Complete Collection', icon: 'grid' }, ...categories]), [categories]);
   const featured = useMemo(() => { const f = books.filter((b) => b.featured); return (f.length ? f : books).slice(0, 8); }, [books]);
@@ -381,11 +330,10 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
             </Stagger>
             <Reveal delay={.8} className="mt-7 flex flex-wrap gap-3">
               <m.a href="#featured" whileHover={{ y: -3 }} whileTap={{ scale: .97 }} className={btnRed}><Shine />{settings.exploreCtaLabel || 'Explore Books'} <ArrowRight className="h-4 w-4" /></m.a>
-              <m.a href="#offer" whileHover={{ y: -3 }} whileTap={{ scale: .97 }} className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-white px-6 py-3.5 text-[15px] font-bold text-[#e30f2f] shadow-sm"><Gift className="h-4 w-4" /> {settings.comboCtaLabel || 'View Combos'}</m.a>
+              {offer && <m.a href="#offer" whileHover={{ y: -3 }} whileTap={{ scale: .97 }} className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-white px-6 py-3.5 text-[15px] font-bold text-[#e30f2f] shadow-sm"><Gift className="h-4 w-4" /> {settings.comboCtaLabel || 'View Combos'}</m.a>}
             </Reveal>
-            <Reveal delay={.95} className="mt-6 flex items-center gap-3">
-              <div className="flex -space-x-3">{AVATARS.map((a, i) => <m.img key={i} src={a} alt="" whileHover={{ y: -4, zIndex: 5 }} className="h-9 w-9 rounded-full border-2 border-white object-cover shadow" />)}</div>
-              <p className="text-[13px] text-slate-600"><b className="block text-[#e30f2f]">10,000+ Students</b>are already studying with Persona Books</p>
+            <Reveal delay={.95} className="mt-6 max-w-[470px] text-[13px] leading-relaxed text-slate-600">
+              Explore books and practice resources curated for English learning and exam preparation.
             </Reveal>
           </div>
 
@@ -408,16 +356,18 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
       </section>
 
       {/* ─── STATS ─── */}
-      <div className={wrap}>
-        <Stagger className="bookstore-stats-grid rounded-[22px] bg-white/95 shadow-[0_18px_45px_-20px_rgba(15,39,79,.25)] ring-1 ring-rose-50 backdrop-blur">
-          {stats.map(([Ic, v, suf, dec, l]) => (
-            <StaggerItem key={l} className="bookstore-stat-card">
-              <span className="bookstore-stat-icon grid place-items-center rounded-full bg-rose-50 text-[#f51632]"><Ic className="h-6 w-6" /></span>
-              <div className="bookstore-stat-copy"><b className="bookstore-stat-value block font-extrabold leading-none text-[#0c1f4a]"><CountUp value={v} suffix={suf} decimals={dec} /></b><span className="bookstore-stat-label block text-slate-500">{l}</span></div>
-            </StaggerItem>
-          ))}
-        </Stagger>
-      </div>
+      {stats.length > 0 && (
+        <div className={wrap}>
+          <Stagger className="bookstore-stats-grid rounded-[22px] bg-white/95 shadow-[0_18px_45px_-20px_rgba(15,39,79,.25)] ring-1 ring-rose-50 backdrop-blur">
+            {stats.map(([Ic, v, suf, dec, l]) => (
+              <StaggerItem key={l} className="bookstore-stat-card">
+                <span className="bookstore-stat-icon grid place-items-center rounded-full bg-rose-50 text-[#f51632]"><Ic className="h-6 w-6" /></span>
+                <div className="bookstore-stat-copy"><b className="bookstore-stat-value block font-extrabold leading-none text-[#0c1f4a]"><CountUp value={v} suffix={suf} decimals={dec} /></b><span className="bookstore-stat-label block text-slate-500">{l}</span></div>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      )}
 
       {/* ─── CATEGORIES ─── */}
       <section className={`${wrap} mt-14`}>
@@ -448,7 +398,7 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
             <m.button key={d} aria-label={d < 0 ? 'Previous' : 'Next'} whileHover={{ scale: 1.1 }} whileTap={{ scale: .9 }} onClick={() => row.current?.scrollBy({ left: d * 260, behavior: 'smooth' })} className="grid h-10 w-10 place-items-center rounded-full bg-white text-[#0c1f4a] shadow-md ring-1 ring-rose-100">{d < 0 ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}</m.button>
           ))}</div>
         } />
-        <p className="ml-4 mt-1 text-[14px] text-slate-600">Trusted by thousands of learners for English mastery.</p>
+        <p className="ml-4 mt-1 text-[14px] text-slate-600">Browse the published collection of Persona Institute books.</p>
         <div ref={row} className="-mx-2 mt-5 overflow-x-auto px-2 pb-8 pt-2 [scrollbar-width:none] snap-x snap-mandatory">
           {list.length === 0 && <p className="py-10 text-center text-slate-500">No books in this category yet.</p>}
           <Stagger key={cat} className="grid grid-flow-col auto-cols-[218px] gap-4 lg:auto-cols-[calc((100%-4rem)/5)]" stagger={.08}>
@@ -464,7 +414,7 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
                     <div className="flex h-[196px] items-end justify-center pb-2 pt-9 [perspective:800px]">
                       <m.div className={b.isCombo && !coverSrc(b) ? 'h-[132px] w-[92%]' : 'w-[54%]'} whileHover={{ rotateY: -14, scale: 1.07 }} transition={{ type: 'spring', stiffness: 220, damping: 20 }}>
                         {b.isCombo && !coverSrc(b) ? (
-                          <Trio books={(b.comboBooks?.length ? b.comboBooks : offer.includedBooks || []) as Array<SanityBook | undefined>} />
+                          <Trio books={(b.comboBooks?.length ? b.comboBooks : offer?.includedBooks || []) as Array<SanityBook | undefined>} />
                         ) : (
                           <Cover book={b} i={i} />
                         )}
@@ -490,7 +440,7 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
       </section>
 
       {/* ─── OFFER / COMBO BANNER (fully Sanity-driven) ─── */}
-      <section id="offer" className={`${wrap} scroll-mt-24`}>
+      {offer && <section id="offer" className={`${wrap} scroll-mt-24`}>
         <Reveal>
           <div className="relative grid items-center gap-4 overflow-hidden rounded-[28px] bg-[linear-gradient(100deg,#1a1347_0,#3b1767_55%,#7b1d6d_100%)] px-6 py-8 text-white shadow-[0_28px_60px_-28px_rgba(40,10,80,.8)] md:grid-cols-[170px_1fr_300px] md:px-10">
             {[8, 22, 40, 63, 78, 91].map((l, i) => <m.span key={i} aria-hidden className="absolute h-1.5 w-1.5 rounded-full bg-amber-300" style={{ left: `${l}%`, top: `${(i * 37) % 80 + 8}%` }} animate={{ opacity: [0, 1, 0], scale: [.5, 1.4, .5] }} transition={{ duration: 2.6, repeat: Infinity, delay: i * .45 }} />)}
@@ -551,7 +501,7 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
             </div>
           </div>
         </Reveal>
-      </section>
+      </section>}
 
       {/* ─── WHY ─── */}
       <section className={`${wrap} mt-14`}>
