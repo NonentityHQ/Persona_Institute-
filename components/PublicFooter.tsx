@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  ArrowRight, Award, BookOpen, BookOpenCheck, GraduationCap, Laptop,
-  Layers3, MapPin, MessageCircle, Users, Youtube,
+  ArrowRight, Award, BookOpen, GraduationCap, Laptop,
+  Layers3, MapPin, MessageCircle, PlayCircle, Users,
 } from 'lucide-react';
 
 const quickLinks = [
@@ -70,7 +70,7 @@ export default function PublicFooter() {
                 <MessageCircle size={20} />
               </a>
               <Link href="/courses" aria-label="Explore video courses" className="grid h-10 w-10 place-items-center rounded-xl bg-[#e62b4e] text-white transition hover:-translate-y-1 hover:brightness-110">
-                <Youtube size={20} />
+                <PlayCircle size={20} />
               </Link>
               <Link href="/book-store" aria-label="Explore Persona books" className="grid h-10 w-10 place-items-center rounded-xl bg-[#2588d9] text-white transition hover:-translate-y-1 hover:brightness-110">
                 <BookOpen size={20} />
@@ -104,7 +104,7 @@ export default function PublicFooter() {
             <Link href="/contact" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-white transition-colors hover:text-pink-300">
               Contact Support <ArrowRight size={15} />
             </Link>
-            <a href="https://wa.me/918719977802" target="_blank" rel="noopener noreferrer" className="mt-4 flex items-start gap-2.5 text-sm leading-6 text-slate-300 transition-colors hover:text-white">
+            <a href="https://maps.google.com/?q=01%2C%20Jai%20Bajrang%20Nagar%2C%20near%20Gangrade%20Dharmshala%2C%20Kasal%20Pura%2C%20Khandwa%2C%20Madhya%20Pradesh%20450001" target="_blank" rel="noopener noreferrer" className="mt-4 flex items-start gap-2.5 text-sm leading-6 text-slate-300 transition-colors hover:text-white">
               <MapPin size={18} className="mt-1 shrink-0 text-pink-300" />
               <span>01, Jai Bajrang Nagar, near Gangrade Dharmshala, Kasal Pura, Khandwa, Madhya Pradesh 450001</span>
             </a>
