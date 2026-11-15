@@ -139,7 +139,7 @@ async function getLatestYoutubeFeed(): Promise<SanityYoutubeVideo[]> {
         return [] as Array<SanityYoutubeVideo & { publishedAt?: string }>;
       }
       const xml = await response.text();
-      const entries = Array.from(xml.matchAll(/<entry\\b[^>]*>([\\s\\S]*?)<\\/entry>/gi));
+      const entries = Array.from(xml.matchAll(/<entry\b[^>]*>([\s\S]*?)<\/entry>/gi));
       if (!entries.length) console.warn(`[youtube] RSS returned no entries for ${channel.label}`);
       return entries.map((match, index) => {
         const entry = match[1];
