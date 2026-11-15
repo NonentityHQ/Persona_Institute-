@@ -124,6 +124,7 @@ export default function ReviewsPageClient({ siteCards = [] }: { siteCards: Sanit
         </div>
       </section>
 
+      {editableStories.length > 0 && (
       <section className="relative z-10 mx-auto -mt-2 max-w-[1440px] px-4 sm:px-7 lg:px-10">
         <div className="flex gap-2 overflow-x-auto rounded-2xl border border-slate-100 bg-white/95 p-2 shadow-sm">
           {categories.map((item, i) => (
@@ -133,6 +134,7 @@ export default function ReviewsPageClient({ siteCards = [] }: { siteCards: Sanit
           ))}
         </div>
       </section>
+      )}
 
       {featured && (
         <m.section initial="hidden" whileInView="show" viewport={{ once: true, amount: .08, margin: "0px 0px -4% 0px" }} variants={fadeUp} id="featured-story" className="mx-auto max-w-[1440px] px-5 pb-5 pt-5 sm:px-7 lg:px-10">
@@ -171,11 +173,11 @@ export default function ReviewsPageClient({ siteCards = [] }: { siteCards: Sanit
 
       <m.section initial="hidden" whileInView="show" viewport={{ once: true, amount: .08, margin: "0px 0px -4% 0px" }} variants={fadeUp} className="mx-auto max-w-[1440px] px-5 pb-7 sm:px-7 lg:px-10">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div><h2 className="text-xl font-black tracking-tight sm:text-2xl">More Success Stories from Our Learners</h2><p className="mt-1 text-xs text-[#52658d] sm:text-sm">Browse experiences shared by learners.</p></div>
-          <div className="flex gap-2">
+          <div><h2 className="text-xl font-black tracking-tight sm:text-2xl">{editableStories.length ? "More Success Stories from Our Learners" : "Learner Stories"}</h2><p className="mt-1 text-xs text-[#52658d] sm:text-sm">{editableStories.length ? "Browse experiences shared by learners." : "Real experiences from our learning community."}</p></div>
+          {editableStories.length > 0 && <div className="flex gap-2">
             <label className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 sm:w-[240px] sm:flex-none"><Search size={16} className="shrink-0 text-[#52658d]" /><input id="story-search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by name, city, course..." className="w-full min-w-0 bg-transparent text-xs outline-none placeholder:text-slate-400" /></label>
             <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-bold ${showFilters ? "border-orange-300 bg-orange-50" : "border-slate-200 bg-white"}`}><SlidersHorizontal size={15} /> Filters</button>
-          </div>
+          </div>}
         </div>
         {showFilters && (
           <div className="mb-4 flex flex-wrap gap-2 rounded-xl border border-orange-100 bg-orange-50/50 p-3">
@@ -208,11 +210,7 @@ export default function ReviewsPageClient({ siteCards = [] }: { siteCards: Sanit
             </AnimatePresence>
           </m.div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-orange-200 bg-orange-50/50 p-10 text-center">
-            <p className="font-bold">{editableStories.length ? "No stories match your search." : "Success stories will appear here once published."}</p>
-            <p className="mt-2 text-sm text-[#52658d]">Add learner stories in Sanity → Site Cards → Success Stories.</p>
-            {editableStories.length > 0 && <button onClick={() => { setCategory("All Stories"); setQuery(""); }} className="mt-3 text-sm font-semibold text-orange-600 underline">Clear search and filters</button>}
-          </div>
+          <div className="overflow-hidden rounded-2xl border border-orange-100 bg-gradient-to-br from-white via-[#fffaf6] to-[#fff0e5] px-5 py-10 text-center shadow-[0_8px_28px_rgba(16,45,112,.045)] sm:px-8 sm:py-12"><span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-orange-50 text-[#ed542d]"><Users size={27} strokeWidth={1.8} /></span><h3 className="mt-4 text-lg font-extrabold tracking-tight text-[#102d70] sm:text-xl">{editableStories.length ? "No stories found for this search" : "Our learner stories are coming soon"}</h3><p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#52658d]">{editableStories.length ? "Try a different name, city or course, or clear your filters to see all available stories." : "We’re getting more learner experiences ready to share. In the meantime, explore our courses or talk to our team about your learning goals."}</p>{editableStories.length > 0 ? <button onClick={() => { setCategory("All Stories"); setQuery(""); }} className="mt-5 inline-flex items-center justify-center rounded-full border border-orange-200 bg-white px-5 py-2.5 text-sm font-bold text-[#173879] transition hover:bg-orange-50">Clear search and filters</button> : <div className="mt-5 flex flex-wrap justify-center gap-3"><TransitionLink href="/courses" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#ff4a16] to-[#ff7014] px-5 py-2.5 text-sm font-bold text-white shadow-md">Explore Courses <ArrowRight size={15} /></TransitionLink><TransitionLink href="/contact" className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white px-5 py-2.5 text-sm font-bold text-[#173879] transition hover:bg-orange-50">Contact Us <ArrowRight size={15} /></TransitionLink></div>}</div>
         )}
       </m.section>
 
