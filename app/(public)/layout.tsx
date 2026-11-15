@@ -14,8 +14,7 @@ export default async function PublicLayout({ children }: { children: React.React
     <>
       <PublicHeader />
       <div className="h-16 lg:h-[4.25rem]" aria-hidden="true" />
-      <div className="pb-20 lg:pb-0">{children}</div>
-      <PublicFooter />
+      <div className="pb-20 lg:pb-0">{children}<PublicFooter /></div>
       {liveEnabled ? <SanityLive /> : null}
       {isDraftMode ? <><VisualEditing /><DisableDraftMode /></> : null}
     </>
