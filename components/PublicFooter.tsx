@@ -43,8 +43,9 @@ export default function PublicFooter() {
       <div className="mx-auto max-w-[1440px] px-5 pb-7 pt-9 sm:px-8 sm:pt-12 lg:px-10">
         <div className="relative mb-10 grid gap-5 overflow-hidden rounded-[28px] border border-white/80 bg-[linear-gradient(112deg,#fff0f6_0%,#fffafd_48%,#fff0e9_100%)] px-5 py-6 text-[#10285b] shadow-[0_18px_48px_rgba(3,12,35,.24)] sm:grid-cols-[116px_1fr_auto] sm:items-center sm:gap-7 sm:px-8 sm:py-7">
           <div aria-hidden="true" className="absolute -right-12 -top-16 h-48 w-48 rounded-full bg-[#f8c7d6]/30 blur-3xl" />
-          <div className="relative flex h-[100px] w-[112px] items-center justify-center rounded-[24px] border border-white bg-white/75 shadow-[inset_0_1px_0_white,0_8px_24px_rgba(29,58,111,.08)]">
-            <Image src="/images/persona-books-display.webp" alt="" width={150} height={130} className="h-[94px] w-[104px] object-contain" />
+          <div aria-hidden="true" className="relative flex h-[116px] w-[132px] items-center justify-center sm:h-[128px] sm:w-[148px]">
+            <span className="absolute inset-2 rounded-full bg-[#f6c7d7]/55 blur-xl" />
+            <Image src="/images/persona-books-display.webp" alt="" width={220} height={190} className="relative h-[116px] w-[140px] object-contain drop-shadow-[0_9px_12px_rgba(30,45,90,.16)] sm:h-[132px] sm:w-[156px]" />
           </div>
           <div className="relative min-w-0">
             <span className="mb-2 inline-flex rounded-full border border-[#f5b4c6] bg-white/85 px-3 py-1 text-[10px] font-black uppercase tracking-[.15em] text-[#d91e4e] sm:text-[11px]">
@@ -64,13 +65,8 @@ export default function PublicFooter() {
 
         <div className="grid gap-9 border-b border-white/15 pb-9 sm:grid-cols-2 lg:grid-cols-[1.2fr_.8fr_1fr_1.1fr] lg:gap-8">
           <div className="min-w-0">
-            <Link href="/" aria-label="Persona Institute home" className="inline-flex items-center gap-3">
-              <Image src="/images/persona-logo-contact.webp" alt="Persona Institute logo" width={104} height={104} className="h-[86px] w-[86px] shrink-0 object-contain drop-shadow-[0_5px_12px_rgba(0,0,0,.22)] sm:h-[96px] sm:w-[96px]" />
-              <span className="leading-[1.05]">
-                <strong className="block text-[25px] font-black tracking-tight text-white sm:text-[29px]">Persona</strong>
-                <span className="mt-1 block text-[21px] font-light tracking-wide text-slate-200 sm:text-[24px]">Institute</span>
-                <span className="mt-1 block text-[9px] font-semibold uppercase tracking-[.19em] text-blue-200">Learn · Practice · Grow</span>
-              </span>
+            <Link href="/" aria-label="Persona Institute home" className="inline-flex items-center">
+              <Image src="/images/persona-logo.webp" alt="Persona Institute" width={340} height={150} className="h-[112px] w-auto max-w-[290px] object-contain object-left drop-shadow-[0_5px_14px_rgba(0,0,0,.28)] sm:h-[126px] sm:max-w-[320px]" priority={false} />
             </Link>
             <p className="mt-4 max-w-[310px] text-sm leading-6 text-slate-300">
               India’s trusted platform to learn, practise and speak English with confidence.
