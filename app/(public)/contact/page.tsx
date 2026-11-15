@@ -2,6 +2,8 @@ import { getSiteCards, getSiteSettings } from '@/lib/sanity/server';
 import { cleanSanityString } from '@/lib/sanity/client';
 import ContactPageClient from './ContactPageClient';
 
+export const metadata = { title: 'Contact Persona Institute', description: 'Contact Persona Institute in Khandwa, Madhya Pradesh for spoken English courses, admissions, course guidance and support.', alternates: { canonical: '/contact' } };
+
 export const revalidate = 120;
 
 export default async function ContactPage() {
