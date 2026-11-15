@@ -50,6 +50,14 @@ export default defineType({
       group: 'hero',
     }),
     defineField({
+      name: 'heroVideoUrl',
+      title: 'Hero YouTube Video URL',
+      type: 'url',
+      group: 'hero',
+      description: 'Paste a YouTube video, Shorts, or youtu.be URL. Leave blank to keep the current introduction video.',
+      validation: (Rule) => Rule.uri({ scheme: ['https'] }),
+    }),
+    defineField({
       name: 'heroImage',
       title: 'Hero Teacher / Main Image',
       type: 'image',
