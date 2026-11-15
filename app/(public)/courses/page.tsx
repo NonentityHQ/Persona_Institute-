@@ -3,6 +3,8 @@ import { brands } from '@/lib/classplus/brands';
 import CoursesClient, { type CourseCard } from './CoursesClient';
 import { getSiteCards } from '@/lib/sanity/server';
 
+export const metadata = { title: 'English Courses', description: 'Explore live and recorded spoken English courses from Persona Institute and English with Khushi. Compare course formats and find a suitable learning path.', alternates: { canonical: '/courses' } };
+
 export const revalidate = 60;
 
 function formatInr(n: number) {

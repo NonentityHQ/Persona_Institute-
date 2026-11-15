@@ -9,7 +9,7 @@ import {
   Trophy, Star, ShieldCheck, ShoppingCart, Target, Layers, Users,
 } from 'lucide-react';
 import '../home3d.css';
-import { videos, type Course } from '@/lib/data';
+import { type Course } from '@/lib/data';
 import { DUR, EASE_OUT } from '@/lib/motion';
 import { useRouteTransition } from '@/components/motion/RouteTransition';
 import { HeroFade, HeroHeading, TypedWord } from '@/components/motion/HeroText';
@@ -64,7 +64,7 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
   const { navigate } = useRouteTransition();
 
   const s = settings || fallbackSettings;
-  const activeOffer = offer;
+  const activeOffer = offer?.active === true ? offer : null;
   const activeReels = reels;
   const activeYoutube = youtube;
   const cardByKey = (key: string) => siteCards.find((card) => cleanSanityString(typeof card.key === 'string' ? card.key : card.key?.current) === key);
@@ -273,47 +273,6 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
                     </button>
                   </div>
                 </div>
-              </Card3D>
-            </Reveal3D>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== VIDEO STRIP ===== */}
-      <section className="section-wrap h3d-section">
-        <Reveal3D className="h3d-head">
-          <div>
-            <p className="section-kicker">{s.youtubeSectionKicker}</p>
-            <h2 className="section-title">{s.youtubeSectionTitle}</h2>
-          </div>
-          <button type="button" onClick={() => setModal('video')} className="h3d-link">
-            View All Videos <ArrowRight size={16} />
-          </button>
-        </Reveal3D>
-        <div className="h3d-grid">
-          {videos.map((v, i) => (
-            <Reveal3D key={v.title} delay={i * 80}>
-              <Card3D as="article" className="h3d-vid" maxTilt={8} lift={8}>
-                <div className="h3d-vid-stage">
-                  <div className="h3d-vid-thumb">
-                    <Image
-                      src={v.image}
-                      alt={v.title}
-                      width={800}
-                      height={450}
-                      className="c3d-img"
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                    <span className="h3d-vid-time">{v.duration}</span>
-                  </div>
-                  <button type="button" className="h3d-vid-play c3d-z2" onClick={() => setModal('video')} aria-label={`Play ${v.title}`}>
-                    <Play size={20} fill="currentColor" />
-                  </button>
-                </div>
-                <button type="button" className="h3d-vid-meta c3d-z1" onClick={() => setModal('video')}>
-                  <h3>{v.title}</h3>
-                  <span>{v.category}</span>
-                </button>
               </Card3D>
             </Reveal3D>
           ))}
