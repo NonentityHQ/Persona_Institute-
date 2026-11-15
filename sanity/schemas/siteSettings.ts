@@ -77,7 +77,7 @@ export default defineType({
       title: 'Learners Count Label',
       type: 'string',
       group: 'hero',
-      initialValue: '10,000+ Learners',
+      initialValue: '50,000+ Learners',
     }),
     defineField({
       name: 'learnersText',
@@ -146,14 +146,14 @@ export default defineType({
       title: 'Stat: Happy Learners',
       type: 'string',
       group: 'stats',
-      initialValue: '10,000+',
+      initialValue: '50,000+',
     }),
     defineField({
       name: 'statYears',
       title: 'Stat: Years Teaching',
       type: 'string',
       group: 'stats',
-      initialValue: '4+',
+      initialValue: '8+',
     }),
     defineField({
       name: 'statBatches',

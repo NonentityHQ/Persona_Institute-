@@ -38,8 +38,8 @@ function parseStat(raw: string | undefined, n: number, suffix: string) {
 const HERO_STATS: Array<{
   icon: typeof Trophy; label: string; n?: number; suffix?: string; decimals?: number; text?: string; fill?: boolean;
 }> = [
-  { icon: Trophy, n: 10000, suffix: '+', label: 'Happy Learners' },
-  { icon: Video, n: 500, suffix: '+', label: 'Video Lessons' },
+  { icon: Trophy, n: 50000, suffix: '+', label: 'Happy Learners' },
+  { icon: Video, n: 5000, suffix: '+', label: 'Video Lessons' },
   { icon: Star, n: 4.8, decimals: 1, suffix: '/5', label: 'Student Rating', fill: true },
   { icon: BookOpen, n: 25000, suffix: '+', label: 'Vocabulary Words' },
   { icon: ClipboardCheck, text: '100%', label: 'Exam Focused' },
@@ -98,23 +98,21 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
   const goTests = () => navigate('/free-tests');
 
   const trust = [
-    { ...parseStat(s.statLearners, 10000, '+'), label: 'Happy Learners' },
-    { ...parseStat(s.statYears, 4, '+'), label: 'Years Teaching' },
-    { ...parseStat(s.statBatches, 50, '+'), label: 'Live Batches' },
-    { ...parseStat(s.statSatisfaction, 98, '%'), label: 'Satisfaction' },
+    { ...parseStat(undefined, 50000, '+'), label: 'Happy Learners' },
+    { ...parseStat(undefined, 8, '+'), label: 'Years of Experience' },
+    { ...parseStat(undefined, 50, '+'), label: 'Live Batches' },
+    { ...parseStat(undefined, 98, '%'), label: 'Satisfaction' },
   ];
 
   // Keep the original six headline metrics. The additional trust metrics remain
   // in the community section below instead of overcrowding this compact card deck.
-  const deckStats = HERO_STATS.map((stat) => stat.label === 'Happy Learners'
-    ? { ...stat, ...parseStat(s.statLearners, 10000, '+') }
-    : stat);
+  const deckStats = HERO_STATS;
 
   return (
     <main className="h3d-page">
       {/* ===== HERO: copy on the left, the video lives in a real 3D stage on the right ===== */}
       <Hero3D
-        learnersLabel={s.learnersCount || '10,000+ Learners'}
+        learnersLabel="50,000+ Learners"
         videoUrl={s.heroVideoUrl}
         after={
           <>
@@ -151,7 +149,7 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
                   ))}
                 </div>
                 <p>
-                  <b>{s.learnersCount || '10,000+ Learners'}</b>
+                  <b>50,000+ Learners</b>
                   {s.learnersText || 'are improving their English with Persona Institute'}
                 </p>
               </div>
@@ -221,7 +219,7 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
           <div>
             <p className="section-kicker">POPULAR PROGRAMMES</p>
             <h2 className="section-title">Choose Your Learning Path</h2>
-            <p className="h3d-lead">Course list &amp; pricing sync from Classplus. Offer banners &amp; reels are managed in Sanity.</p>
+            <p className="h3d-lead">Explore our English programmes and find the right learning path for your goals.</p>
           </div>
           <button type="button" onClick={goCourses} className="h3d-link">
             View all courses <ArrowRight size={16} />

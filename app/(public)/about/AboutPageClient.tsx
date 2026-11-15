@@ -38,8 +38,8 @@ function CountUpText({ value }: { value: string }) {
 }
 
 const stats = [
-  { icon: Users, value: "10,000+", label: "Happy Learners", tone: "orange" },
-  { icon: Play, value: "500+", label: "Video Lessons", tone: "pink" },
+  { icon: Users, value: "50,000+", label: "Happy Learners", tone: "orange" },
+  { icon: Play, value: "5,000+", label: "Video Lessons", tone: "pink" },
   { icon: Star, value: "4.8/5", label: "Average Rating", tone: "orange" },
   { icon: BarChart3, value: "95%", label: "Report Visible Improvement", tone: "pink" },
   { icon: Globe2, value: "500+", label: "Cities Across India", tone: "violet" },
@@ -49,7 +49,7 @@ const timeline = [
   ["2021", "Started online teaching with a small group of students"],
   ["2022", "Launched structured courses for learners across India"],
   ["2023", "Introduced Persona English and English with Khushi"],
-  ["2024", "Built a community of 10,000+ learners"],
+  ["2024", "Reached learners across India through online classes"],
   ["2025", "Continuing our mission to make English learning practical, simple and accessible"],
 ];
 
@@ -253,7 +253,7 @@ export default function AboutPageClient({ siteCards = [] }: { siteCards: SanityS
       <m.section initial="hidden" whileInView="show" viewport={{once:true,amount:.08,margin:"0px 0px -4% 0px"}} variants={fadeUp} id="founder" className="mx-auto grid max-w-[1440px] items-center gap-5 px-5 pb-8 lg:grid-cols-[0.95fr_1.05fr] lg:px-10">
         <div className="relative aspect-video overflow-hidden rounded-2xl bg-[#f8e9df]"><img src="/images/ajay-sir-persona-wide.webp" alt="Ajay Sir at Persona Institute" className="absolute inset-0 h-full w-full object-cover object-center"/><button aria-label="Play founder introduction" className="absolute left-1/2 top-1/2 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-2 border-white bg-white/90 text-[#f04422] shadow-xl"><Play fill="currentColor" size={23}/></button></div>
         <div><span className="rounded-full bg-[#ffe6e0] px-3 py-1 text-[10px] font-extrabold tracking-wider text-[#f04422]">MEET OUR FOUNDER</span><h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">Ajay Singh Rajput (Ajay Sir)</h2><p className="mt-2 text-sm leading-relaxed text-[#52658d]">With a learner-first approach, practical examples and structured lessons, our goal is to help students overcome hesitation and build real communication skills. Persona Institute is designed to make English learning approachable and useful in everyday life.</p>
-          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">{[{icon:Award,top:"Years of",bottom:"Teaching Experience"},{icon:UsersRound,top:"10,000+",bottom:"Students Guided"},{icon:GraduationCap,top:"Specialist in",bottom:"Spoken English"},{icon:Users,top:"Mentor &",bottom:"Career Guide"}].map(({icon:Icon,top,bottom})=><div key={bottom} className="flex items-center gap-2 rounded-xl border border-slate-100 bg-white p-2 shadow-sm"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-orange-50 text-orange-500"><Icon size={16}/></span><span><strong className="block text-[11px]">{top}</strong><span className="text-[10px] text-[#52658d]">{bottom}</span></span></div>)}</div>
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">{[{icon:Award,top:"8+ Years",bottom:"Teaching Experience"},{icon:UsersRound,top:"50,000+",bottom:"Students Guided"},{icon:GraduationCap,top:"Specialist in",bottom:"Spoken English"},{icon:Users,top:"Mentor &",bottom:"Career Guide"}].map(({icon:Icon,top,bottom})=><div key={bottom} className="flex items-center gap-2 rounded-xl border border-slate-100 bg-white p-2 shadow-sm"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-orange-50 text-orange-500"><Icon size={16}/></span><span><strong className="block text-[11px]">{top}</strong><span className="text-[10px] text-[#52658d]">{bottom}</span></span></div>)}</div>
           <div className="mt-4 flex flex-wrap gap-2"><TransitionLink href="/courses" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#ff1738] to-[#ff5017] px-5 py-3 text-xs font-bold text-white">Explore Courses <ArrowRight size={15}/></TransitionLink><TransitionLink href="/contact" className="inline-flex items-center gap-2 rounded-full border border-[#ff6840] bg-white px-5 py-3 text-xs font-bold">Talk to Our Team</TransitionLink></div>
         </div>
       </m.section>
@@ -261,7 +261,7 @@ export default function AboutPageClient({ siteCards = [] }: { siteCards: SanityS
       <m.section initial="hidden" whileInView="show" viewport={{once:true,amount:.08,margin:"0px 0px -4% 0px"}} variants={fadeUp} className="relative overflow-hidden bg-gradient-to-r from-[#fff0e4] via-[#fffaf5] to-[#ffdfca]">
         <div className="mx-auto grid max-w-[1440px] items-center gap-5 px-5 py-7 md:grid-cols-2 lg:px-10">
           <div><h2 className="max-w-md text-2xl font-black leading-tight tracking-tight sm:text-3xl">Be a Part of Our Growing Learning Community</h2><p className="mt-2 max-w-lg text-sm leading-relaxed text-[#52658d]">Join thousands of students who are building their confidence and creating better opportunities with Persona Institute.</p><TransitionLink href="/courses" className="mt-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#ff4a16] to-[#ff7014] px-5 py-3 text-xs font-bold text-white">Start Learning Today <ArrowRight size={15}/></TransitionLink></div>
-          <div className="relative aspect-video overflow-hidden rounded-2xl"><img src="/images/ajay-sir-persona-wide.webp" alt="Ajay Sir at Persona Institute" className="absolute inset-0 h-full w-full rounded-2xl object-cover object-center"/><div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-2xl border border-white bg-white/95 px-5 py-3 shadow-xl"><strong className="block text-xl font-black">10,000+</strong><span className="text-xs text-[#52658d]">Happy Learners</span></div></div>
+          <div className="relative aspect-video overflow-hidden rounded-2xl"><img src="/images/ajay-sir-persona-wide.webp" alt="Ajay Sir at Persona Institute" className="absolute inset-0 h-full w-full rounded-2xl object-cover object-center"/><div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-2xl border border-white bg-white/95 px-5 py-3 shadow-xl"><strong className="block text-xl font-black">50,000+</strong><span className="text-xs text-[#52658d]">Happy Learners</span></div></div>
         </div>
       </m.section>
       <footer className="bg-[#102d70] px-5 py-5 text-center text-xs text-white/75">© {new Date().getFullYear()} Persona Institute. Learn · Practice · Grow.</footer>
