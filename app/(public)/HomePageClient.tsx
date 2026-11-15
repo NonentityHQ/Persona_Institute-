@@ -115,6 +115,7 @@ export default function HomePageClient({ offer, reels, youtube, settings, course
       {/* ===== HERO: copy on the left, the video lives in a real 3D stage on the right ===== */}
       <Hero3D
         learnersLabel={s.learnersCount || '10,000+ Learners'}
+        videoUrl={s.heroVideoUrl}
         after={
           <>
             <HeroFade delay={0.55}>
