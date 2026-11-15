@@ -10,6 +10,8 @@ import {
 } from '@/lib/sanity/fallback';
 import BookStoreClient from './BookStoreClient';
 
+export const metadata = { title: 'English Grammar & Vocabulary Book Store', description: 'Explore Persona Institute books for English grammar, vocabulary, spoken English and practice, including curated book combinations.', alternates: { canonical: '/book-store' } };
+
 export const revalidate = 120;
 
 export const metadata = {
