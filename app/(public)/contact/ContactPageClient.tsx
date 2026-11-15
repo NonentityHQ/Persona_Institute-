@@ -261,6 +261,6 @@ export default function ContactPageClient({ contactSettings, siteCards = [] }: {
       </section>
     </div>}
 
-    <footer className="bg-[#09276f] px-5 py-5 text-center text-xs text-white/75">© {new Date().getFullYear()} Persona Institute. Learn · Practice · Grow.</footer>
+
   </main>;
 }

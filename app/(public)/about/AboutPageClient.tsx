@@ -264,7 +264,8 @@ export default function AboutPageClient({ siteCards = [] }: { siteCards: SanityS
           <div className="relative aspect-video overflow-hidden rounded-2xl"><img src="/images/ajay-sir-persona-wide.webp" alt="Ajay Sir at Persona Institute" className="absolute inset-0 h-full w-full rounded-2xl object-cover object-center"/><div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-2xl border border-white bg-white/95 px-5 py-3 shadow-xl"><strong className="block text-xl font-black">50,000+</strong><span className="text-xs text-[#52658d]">Happy Learners</span></div></div>
         </div>
       </m.section>
-      <footer className="bg-[#102d70] px-5 py-5 text-center text-xs text-white/75">© {new Date().getFullYear()} Persona Institute. Learn · Practice · Grow.</footer>
+
+
     </main>
   );
 }

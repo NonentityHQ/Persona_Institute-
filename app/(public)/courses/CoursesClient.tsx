@@ -481,9 +481,7 @@ export default function CoursesClient({ courseList, live = false, siteCards = []
         </div>
       </section>
 
-      <footer className="bg-[#102d70] px-5 py-4 text-center text-xs text-white/80">
-        © 2026 Persona Institute. Learn · Practice · Grow.
-      </footer>
+
     </main>
   );
 }
