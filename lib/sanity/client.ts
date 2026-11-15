@@ -74,7 +74,8 @@ export type SiteSettings = {
   heroTitlePrefix?: string;
   heroTypedWords?: string[];
   heroSubtitle?: string;
-  heroImage?: { asset?: { _ref: string }; hotspot?: unknown };
+  heroVideoUrl?: string;
+  heroImage ?: { asset?: { _ref: string }; hotspot?: unknown };
   heroSecondaryImage?: { asset?: { _ref: string }; hotspot?: unknown };
   learnersCount?: string;
   learnersText?: string;

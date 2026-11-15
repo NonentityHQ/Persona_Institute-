@@ -65,7 +65,7 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
     return await fetchSanity<SiteSettings>(
       `*[_type == "siteSettings"][0]{
         heroEyebrow, heroTitleLine1, heroTitlePrefix, heroTypedWords,
-        heroSubtitle, heroImage, heroSecondaryImage, learnersCount, learnersText,
+        heroSubtitle, heroVideoUrl, heroImage, heroSecondaryImage, learnersCount, learnersText,
         instagramUrl, youtubeChannelUrl,
         reelsSectionTitle, reelsSectionKicker, reelsSectionSubtitle,
         youtubeSectionTitle, youtubeSectionKicker, youtubeSectionSubtitle,
@@ -134,9 +134,14 @@ async function getLatestYoutubeFeed(): Promise<SanityYoutubeVideo[]> {
         headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PersonaWebsite/1.0)' },
         next: { revalidate: 1800 },
       });
-      if (!response.ok) return [] as Array<SanityYoutubeVideo & { publishedAt?: string }>;
+      if (!response.ok) {
+        console.warn(`[youtube] RSS request failed for ${channel.label}: HTTP ${response.status}`);
+        return [] as Array<SanityYoutubeVideo & { publishedAt?: string }>;
+      }
       const xml = await response.text();
-      return Array.from(xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)).map((match, index) => {
+      const entries = Array.from(xml.matchAll(/<entry\b[^>]*>([\s\S]*?)<\/entry>/gi));
+      if (!entries.length) console.warn(`[youtube] RSS returned no entries for ${channel.label}`);
+      return entries.map((match, index) => {
         const entry = match[1];
         const id = xmlText(entry, 'yt:videoId');
         if (!id) return null;
@@ -147,10 +152,11 @@ async function getLatestYoutubeFeed(): Promise<SanityYoutubeVideo[]> {
           category: channel.label,
           active: true,
           order: index,
-          publishedAt: xmlText(entry, 'published'),
+          publishedAt: xmlText(entry, 'published') || xmlText(entry, 'updated'),
         };
       }).filter(Boolean) as Array<SanityYoutubeVideo & { publishedAt?: string }>;
-    } catch {
+    } catch (error) {
+      console.warn(`[youtube] RSS fetch failed for ${channel.label}:`, error);
       return [] as Array<SanityYoutubeVideo & { publishedAt?: string }>;
     }
   }));

@@ -11,6 +11,7 @@ type Props = {
    *  On phones the video sits BETWEEN `children` and `after`, so it is seen without scrolling far. */
   after?: ReactNode;
   learnersLabel?: string;
+  videoUrl?: string;
 };
 
 /** Per-layer depth: --z = real Z (px), --k = pointer parallax strength (px). */
@@ -26,7 +27,7 @@ const depth = (z: number, k: number) => ({ '--z': `${z}px`, '--k': k }) as CSSPr
  * requestAnimationFrame - no React re-renders while moving. Only transform / opacity animate.
  * Touch devices and prefers-reduced-motion get a calm static (or gently swaying) scene.
  */
-export default function Hero3D({ children, after, learnersLabel = '10,000+ Learners' }: Props) {
+export default function Hero3D({ children, after, learnersLabel = '10,000+ Learners', videoUrl }: Props) {
   const rootRef = useRef<HTMLElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
 
@@ -118,7 +119,7 @@ export default function Hero3D({ children, after, learnersLabel = '10,000+ Learn
                 <div className="h3d-layer h3d-layer-device" style={depth(0, 0)}>
                   <div className="h3d-device">
                     <div className="h3d-frame">
-                      <HeroVideo />
+                      <HeroVideo videoUrl={videoUrl} />
                     </div>
                   </div>
                 </div>
