@@ -273,7 +273,7 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
   const whyItems = (settings.whyItems?.length
     ? settings.whyItems.map((w) => [iconOf(w.icon, Target), w.title || '', w.description || ''] as [LucideIcon, string, string])
     : [
-      [Target, 'By Ajay Sir', 'Curated by Ajay Singh Rajput (Ajay Sir)'], [Award, 'Exam Oriented', 'Syllabus-based and completely practical'],
+      [Target, 'By Ajay Sir', 'Curated by Ajay Singh Rajput (Ajay Sir)'], [Award, 'Course Oriented', 'Syllabus-based and completely practical'],
       [BookOpen, 'Concept + Practice', 'Complete learning with examples & sets'], [TrendingUp, 'Structured Learning', 'Clear lessons supported by examples and practice'],
     ] as Array<[LucideIcon, string, string]>);
 
