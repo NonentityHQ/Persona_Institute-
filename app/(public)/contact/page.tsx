@@ -16,7 +16,7 @@ export default async function ContactPage() {
     phoneSecondary: cleanSanityString(settings?.contactPhoneSecondary),
     whatsapp: cleanSanityString(settings?.contactWhatsapp) || '8719977802',
     email: cleanSanityString(settings?.contactEmail) || 'Personaenglishknw@gmail.com',
-    address: cleanSanityString(settings?.contactAddress) || '01, Jai Bajrang Nagar, near Gangrade Dharmshala, Kasal Pura, Khandwa, Madhya Pradesh 450001',
+    address: '01, Jai Bajrang Nagar, near Gangrade Dharmshala, Kasal Pura, Khandwa, Madhya Pradesh 450001',
   };
   return <ContactPageClient contactSettings={contactSettings} siteCards={siteCards} />;
 }
