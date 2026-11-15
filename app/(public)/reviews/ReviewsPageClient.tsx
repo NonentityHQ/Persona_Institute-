@@ -233,7 +233,8 @@ export default function ReviewsPageClient({ siteCards = [] }: { siteCards: Sanit
           </div>
         </div>
       </m.section>
-      <footer className="bg-[#102f70] py-4 text-center text-[10px] text-white/80">© 2026 Persona Institute. Learn · Practice · Grow.</footer>
+
+
     </main>
   );
 }
