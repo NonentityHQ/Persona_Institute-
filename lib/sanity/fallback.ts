@@ -125,7 +125,7 @@ export const fallbackSettings: SiteSettings = {
   contactEmail: 'Personaenglishknw@gmail.com',
   contactPhone: '8719977802',
   contactPhoneSecondary: '',
-  contactAddress: 'Navchandi Mandir Main Road, Rameshwar Nagar, Khandwa, Madhya Pradesh 450001, India',
+  contactAddress: '01, Jai Bajrang Nagar, near Gangrade Dharmshala, Kasal Pura, Khandwa, Madhya Pradesh 450001',
   contactWhatsapp: '8719977802',
 };
 
