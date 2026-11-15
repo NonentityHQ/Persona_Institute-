@@ -222,7 +222,7 @@ export default defineType({
       type: 'text',
       rows: 3,
       group: 'contact',
-      initialValue: 'Navchandi Mandir Main Road, Rameshwar Nagar, Khandwa, Madhya Pradesh 450001, India',
+      initialValue: '01, Jai Bajrang Nagar, near Gangrade Dharmshala, Kasal Pura, Khandwa, Madhya Pradesh 450001',
     }),
     defineField({
       name: 'contactWhatsapp',
