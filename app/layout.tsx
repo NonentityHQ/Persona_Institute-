@@ -4,8 +4,13 @@ import './motion.css';
 import MotionRoot from '@/components/motion/MotionRoot';
 
 export const metadata: Metadata = {
-  title: 'Persona Institute | Speak English with Confidence',
-  description: 'Learn English anytime, anywhere with Persona Institute.',
+  metadataBase: new URL('https://personaenglish.in'),
+  title: { default: 'Persona Institute | Spoken English & Communication Skills', template: '%s | Persona Institute' },
+  description: 'Build spoken English, grammar, vocabulary and communication skills with Persona Institute. Explore live and recorded courses, practice and learning resources.',
+  applicationName: 'Persona Institute',
+  alternates: { canonical: '/' },
+  openGraph: { type: 'website', siteName: 'Persona Institute', url: 'https://personaenglish.in', title: 'Persona Institute | Spoken English & Communication Skills', description: 'Build spoken English, grammar, vocabulary and communication skills with Persona Institute.', images: [{ url: '/images/persona-books-display.webp', width: 1200, height: 900, alt: 'Persona Institute learning resources' }] },
+  twitter: { card: 'summary_large_image', title: 'Persona Institute | Spoken English & Communication Skills', description: 'Build spoken English, grammar, vocabulary and communication skills with Persona Institute.', images: ['/images/persona-books-display.webp'] },
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '48x48' },
