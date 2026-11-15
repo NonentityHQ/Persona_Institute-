@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  ArrowRight, Award, BookOpen, Laptop, Layers3, MapPin, Users,
+  ArrowRight, MapPin,
 } from 'lucide-react';
 
 const quickLinks = [
@@ -23,13 +23,6 @@ const courseLinks = [
   { label: 'Study Books', href: '/book-store' },
 ];
 
-const trustItems = [
-  { icon: Users, value: '50,000+', label: 'Happy Learners' },
-  { icon: Award, value: '8+', label: 'Years of Experience' },
-  { icon: Laptop, value: 'Expert', label: 'Learning Guidance' },
-  { icon: Layers3, value: 'Quality', label: 'Study Material' },
-];
-
 function SocialMark({ type }: { type: 'instagram' | 'youtube' | 'whatsapp' }) {
   if (type === 'instagram') return <svg viewBox="0 0 24 24" aria-hidden="true" className="h-[22px] w-[22px]" fill="none" stroke="currentColor" strokeWidth="1.9"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg>;
   if (type === 'youtube') return <svg viewBox="0 0 24 24" aria-hidden="true" className="h-[22px] w-[22px]" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4L15.8 12l-6.2 3.6Z"/></svg>;
@@ -40,55 +33,33 @@ export default function PublicFooter() {
   return (
     <footer className="relative isolate overflow-hidden bg-[#0b1835] text-white">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_12%_10%,rgba(42,86,164,.30),transparent_42%),radial-gradient(ellipse_at_88%_80%,rgba(221,30,91,.18),transparent_38%)]" />
-      <div className="mx-auto max-w-[1440px] px-5 pb-7 pt-9 sm:px-8 sm:pt-12 lg:px-10">
-        <div className="relative mb-10 grid gap-5 overflow-hidden rounded-[28px] border border-white/80 bg-[linear-gradient(112deg,#fff0f6_0%,#fffafd_48%,#fff0e9_100%)] px-5 py-6 text-[#10285b] shadow-[0_18px_48px_rgba(3,12,35,.24)] sm:grid-cols-[116px_1fr_auto] sm:items-center sm:gap-7 sm:px-8 sm:py-7">
-          <div aria-hidden="true" className="absolute -right-12 -top-16 h-48 w-48 rounded-full bg-[#f8c7d6]/30 blur-3xl" />
-          <div aria-hidden="true" className="relative flex h-[116px] w-[132px] items-center justify-center sm:h-[128px] sm:w-[148px]">
-            <span className="absolute inset-2 rounded-full bg-[#f6c7d7]/55 blur-xl" />
-            <Image src="/images/persona-books-display.webp" alt="" width={220} height={190} className="relative h-[116px] w-[140px] object-contain drop-shadow-[0_9px_12px_rgba(30,45,90,.16)] sm:h-[132px] sm:w-[156px]" />
-          </div>
-          <div className="relative min-w-0">
-            <span className="mb-2 inline-flex rounded-full border border-[#f5b4c6] bg-white/85 px-3 py-1 text-[10px] font-black uppercase tracking-[.15em] text-[#d91e4e] sm:text-[11px]">
-              Continue your learning
-            </span>
-            <h2 className="text-[22px] font-black leading-[1.13] tracking-tight sm:text-[clamp(23px,2.2vw,31px)]">
-              Start Your English Learning Journey Today
-            </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#40577f] sm:text-[15px]">
-              Build confidence, fluency and better communication with Persona Institute.
-            </p>
-          </div>
-          <Link href="/courses" className="relative inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#f22d59] to-[#d90d3d] px-6 py-3 text-sm font-extrabold text-white shadow-[0_8px_22px_rgba(217,13,61,.24)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(217,13,61,.32)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
-            Explore Courses <ArrowRight size={17} />
-          </Link>
-        </div>
-
-        <div className="grid gap-9 border-b border-white/15 pb-9 sm:grid-cols-2 lg:grid-cols-[1.2fr_.8fr_1fr_1.1fr] lg:gap-8">
-          <div className="min-w-0">
-            <Link href="/" aria-label="Persona Institute home" className="inline-flex items-center">
-              <Image src="/images/persona-logo.webp" alt="Persona Institute" width={340} height={150} className="h-[112px] w-auto max-w-[290px] object-contain object-left drop-shadow-[0_5px_14px_rgba(0,0,0,.28)] sm:h-[126px] sm:max-w-[320px]" priority={false} />
+      <div className="mx-auto max-w-[1440px] px-5 pb-7 pt-8 sm:px-8 sm:pt-10 lg:px-10">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-9 border-b border-white/15 pb-8 sm:grid-cols-2 sm:gap-8 lg:grid-cols-[1.2fr_.8fr_1fr_1.1fr] lg:gap-8">
+          <div className="col-span-2 min-w-0 text-center lg:col-span-1 lg:text-left">
+            <Link href="/" aria-label="Persona Institute home" className="inline-flex items-center justify-center lg:justify-start">
+              <Image src="/images/persona-logo.webp" alt="Persona Institute" width={340} height={150} className="mx-auto h-[112px] w-auto max-w-[290px] object-contain object-center drop-shadow-[0_5px_14px_rgba(0,0,0,.28)] sm:h-[126px] sm:max-w-[320px] lg:mx-0 lg:object-left" priority={false} />
             </Link>
-            <p className="mt-4 max-w-[310px] text-sm leading-6 text-slate-300">
+            <p className="mx-auto mt-4 max-w-[310px] text-sm leading-6 text-slate-300 lg:mx-0">
               India’s trusted platform to learn, practise and speak English with confidence.
             </p>
-            <div className="mt-5 flex flex-wrap gap-3">
+            <div className="mt-5 flex flex-wrap justify-center gap-3 lg:justify-start">
               <a href="https://www.instagram.com/personaenglish/" target="_blank" rel="noopener noreferrer" aria-label="Persona Institute on Instagram" className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-[#833ab4] via-[#e1306c] to-[#f77737] text-white shadow-lg shadow-pink-950/20 transition hover:-translate-y-1 hover:brightness-110"><SocialMark type="instagram" /></a>
               <a href="https://www.youtube.com/@PersonaInstituteForEnglish" target="_blank" rel="noopener noreferrer" aria-label="Persona Institute on YouTube" className="grid h-11 w-11 place-items-center rounded-xl bg-[#ff0033] text-white shadow-lg shadow-red-950/20 transition hover:-translate-y-1 hover:brightness-110"><SocialMark type="youtube" /></a>
               <a href="https://wa.me/918719977802" target="_blank" rel="noopener noreferrer" aria-label="Chat with Persona Institute on WhatsApp" className="grid h-11 w-11 place-items-center rounded-xl bg-[#20c66b] text-white shadow-lg shadow-green-950/20 transition hover:-translate-y-1 hover:brightness-110"><SocialMark type="whatsapp" /></a>
             </div>
           </div>
 
-          <nav aria-label="Footer quick links">
+          <nav aria-label="Footer quick links" className="min-w-0">
             <h3 className="mb-4 text-base font-extrabold tracking-tight text-white">Quick Links</h3>
             <ul className="space-y-2.5">{quickLinks.map((item) => <li key={item.label}><Link href={item.href} className="text-sm text-slate-300 transition-colors hover:text-white">{item.label}</Link></li>)}</ul>
           </nav>
 
-          <nav aria-label="Footer learning links">
+          <nav aria-label="Footer learning links" className="min-w-0">
             <h3 className="mb-4 text-base font-extrabold tracking-tight text-white">Learn With Us</h3>
             <ul className="space-y-2.5">{courseLinks.map((item) => <li key={item.label}><Link href={item.href} className="text-sm text-slate-300 transition-colors hover:text-white">{item.label}</Link></li>)}</ul>
           </nav>
 
-          <div>
+          <div className="col-span-2 min-w-0 sm:col-span-2 lg:col-span-1">
             <h3 className="mb-4 text-base font-extrabold tracking-tight text-white">Need Help?</h3>
             <p className="max-w-[280px] text-sm leading-6 text-slate-300">Have a question about courses, enrolment or learning resources? Our team can help.</p>
             <Link href="/contact" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-white transition-colors hover:text-pink-300">Contact Support <ArrowRight size={15} /></Link>
@@ -99,18 +70,9 @@ export default function PublicFooter() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-5 border-b border-white/15 py-8 sm:grid-cols-4 sm:gap-4">
-          {trustItems.map(({ icon: Icon, value, label }) => (
-            <div key={label} className="flex items-center gap-3 sm:justify-center">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-pink-300/20 bg-gradient-to-br from-[#a82c68] to-[#592d79] text-white shadow-[0_8px_20px_rgba(207,28,91,.18)]"><Icon size={21} strokeWidth={1.8} /></span>
-              <span className="min-w-0"><strong className="block text-base font-black leading-tight sm:text-lg">{value}</strong><span className="mt-1 block text-xs leading-4 text-slate-300 sm:text-sm">{label}</span></span>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex flex-col gap-4 pt-6 text-xs text-slate-300 sm:flex-row sm:items-center sm:justify-between sm:text-sm">
+        <div className="flex flex-col gap-4 pt-6 text-center text-xs text-slate-300 sm:flex-row sm:items-center sm:justify-between sm:text-left sm:text-sm">
           <p>© {new Date().getFullYear()} Persona Institute. All rights reserved.</p>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-end">
             <Link href="/contact" className="transition-colors hover:text-white">Contact</Link>
             <Link href="/about" className="transition-colors hover:text-white">About</Link>
             <Link href="/courses" className="transition-colors hover:text-white">Courses</Link>
