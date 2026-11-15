@@ -7,6 +7,14 @@ import {
 } from '@/lib/classplus/client';
 import { courseDetails } from '@/lib/course-details';
 
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const readable = decodeURIComponent(slug).replace(/[-_]+/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
+  const title = readable + ' English Course';
+  const description = `Explore ${readable} course details, learning features and enrollment information at Persona Institute.`;
+  return { title, description, alternates: { canonical: `/courses/${slug}` }, openGraph: { title: `${title} | Persona Institute`, description, url: `https://personaenglish.in/courses/${slug}` } };
+}
+
 export const revalidate = 60;
 
 /** Prefer Classplus IDs; keep static ids so old links still build */
