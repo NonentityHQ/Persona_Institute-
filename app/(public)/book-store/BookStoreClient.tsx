@@ -5,7 +5,7 @@ import { AnimatePresence, m } from 'framer-motion';
 import {
   ArrowRight, Award, BookOpen, ChevronLeft, ChevronRight, Crown, FileText, Gift, Heart,
   Layers, LayoutGrid, PenLine, Play, ShieldCheck, ShoppingCart, Star, Target, TrendingUp,
-  Type, Users, Zap, ShoppingBag, Sparkles, type LucideIcon,
+  Type, Users, Zap, ShoppingBag, Sparkles, MapPin, type LucideIcon,
 } from 'lucide-react';
 import type {
   SanityBook,
@@ -522,6 +522,16 @@ export default function BookStoreClient({ books, categories, offer, settings }: 
       </section>
 
       <TrustBanner wrap={wrap} testimonials={settings.testimonials || []} />
+
+      <section className={`${wrap} mt-10`} aria-label="Persona Institute address">
+        <div className="flex flex-col gap-3 rounded-2xl border border-rose-100 bg-white p-5 shadow-[0_10px_28px_-16px_rgba(15,39,79,.25)] sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="flex items-start gap-3">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-rose-50 text-[#e30f2f]"><MapPin className="h-5 w-5" /></span>
+            <div><b className="block text-sm font-extrabold text-[#0c1f4a]">Visit Persona Institute</b><p className="mt-1 text-sm leading-relaxed text-slate-600">01, Jai Bajrang Nagar, near Gangrade Dharmshala, Kasal Pura, Khandwa, Madhya Pradesh 450001</p></div>
+          </div>
+          <a href={`https://maps.google.com/?q=${encodeURIComponent('Persona Institute, 01, Jai Bajrang Nagar, near Gangrade Dharmshala, Kasal Pura, Khandwa, Madhya Pradesh 450001')}`} target="_blank" rel="noopener noreferrer" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#e30f2f] px-4 py-3 text-sm font-bold text-white">Get Directions <ArrowRight className="h-4 w-4" /></a>
+        </div>
+      </section>
     </main>
   );
 }
