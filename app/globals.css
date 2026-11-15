@@ -971,10 +971,7 @@ main section[class*="hero"] .rounded-xl.border { will-change: auto; }
 }
 .contact-hero-copy { position: relative; z-index: 4; max-width: 650px; }
 .contact-title-accent { position: relative; display: inline-block; color: #f04422; white-space: nowrap; }
-.contact-title-accent::after {
-  position: absolute; content: ""; height: .085em; left: 8%; right: 3%; bottom: -.08em;
-  border-radius: 99px; background: #ff4b18; transform: rotate(-2deg);
-}
+/* Removed decorative orange underline beneath the Contact hero accent. */
 .contact-hero-visual {
   position: relative; align-self: stretch; display: flex; align-items: flex-end; justify-content: center;
   min-width: 0; min-height: 510px; isolation: isolate;
