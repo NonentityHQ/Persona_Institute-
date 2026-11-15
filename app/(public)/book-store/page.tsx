@@ -10,14 +10,13 @@ import {
 } from '@/lib/sanity/fallback';
 import BookStoreClient from './BookStoreClient';
 
-export const metadata = { title: 'English Grammar & Vocabulary Book Store', description: 'Explore Persona Institute books for English grammar, vocabulary, spoken English and practice, including curated book combinations.', alternates: { canonical: '/book-store' } };
-
 export const revalidate = 120;
 
 export const metadata = {
-  title: 'Book Store | Persona Institute',
+  title: 'English Grammar & Vocabulary Book Store',
   description:
-    'Official Persona Institute Book Store — Grammar, Vocabulary, Practice Sets and Combos by Ajay Sir.',
+    'Explore Persona Institute books for English grammar, vocabulary, spoken English and practice, including curated book combinations.',
+  alternates: { canonical: '/book-store' },
 };
 
 export default async function BookStorePage() {
