@@ -1,4 +1,5 @@
 import PublicHeader from '@/components/PublicHeader';
+import PublicFooter from '@/components/PublicFooter';
 import { draftMode } from 'next/headers';
 import { VisualEditing } from 'next-sanity/visual-editing';
 import { SanityLive } from '@/lib/sanity/live';
@@ -14,6 +15,7 @@ export default async function PublicLayout({ children }: { children: React.React
       <PublicHeader />
       <div className="h-16 lg:h-[4.25rem]" aria-hidden="true" />
       <div className="pb-20 lg:pb-0">{children}</div>
+      <PublicFooter />
       {liveEnabled ? <SanityLive /> : null}
       {isDraftMode ? <><VisualEditing /><DisableDraftMode /></> : null}
     </>
