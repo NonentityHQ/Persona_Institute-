@@ -9,7 +9,7 @@ import {
   Trophy, Star, ShieldCheck, ShoppingCart, Target, Layers, Users,
 } from 'lucide-react';
 import '../home3d.css';
-import { videos, type Course } from '@/lib/data';
+import { type Course } from '@/lib/data';
 import { DUR, EASE_OUT } from '@/lib/motion';
 import { useRouteTransition } from '@/components/motion/RouteTransition';
 import { HeroFade, HeroHeading, TypedWord } from '@/components/motion/HeroText';
