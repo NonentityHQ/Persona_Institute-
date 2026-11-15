@@ -168,7 +168,7 @@ export default function ContactPageClient({ contactSettings, siteCards = [] }: {
         { id: "contact-call", label: contactCard("contact-call")?.title || "Call Us", value: phoneOptions[0] ? displayPhone(phoneOptions[0]) : "Add a phone number", detail: contactCard("contact-call")?.description || (phoneOptions.length > 1 ? "Choose which number to call" : "Tap to call Persona Institute"), icon: Phone, color: "orange", action: "call" },
         { id: "contact-whatsapp", label: contactCard("contact-whatsapp")?.title || "WhatsApp Us", value: displayPhone(whatsappNumber), detail: contactCard("contact-whatsapp")?.description || "Quick Support", icon: MessageCircle, color: "green", href: whatsappUrl },
         { id: "contact-email", label: contactCard("contact-email")?.title || "Email Us", value: emailAddress, detail: contactCard("contact-email")?.description || "We reply within 24 hours", icon: Mail, color: "orange", href: emailUrl },
-        { id: "contact-office", label: contactCard("contact-office")?.title || "Visit Our Office", value: contactCard("contact-office")?.subtitle || "Rameshwar Nagar, Khandwa", detail: contactCard("contact-office")?.description || "Navchandi Mandir Main Road", icon: MapPin, color: "orange", href: mapsUrl },
+        { id: "contact-office", label: contactCard("contact-office")?.title || "Visit Our Office", value: officeAddress, detail: "Near Gangrade Dharmshala, Kasal Pura", icon: MapPin, color: "orange", href: mapsUrl },
       ].map((item) => {
         const Icon = item.icon;
         const cardClass = "group flex min-w-0 items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 text-left shadow-[0_5px_20px_rgba(15,39,87,0.05)] transition hover:-translate-y-1 hover:border-orange-200 hover:shadow-lg";
