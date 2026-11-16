@@ -125,7 +125,7 @@ export default function ContactPageClient({ contactSettings, siteCards = [] }: {
             fetchPriority="high"
           />
           <img
-            src="/images/persona-logo-contact.webp"
+            src="/images/persona-logo.webp"
             alt="Persona Institute logo"
             className="contact-hero-logo"
           />
